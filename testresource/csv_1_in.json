@@ -1,0 +1,35 @@
+{
+    "template": "csv",
+    "count": 2,
+    "columns": [
+        {
+            "name": "id",
+            "type": "rowIndex"
+        },
+        {
+            "name": "greeting",
+            "type": "const",
+            "options": {
+                "value": "hello"
+            }
+        },
+        {
+            "name": "from",
+            "type": "const",
+            "options": {
+                "value": "from"
+            }
+        },
+        {
+            "name": "server",
+            "type": "const",
+            "options": {
+                "value": "datarator"
+            }
+        }
+    ],
+    "options": {
+        "header": false,
+        "separator": " "
+    }
+}
