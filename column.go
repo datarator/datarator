@@ -37,6 +37,10 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		typedColumn = ColumnNameFirst{
 			Column: column,
 		}
+	case COLUMN_NAME_LAST:
+		typedColumn = ColumnNameLast{
+			Column: column,
+		}
 	case COLUMN_JOIN:
 		options := ColumnOptionsJoin{}
 		errOpts = loadOptions(jSONColumn.JSONOptions, &options)

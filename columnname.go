@@ -6,6 +6,7 @@ import (
 
 const (
 	COLUMN_NAME_FIRST = "name.first"
+	COLUMN_NAME_LAST  = "name.last"
 )
 
 type ColumnNameFirst struct {
@@ -14,4 +15,12 @@ type ColumnNameFirst struct {
 
 func (columnNameFirst ColumnNameFirst) Value(context Context) (string, error) {
 	return fake.FirstName(), nil
+}
+
+type ColumnNameLast struct {
+	Column Column
+}
+
+func (columnNameLast ColumnNameLast) Value(context Context) (string, error) {
+	return fake.LastName(), nil
 }
