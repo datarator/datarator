@@ -8,7 +8,7 @@ import (
 	"github.com/gavv/httpexpect"
 )
 
-var tests = []struct {
+var integrationTests = []struct {
 	inFile  string
 	outFile string
 }{
@@ -39,7 +39,7 @@ func TestCsv(t *testing.T) {
 	//     t.Skip("skipping test in short mode.")
 	// }
 
-	for _, test := range tests {
+	for _, test := range integrationTests {
 		in, errIn := ioutil.ReadFile(test.inFile)
 		if errIn != nil {
 			t.Fatalf("Failed reading file %v: %v", test.inFile, errIn.Error())
