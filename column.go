@@ -37,8 +37,36 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		typedColumn = ColumnNameFirst{
 			Column: column,
 		}
+	case COLUMN_NAME_FIRST_MALE:
+		typedColumn = ColumnNameFirstMale{
+			Column: column,
+		}
+	case COLUMN_NAME_FIRST_FEMALE:
+		typedColumn = ColumnNameFirstFemale{
+			Column: column,
+		}
 	case COLUMN_NAME_LAST:
 		typedColumn = ColumnNameLast{
+			Column: column,
+		}
+	case COLUMN_NAME_LAST_MALE:
+		typedColumn = ColumnNameLastMale{
+			Column: column,
+		}
+	case COLUMN_NAME_LAST_FEMALE:
+		typedColumn = ColumnNameLastFemale{
+			Column: column,
+		}
+	case COLUMN_NAME_FULL:
+		typedColumn = ColumnNameFull{
+			Column: column,
+		}
+	case COLUMN_NAME_FULL_MALE:
+		typedColumn = ColumnNameFullMale{
+			Column: column,
+		}
+	case COLUMN_NAME_FULL_FEMALE:
+		typedColumn = ColumnNameFullFemale{
 			Column: column,
 		}
 	case COLUMN_JOIN:
