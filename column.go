@@ -5,12 +5,6 @@ import (
 	"io"
 )
 
-const (
-	CONST    = "const"
-	JOIN     = "join"
-	ROWINDEX = "rowIndex"
-)
-
 type ColumnFactory struct {
 }
 
@@ -32,21 +26,25 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	var errOpts error
 
 	switch jSONColumn.Type {
-	case CONST:
+	case COLUMN_CONST:
 		options := ColumnOptionsConst{}
 		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
 		typedColumn = ColumnConst{
 			Options: options,
 			Column:  column,
 		}
-	case JOIN:
+	case COLUMN_NAME_FIRST:
+		typedColumn = ColumnNameFirst{
+			Column: column,
+		}
+	case COLUMN_JOIN:
 		options := ColumnOptionsJoin{}
 		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
 		typedColumn = ColumnJoin{
 			Options: options,
 			Column:  column,
 		}
-	case ROWINDEX:
+	case COLUMN_ROW_INDEX:
 		options := ColumnOptionsRowIndex{}
 		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
 		typedColumn = ColumnRowIndex{

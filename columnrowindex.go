@@ -2,6 +2,10 @@ package main
 
 import "strconv"
 
+const (
+	COLUMN_ROW_INDEX = "rowIndex"
+)
+
 type ColumnOptionsRowIndex struct {
 	// Increment int
 	// Decrement int

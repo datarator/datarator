@@ -4,6 +4,10 @@ import (
 	"bytes"
 )
 
+const (
+	COLUMN_JOIN = "join"
+)
+
 type ColumnOptionsJoin struct {
 	Separator string
 }

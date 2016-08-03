@@ -1,5 +1,9 @@
 package main
 
+const (
+	COLUMN_CONST = "const"
+)
+
 type ColumnOptionsConst struct {
 	Value string
 }
