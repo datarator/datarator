@@ -3,7 +3,7 @@ package main
 import "strconv"
 
 const (
-	COLUMN_ROW_INDEX = "rowIndex"
+	COLUMN_ROW_INDEX = "row_index"
 )
 
 type ColumnOptionsRowIndex struct {
