@@ -10,7 +10,7 @@ type TemplateFactory struct {
 
 func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema JSONSchema) (Template, error) {
 
-	nestedColums, err := CreateColumns(jSONSchema.Columns)
+	nestedColums, err := createColumns(jSONSchema.Columns)
 	if err != nil {
 		return nil, err
 	}

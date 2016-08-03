@@ -16,7 +16,7 @@ type ColumnFactory struct {
 
 func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedColumn, error) {
 
-	nestedColums, err := CreateColumns(jSONColumn.Columns)
+	nestedColums, err := createColumns(jSONColumn.Columns)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 //     return "en", nil
 // }
 
-func CreateColumns(columns []JSONColumn) ([]TypedColumn, error) {
+func createColumns(columns []JSONColumn) ([]TypedColumn, error) {
 	columnFactory := ColumnFactory{}
 	nestedColumns := []TypedColumn{}
 
