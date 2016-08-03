@@ -280,6 +280,10 @@
 			"Rev": "d77da356e56a7428ad25149ca77381849a6a5232"
 		},
 		{
+			"ImportPath": "github.com/syscrusher/fake",
+			"Rev": "9d352d243c041c08e75db010138b70a83b571f03"
+		},
+		{
 			"ImportPath": "github.com/valyala/bytebufferpool",
 			"Rev": "a517d2d1537f5b02e9f6c23d4794160c6c2bc157"
 		},

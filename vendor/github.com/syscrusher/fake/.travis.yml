@@ -1,0 +1,15 @@
+sudo: false
+language: go
+
+go:
+  - 1.6
+  - tip
+
+install:
+  - go get github.com/alecthomas/gometalinter
+  - gometalinter --install --update
+  - go get -v -d -t ./...
+
+script:
+  - go test -v -race ./...
+  - gometalinter --enable=gofmt,goimports --deadline=60s
