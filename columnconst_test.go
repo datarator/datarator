@@ -2,26 +2,26 @@ package main
 
 import "testing"
 
-var columnConstValueTests = []struct {
-	inColumnConst ColumnConst
-	inContext     Context
-	outValue      string
-}{
-	{
-		inColumnConst: ColumnConst{
-			Options: ColumnOptionsConst{
-				Value: "foo",
-			},
-			Column: Column{},
-		},
-		inContext: Context{},
-		outValue:  "foo",
-	},
-}
-
 func TestColumnConstValue(t *testing.T) {
-	for _, test := range columnConstValueTests {
-		actual, _ := test.inColumnConst.Value(test.inContext)
+	var tests = []struct {
+		inColumn  ColumnConst
+		inContext Context
+		outValue  string
+	}{
+		{
+			inColumn: ColumnConst{
+				Options: ColumnOptionsConst{
+					Value: "foo",
+				},
+				Column: Column{},
+			},
+			inContext: Context{},
+			outValue:  "foo",
+		},
+	}
+
+	for _, test := range tests {
+		actual, _ := test.inColumn.Value(test.inContext)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}
