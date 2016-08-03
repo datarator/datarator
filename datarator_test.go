@@ -8,21 +8,11 @@ import (
 	"github.com/gavv/httpexpect"
 )
 
-var integrationTests = []struct {
-	inFile  string
-	outFile string
-}{
-	{
-		inFile:  "./testresource/csv_1_in.json",
-		outFile: "./testresource/csv_1_out",
-	},
-}
-
 func irisTester(t *testing.T) *httpexpect.Expect {
 	api := IrisAPI()
 
 	return httpexpect.WithConfig(httpexpect.Config{
-		// BaseURL: "http://localhost:9292",
+		// BaseURL: "http://localhost:2345",
 		Client: &http.Client{
 			Transport: httpexpect.NewFastBinder(api.ListenVirtual().Handler),
 			Jar:       httpexpect.NewJar(),
@@ -39,7 +29,17 @@ func TestCsv(t *testing.T) {
 	//     t.Skip("skipping test in short mode.")
 	// }
 
-	for _, test := range integrationTests {
+	var tests = []struct {
+		inFile  string
+		outFile string
+	}{
+		{
+			inFile:  "./testresource/csv_1_in.json",
+			outFile: "./testresource/csv_1_out",
+		},
+	}
+
+	for _, test := range tests {
 		in, errIn := ioutil.ReadFile(test.inFile)
 		if errIn != nil {
 			t.Fatalf("Failed reading file %v: %v", test.inFile, errIn.Error())
