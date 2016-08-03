@@ -19,7 +19,7 @@ var columnConstValueTests = []struct {
 	},
 }
 
-func TestValue(t *testing.T) {
+func TestColumnConstValue(t *testing.T) {
 	for _, test := range columnConstValueTests {
 		actual, _ := test.inColumnConst.Value(test.inContext)
 		if actual != test.outValue {
