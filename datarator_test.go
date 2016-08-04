@@ -67,12 +67,12 @@ func TestErr(t *testing.T) {
 		{
 			inFile:       "./testresource/csv_err_unsupported_type.json",
 			outErrCode:   http.StatusBadRequest,
-			outErrString: "Bad Request: Column: id has unsupported type: rowIndex",
+			outErrString: "Bad Request: Column: id has unsupported type: unsupported",
 		},
 		{
 			inFile:       "./testresource/csv_err_unsupported_template.json",
 			outErrCode:   http.StatusBadRequest,
-			outErrString: "Bad Request: Unsupported template: unknown",
+			outErrString: "Bad Request: Unsupported template: unsupported",
 		},
 	}
 
