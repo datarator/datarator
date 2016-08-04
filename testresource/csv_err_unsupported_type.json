@@ -1,0 +1,10 @@
+{
+    "template": "csv",
+    "count": 1,
+    "columns": [
+        {
+            "name": "id",
+            "type": "rowIndex"
+        }        
+    ]    
+}

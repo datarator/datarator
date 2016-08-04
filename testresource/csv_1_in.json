@@ -4,7 +4,7 @@
     "columns": [
         {
             "name": "id",
-            "type": "rowIndex"
+            "type": "row_index"
         },
         {
             "name": "greeting",

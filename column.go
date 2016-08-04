@@ -2,7 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
+)
+
+var (
+	errUnsupportedType = "Column: %s has unsupported type: %s"
 )
 
 type ColumnFactory struct {
@@ -84,7 +89,7 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			Column:  column,
 		}
 	default:
-		return nil, nil // errors.New("Invalid schema Type: %v", schemaType)
+		return nil, fmt.Errorf(errUnsupportedType, jSONColumn.Name, jSONColumn.Type)
 	}
 
 	if errOpts != nil {
@@ -111,7 +116,7 @@ func createColumns(columns []JSONColumn) ([]TypedColumn, error) {
 	for _, nestedJSONColumn := range columns {
 		nestedColumn, err := columnFactory.CreateColumn(nestedJSONColumn)
 		if err != nil {
-			return nil, nil
+			return nil, err
 		}
 		nestedColumns = append(nestedColumns, nestedColumn)
 	}

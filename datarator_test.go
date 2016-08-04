@@ -12,7 +12,6 @@ func irisTester(t *testing.T) *httpexpect.Expect {
 	api := IrisAPI()
 
 	return httpexpect.WithConfig(httpexpect.Config{
-		// BaseURL: "http://localhost:2345",
 		Client: &http.Client{
 			Transport: httpexpect.NewFastBinder(api.ListenVirtual().Handler),
 			Jar:       httpexpect.NewJar(),
@@ -56,5 +55,33 @@ func TestCsv(t *testing.T) {
 			Expect().
 			Status(http.StatusOK).
 			Body().Equal(string(out))
+	}
+}
+
+func TestErr(t *testing.T) {
+	var tests = []struct {
+		inFile       string
+		outErrCode   int
+		outErrString string
+	}{
+		{
+			inFile:       "./testresource/csv_err_unsupported_type.json",
+			outErrCode:   http.StatusBadRequest,
+			outErrString: "Bad Request: Column: id has unsupported type: rowIndex",
+		},
+	}
+
+	for _, test := range tests {
+		in, errIn := ioutil.ReadFile(test.inFile)
+		if errIn != nil {
+			t.Fatalf("Failed reading file %v: %v", test.inFile, errIn.Error())
+		}
+
+		irisTest := irisTester(t)
+
+		irisTest.POST("/api/schemas/foo").WithBytes(in).
+			Expect().
+			Status(test.outErrCode).
+			Body().Equal(test.outErrString)
 	}
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/kataras/iris"
 )
@@ -24,18 +25,6 @@ type JSONSchema struct {
 	JSONOptions json.RawMessage `json:"options"`
 }
 
-// errors
-// var (
-// 	errFoo = errors.New("foo: %s")
-// 	// errFlashNotFound    = errors.New("Unable to get flash message. Trace: Cookie does not exists")
-// 	// errSessionNil       = errors.New("Unable to set session, Config().Session.Provider is nil, please refer to the docs!")
-// 	// errNoForm           = errors.New("Request has no any valid form")
-// 	// errWriteJSON        = errors.New("Before JSON be written to the body, JSON Encoder returned an error. Trace: %s")
-// 	// errRenderMarshalled = errors.New("Before +type Rendering, MarshalIndent returned an error. Trace: %s")
-// 	// errReadBody         = errors.New("While trying to read %s from the request body. Trace %s")
-// 	// errServeContent     = errors.New("While trying to serve content to the client. Trace %s")
-// )
-
 func IrisAPI() *iris.Framework {
 	api := iris.New()
 	// define the api
@@ -52,15 +41,13 @@ func IrisAPI() *iris.Framework {
 
 		// parse input
 		if err := ctx.ReadJSON(&jSONSchema); err != nil {
-			ctx.EmitError(iris.StatusInternalServerError)
-			ctx.Write(err.Error())
+			emmitError(http.StatusBadRequest, err.Error(), ctx)
 			return
 		}
 
 		template, err := TemplateFactory{}.CreateTemplate(id, jSONSchema)
 		if err != nil {
-			ctx.EmitError(iris.StatusInternalServerError)
-			ctx.Write(err.Error())
+			emmitError(http.StatusBadRequest, err.Error(), ctx)
 			return
 		}
 
@@ -73,8 +60,7 @@ func IrisAPI() *iris.Framework {
 
 		out, err := template.Generate(context)
 		if err != nil {
-			ctx.EmitError(iris.StatusInternalServerError)
-			ctx.Write(err.Error())
+			emmitError(http.StatusInternalServerError, err.Error(), ctx)
 			return
 		}
 
@@ -88,4 +74,9 @@ func IrisAPI() *iris.Framework {
 
 func main() {
 	IrisAPI().Listen(":9292")
+}
+
+func emmitError(errorCode int, errorString string, ctx *iris.Context) {
+	ctx.EmitError(errorCode)
+	ctx.Write(": " + errorString)
 }
