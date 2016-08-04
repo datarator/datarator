@@ -1,0 +1,10 @@
+{
+    "template": "unknown",
+    "count": 1,
+    "columns": [
+        {
+            "name": "id",
+            "type": "row_index"
+        }        
+    ]    
+}

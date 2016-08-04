@@ -1,8 +1,14 @@
 package main
 
+import "fmt"
+
 const (
 	CSV = "csv"
 	SQL = "sql"
+)
+
+var (
+	errUnsupportedTemplate = "Unsupported template: %s"
 )
 
 type TemplateFactory struct {
@@ -35,18 +41,8 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema JSON
 			Schema:  schema,
 			Options: options,
 		}
-	// case JOIN:
-	// 	options := ColumnOptionsJoin{}
-	// 	err := json.Unmarshal(jSONSchema.JSONOptions, &options)
-	// 	if err != nil {
-	// 		return nil, err
-	// 	}
-
-	// 	typedColumn = ColumnJoin{
-	// 		"Options": options,
-	// 	}
 	default:
-		return nil, nil // errors.New("Invalid schema Type: %v", schemaType)
+		return nil, fmt.Errorf(errUnsupportedTemplate, jSONSchema.Template)
 	}
 
 	if errOpts != nil {
