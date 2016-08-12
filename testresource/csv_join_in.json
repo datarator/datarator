@@ -1,0 +1,26 @@
+{
+    "template": "csv",
+    "count": 2,
+    "columns": [
+        {
+            "name": "Greeting",
+            "type": "join",
+            "columns": [
+                {
+                    "name": "Hello",
+                    "type": "const",
+                    "payload": {
+                        "value": "Hello"
+                    }
+                },
+                {
+                    "name": "Datarator",
+                    "type": "const",
+                    "payload": {
+                        "value": "Datarator"
+                    }
+                }
+            ]
+        }
+    ]
+}

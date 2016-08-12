@@ -33,8 +33,12 @@ func TestCsv(t *testing.T) {
 		outFile string
 	}{
 		{
-			inFile:  "./testresource/csv_1_in.json",
-			outFile: "./testresource/csv_1_out",
+			inFile:  "./testresource/csv_const_in.json",
+			outFile: "./testresource/csv_const_out",
+		},
+		{
+			inFile:  "./testresource/csv_join_in.json",
+			outFile: "./testresource/csv_join_out",
 		},
 	}
 

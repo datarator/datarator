@@ -30,6 +30,9 @@
 					"$ref": "#/definitions/columnConst"
 				},
 				{
+					"$ref": "#/definitions/columnJoin"
+				},
+				{
 					"$ref": "#/definitions/columnName"
 				},
 				{
@@ -63,6 +66,41 @@
 				"name",
 				"type",
 				"payload"
+			]
+		},
+		"columnJoin": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"join"
+					]
+				},
+				"columns": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/column"
+					},
+					"minItems": 1
+				},
+				"payload": {
+					"properties": {
+						"separator": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"separator"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type",
+				"columns"
 			]
 		},
 		"columnName": {

@@ -1,6 +1,6 @@
 {
     "template": "csv",
-    "count": 3,
+    "count": 2,
     "columns": [
         {
             "name": "id",

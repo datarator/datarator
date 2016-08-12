@@ -24,7 +24,7 @@ func (templateCSV TemplateCSV) Generate(context *Context) (string, error) {
 			buffer.WriteString(val)
 			buffer.WriteString(templateCSV.Payload.Separator)
 		}
-		buffer.Truncate(buffer.Len() - 1)
+		buffer.Truncate(buffer.Len() - len(templateCSV.Payload.Separator))
 		buffer.WriteByte('\n')
 	}
 	return buffer.String(), nil
