@@ -27,4 +27,4 @@ debug
 debug.test
 
 # generated content
-data.go
+/data.go
