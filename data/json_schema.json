@@ -1,29 +1,45 @@
 {
-	"type": "object",
-	"properties": {
-		"template": {
-			"enum": [
-				"csv"
-			]
-		},
-		"count": {
-			"type": "integer",
-			"minimum": 0,
-			"maximum": 1000000
-		},
-		"columns": {
-			"type": "array",
-			"items": {
-				"$ref": "#/definitions/column"
-			},
-			"minItems": 1
+	"oneOf": [
+		{
+			"$ref": "#/definitions/templateCsv"
 		}
-	},
-	"required": [
-		"template",
-		"columns"
 	],
 	"definitions": {
+		"templateCsv": {
+			"properties": {
+				"template": {
+					"enum": [
+						"csv"
+					]
+				},
+				"count": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 1000000
+				},
+				"columns": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/column"
+					},
+					"minItems": 1
+				},
+				"payload": {
+					"properties": {
+						"header": {
+							"type": "boolean"
+						},
+						"separator": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"required": [
+				"template",
+				"columns"
+			]
+		},
 		"column": {
 			"oneOf": [
 				{
@@ -41,7 +57,6 @@
 			]
 		},
 		"columnConst": {
-			"type": "object",
 			"properties": {
 				"name": {
 					"type": "string"
@@ -69,7 +84,6 @@
 			]
 		},
 		"columnJoin": {
-			"type": "object",
 			"properties": {
 				"name": {
 					"type": "string"
@@ -104,7 +118,6 @@
 			]
 		},
 		"columnName": {
-			"type": "object",
 			"properties": {
 				"name": {
 					"type": "string"
