@@ -25,3 +25,6 @@ _testmain.go
 
 debug
 debug.test
+
+# generated content
+data.go
