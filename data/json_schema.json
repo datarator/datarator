@@ -46,6 +46,12 @@
 					"$ref": "#/definitions/columnConst"
 				},
 				{
+					"$ref": "#/definitions/columnCreditCardNumber"
+				},
+				{
+					"$ref": "#/definitions/columnCreditCardType"
+				},
+				{
 					"$ref": "#/definitions/columnJoin"
 				},
 				{
@@ -81,6 +87,50 @@
 				"name",
 				"type",
 				"payload"
+			]
+		},
+		"columnCreditCardNumber": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"credit_card.number"
+					]
+				},
+				"payload": {
+					"properties": {
+						"type": {
+							"enum": [
+								"amex",
+								"discover",
+								"mastercard",
+								"visa"
+							]
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnCreditCardType": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"credit_card.type"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type"
 			]
 		},
 		"columnJoin": {

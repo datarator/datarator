@@ -71,7 +71,7 @@ func TestErr(t *testing.T) {
 		{
 			inFile:            "./testresource/err_unsupported_type.json",
 			outErrCode:        http.StatusBadRequest,
-			outErrStringRegex: "columns[.]0[.]type: columns[.]0[.]type must be one of the following:.*\"name.last\"",
+			outErrStringRegex: "columns[.]0[.]type: columns[.]0[.]type must be one of the following:",
 		},
 		{
 			inFile:            "./testresource/err_unsupported_template.json",

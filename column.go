@@ -38,6 +38,17 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			Column:  column,
 			Payload: payload,
 		}
+	case COLUMN_CREDIT_CARD_NUMBER:
+		payload := ColumnCreditCardNumberPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnCreditCardNumber{
+			Column:  column,
+			Payload: payload,
+		}
+	case COLUMN_CREDIT_CARD_TYPE:
+		typedColumn = ColumnCreditCardType{
+			Column: column,
+		}
 	case COLUMN_JOIN:
 		payload := ColumnJoinPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
