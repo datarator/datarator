@@ -2,17 +2,17 @@ package main
 
 import "bytes"
 
-type TemplateOptionsCSV struct {
+type TemplateCSVPayload struct {
 	Header    bool
 	Separator string
 }
 
 type TemplateCSV struct {
 	Schema  Schema
-	Options TemplateOptionsCSV `json:"options"`
+	Payload TemplateCSVPayload `json:"payload"`
 }
 
-func (templateCSV TemplateCSV) Generate(context Context) (string, error) {
+func (templateCSV TemplateCSV) Generate(context *Context) (string, error) {
 	var buffer bytes.Buffer
 	for context.CurrentRowIndex = context.FromIndex; context.CurrentRowIndex < context.ToIndex; context.CurrentRowIndex++ {
 		for _, typedColumn := range templateCSV.Schema.TypedColumns {
@@ -22,7 +22,7 @@ func (templateCSV TemplateCSV) Generate(context Context) (string, error) {
 			}
 
 			buffer.WriteString(val)
-			buffer.WriteString(templateCSV.Options.Separator)
+			buffer.WriteString(templateCSV.Payload.Separator)
 		}
 		buffer.Truncate(buffer.Len() - 1)
 		buffer.WriteByte('\n')

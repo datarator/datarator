@@ -10,8 +10,8 @@ func TestColumnRowIndexValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnRowIndex{
-				Options: ColumnOptionsRowIndex{},
-				Column:  Column{},
+				// Payload: ColumnRowIndexPayload{},
+				Column: Column{},
 			},
 			inContext: Context{
 				CurrentRowIndex: 0,
@@ -20,8 +20,8 @@ func TestColumnRowIndexValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnRowIndex{
-				Options: ColumnOptionsRowIndex{},
-				Column:  Column{},
+				// Payload: ColumnRowIndexPayload{},
+				Column: Column{},
 			},
 			inContext: Context{
 				CurrentRowIndex: 100,
@@ -31,7 +31,7 @@ func TestColumnRowIndexValue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(test.inContext)
+		actual, _ := test.inColumn.Value(&test.inContext)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}

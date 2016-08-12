@@ -10,7 +10,7 @@ func TestColumnConstValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnConst{
-				Options: ColumnOptionsConst{
+				Payload: ColumnConstPayload{
 					Value: "foo",
 				},
 				Column: Column{},
@@ -21,7 +21,7 @@ func TestColumnConstValue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(test.inContext)
+		actual, _ := test.inColumn.Value(&test.inContext)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}

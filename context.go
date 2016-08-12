@@ -8,7 +8,7 @@ type Column struct {
 }
 
 type TypedColumn interface {
-	Value(context Context) (string, error)
+	Value(context *Context) (string, error)
 }
 
 type Schema struct {
@@ -20,7 +20,7 @@ type Schema struct {
 }
 
 type Template interface {
-	Generate(context Context) (string, error)
+	Generate(context *Context) (string, error)
 }
 
 type Context struct {

@@ -9,26 +9,26 @@
         {
             "name": "greeting",
             "type": "const",
-            "options": {
+            "payload": {
                 "value": "hello"
             }
         },
         {
             "name": "from",
             "type": "const",
-            "options": {
+            "payload": {
                 "value": "from"
             }
         },
         {
             "name": "server",
             "type": "const",
-            "options": {
+            "payload": {
                 "value": "datarator"
             }
         }
     ],
-    "options": {
+    "payload": {
         "header": false,
         "separator": " "
     }

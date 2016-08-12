@@ -4,15 +4,15 @@ const (
 	COLUMN_CONST = "const"
 )
 
-type ColumnOptionsConst struct {
+type ColumnConstPayload struct {
 	Value string
 }
 
 type ColumnConst struct {
 	Column  Column
-	Options ColumnOptionsConst `json:"options"`
+	Payload ColumnConstPayload `json:"payload"`
 }
 
-func (columnConst ColumnConst) Value(context Context) (string, error) {
-	return columnConst.Options.Value, nil
+func (columnConst ColumnConst) Value(context *Context) (string, error) {
+	return columnConst.Payload.Value, nil
 }

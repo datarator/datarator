@@ -77,7 +77,7 @@ func TestColumnNameValue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(test.inContext)
+		actual, _ := test.inColumn.Value(&test.inContext)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)

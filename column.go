@@ -28,72 +28,72 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	// "Locale":      retrieveLocale(jSONColumn),
 
 	var typedColumn TypedColumn
-	var errOpts error
+	var errPayload error
 
 	switch jSONColumn.Type {
 	case COLUMN_CONST:
-		options := ColumnOptionsConst{}
-		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
+		payload := ColumnConstPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnConst{
-			Options: options,
 			Column:  column,
+			Payload: payload,
+		}
+	case COLUMN_JOIN:
+		payload := ColumnJoinPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnJoin{
+			Column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FIRST:
 		typedColumn = ColumnNameFirst{
-			Column: column,
-		}
-	case COLUMN_NAME_FIRST_MALE:
-		typedColumn = ColumnNameFirstMale{
 			Column: column,
 		}
 	case COLUMN_NAME_FIRST_FEMALE:
 		typedColumn = ColumnNameFirstFemale{
 			Column: column,
 		}
-	case COLUMN_NAME_LAST:
-		typedColumn = ColumnNameLast{
-			Column: column,
-		}
-	case COLUMN_NAME_LAST_MALE:
-		typedColumn = ColumnNameLastMale{
-			Column: column,
-		}
-	case COLUMN_NAME_LAST_FEMALE:
-		typedColumn = ColumnNameLastFemale{
+	case COLUMN_NAME_FIRST_MALE:
+		typedColumn = ColumnNameFirstMale{
 			Column: column,
 		}
 	case COLUMN_NAME_FULL:
 		typedColumn = ColumnNameFull{
 			Column: column,
 		}
-	case COLUMN_NAME_FULL_MALE:
-		typedColumn = ColumnNameFullMale{
-			Column: column,
-		}
 	case COLUMN_NAME_FULL_FEMALE:
 		typedColumn = ColumnNameFullFemale{
 			Column: column,
 		}
-	case COLUMN_JOIN:
-		options := ColumnOptionsJoin{}
-		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
-		typedColumn = ColumnJoin{
-			Options: options,
-			Column:  column,
+	case COLUMN_NAME_FULL_MALE:
+		typedColumn = ColumnNameFullMale{
+			Column: column,
+		}
+	case COLUMN_NAME_LAST:
+		typedColumn = ColumnNameLast{
+			Column: column,
+		}
+	case COLUMN_NAME_LAST_FEMALE:
+		typedColumn = ColumnNameLastFemale{
+			Column: column,
+		}
+	case COLUMN_NAME_LAST_MALE:
+		typedColumn = ColumnNameLastMale{
+			Column: column,
 		}
 	case COLUMN_ROW_INDEX:
-		options := ColumnOptionsRowIndex{}
-		errOpts = loadOptions(jSONColumn.JSONOptions, &options)
+		// payload := ColumnRowIndexPayload{}
+		// errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnRowIndex{
-			Options: options,
-			Column:  column,
+			Column: column,
+			// Payload: payload,
 		}
 	default:
 		return nil, fmt.Errorf(errUnsupportedType, jSONColumn.Name, jSONColumn.Type)
 	}
 
-	if errOpts != nil {
-		return nil, errOpts
+	if errPayload != nil {
+		return nil, errPayload
 	}
 
 	return typedColumn, nil
@@ -123,9 +123,9 @@ func createColumns(columns []JSONColumn) ([]TypedColumn, error) {
 	return nestedColumns, nil
 }
 
-func loadOptions(jSONOptions json.RawMessage, options interface{}) error {
-	if len(jSONOptions) > 0 {
-		err := json.Unmarshal(jSONOptions, &options)
+func loadPayload(jSONPayload json.RawMessage, payload interface{}) error {
+	if len(jSONPayload) > 0 {
+		err := json.Unmarshal(jSONPayload, &payload)
 		if err != nil && err != io.EOF {
 			return err
 		}

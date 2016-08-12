@@ -14,7 +14,7 @@ var (
 type TemplateFactory struct {
 }
 
-func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema JSONSchema) (Template, error) {
+func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSONSchema) (Template, error) {
 
 	nestedColums, err := createColumns(jSONSchema.Columns)
 	if err != nil {
@@ -35,11 +35,11 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema JSON
 
 	switch jSONSchema.Template {
 	case CSV:
-		options := TemplateOptionsCSV{}
-		errOpts = loadOptions(jSONSchema.JSONOptions, &options)
+		payload := TemplateCSVPayload{}
+		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
 		template = TemplateCSV{
 			Schema:  schema,
-			Options: options,
+			Payload: payload,
 		}
 	default:
 		return nil, fmt.Errorf(errUnsupportedTemplate, jSONSchema.Template)

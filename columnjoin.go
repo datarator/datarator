@@ -8,16 +8,16 @@ const (
 	COLUMN_JOIN = "join"
 )
 
-type ColumnOptionsJoin struct {
+type ColumnJoinPayload struct {
 	Separator string
 }
 
 type ColumnJoin struct {
 	Column  Column
-	Options ColumnOptionsJoin
+	Payload ColumnJoinPayload
 }
 
-func (columnJoin ColumnJoin) Value(context Context) (string, error) {
+func (columnJoin ColumnJoin) Value(context *Context) (string, error) {
 	var buffer bytes.Buffer
 
 	for _, column := range columnJoin.Column.TypedColumns {
@@ -26,7 +26,7 @@ func (columnJoin ColumnJoin) Value(context Context) (string, error) {
 			return "", nil
 		}
 		buffer.WriteString(nestedVal)
-		buffer.WriteString(columnJoin.Options.Separator)
+		buffer.WriteString(columnJoin.Payload.Separator)
 	}
 
 	return buffer.String(), nil
