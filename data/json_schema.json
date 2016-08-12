@@ -1,0 +1,111 @@
+{
+	"type": "object",
+	"properties": {
+		"template": {
+			"enum": [
+				"csv"
+			]
+		},
+		"count": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 1000000
+		},
+		"columns": {
+			"type": "array",
+			"items": {
+				"$ref": "#/definitions/column"
+			},
+			"minItems": 1
+		}
+	},
+	"required": [
+		"template",
+		"columns"
+	],
+	"definitions": {
+		"column": {
+			"oneOf": [
+				{
+					"$ref": "#/definitions/columnConst"
+				},
+				{
+					"$ref": "#/definitions/columnName"
+				},
+				{
+					"$ref": "#/definitions/columnRowIndex"
+				}
+			]
+		},
+		"columnConst": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"const"
+					]
+				},
+				"payload": {
+					"properties": {
+						"value": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"value"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type",
+				"payload"
+			]
+		},
+		"columnName": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"name.first",
+						"name.first.male",
+						"name.first.female",
+						"name.last",
+						"name.last.male",
+						"name.last.female",
+						"name.full",
+						"name.full.male",
+						"name.full.female"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnRowIndex": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"row_index"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		}
+	}
+}

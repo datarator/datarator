@@ -60,19 +60,19 @@ func TestCsv(t *testing.T) {
 
 func TestErr(t *testing.T) {
 	var tests = []struct {
-		inFile       string
-		outErrCode   int
-		outErrString string
+		inFile            string
+		outErrCode        int
+		outErrStringRegex string
 	}{
 		{
-			inFile:       "./testresource/err_unsupported_type.json",
-			outErrCode:   http.StatusBadRequest,
-			outErrString: "Bad Request: Column: id has unsupported type: unsupported",
+			inFile:            "./testresource/err_unsupported_type.json",
+			outErrCode:        http.StatusBadRequest,
+			outErrStringRegex: "columns[.]0[.]type: columns[.]0[.]type must be one of the following:.*\"name.last\"",
 		},
 		{
-			inFile:       "./testresource/err_unsupported_template.json",
-			outErrCode:   http.StatusBadRequest,
-			outErrString: "Bad Request: Unsupported template: unsupported",
+			inFile:            "./testresource/err_unsupported_template.json",
+			outErrCode:        http.StatusBadRequest,
+			outErrStringRegex: "template: template must be one of the following: \"csv\"",
 		},
 	}
 
@@ -87,6 +87,6 @@ func TestErr(t *testing.T) {
 		irisTest.POST("/api/schemas/foo").WithBytes(in).
 			Expect().
 			Status(test.outErrCode).
-			Body().Equal(test.outErrString)
+			Body().Match(test.outErrStringRegex).NotEmpty()
 	}
 }

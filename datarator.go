@@ -1,29 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/kataras/iris"
 )
 
-type JSONColumn struct {
-	Name         string
-	Type         string
-	EmptyPercent float32 `json:"emptyPercent"`
-	Locale       string
-	Columns      []JSONColumn    `json:"columns"`
-	JSONOptions  json.RawMessage `json:"options"`
-}
-
-type JSONSchema struct {
-	Template    string
-	EmptyValue  string `json:"emptyValue"`
-	Locale      string
-	Count       int
-	Columns     []JSONColumn    `json:"columns"`
-	JSONOptions json.RawMessage `json:"options"`
-}
+var (
+	errStaticDataNotFound = "File: %s was not found"
+)
 
 func IrisAPI() *iris.Framework {
 	api := iris.New()
@@ -39,13 +24,8 @@ func IrisAPI() *iris.Framework {
 			Count:      10,
 		}
 
-		// parse input
-		if err := ctx.ReadJSON(&jSONSchema); err != nil {
-			emmitError(http.StatusBadRequest, err.Error(), ctx)
-			return
-		}
-
-		template, err := TemplateFactory{}.CreateTemplate(id, jSONSchema)
+		parser := ValidatingJSONRequestParser{}
+		template, err := parser.parse(ctx, &jSONSchema, id)
 		if err != nil {
 			emmitError(http.StatusBadRequest, err.Error(), ctx)
 			return
@@ -58,7 +38,7 @@ func IrisAPI() *iris.Framework {
 			ToIndex:         jSONSchema.Count,
 		}
 
-		out, err := template.Generate(context)
+		out, err := template.Generate(&context)
 		if err != nil {
 			emmitError(http.StatusInternalServerError, err.Error(), ctx)
 			return
