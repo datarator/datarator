@@ -20,7 +20,7 @@ type ColumnNameFirst struct {
 	Column Column
 }
 
-func (columnName ColumnNameFirst) Value(context *Context) (string, error) {
+func (column ColumnNameFirst) Value(context *Context) (string, error) {
 	return fake.FirstName(), nil
 }
 
@@ -28,7 +28,7 @@ type ColumnNameFirstFemale struct {
 	Column Column
 }
 
-func (columnName ColumnNameFirstFemale) Value(context *Context) (string, error) {
+func (column ColumnNameFirstFemale) Value(context *Context) (string, error) {
 	return fake.FemaleFirstName(), nil
 }
 
@@ -36,7 +36,7 @@ type ColumnNameFirstMale struct {
 	Column Column
 }
 
-func (columnName ColumnNameFirstMale) Value(context *Context) (string, error) {
+func (column ColumnNameFirstMale) Value(context *Context) (string, error) {
 	return fake.MaleFirstName(), nil
 }
 
@@ -44,7 +44,7 @@ type ColumnNameFull struct {
 	Column Column
 }
 
-func (columnName ColumnNameFull) Value(context *Context) (string, error) {
+func (column ColumnNameFull) Value(context *Context) (string, error) {
 	return fake.FullName(), nil
 }
 
@@ -52,7 +52,7 @@ type ColumnNameFullFemale struct {
 	Column Column
 }
 
-func (columnName ColumnNameFullFemale) Value(context *Context) (string, error) {
+func (column ColumnNameFullFemale) Value(context *Context) (string, error) {
 	return fake.FemaleFullName(), nil
 }
 
@@ -60,7 +60,7 @@ type ColumnNameFullMale struct {
 	Column Column
 }
 
-func (columnName ColumnNameFullMale) Value(context *Context) (string, error) {
+func (column ColumnNameFullMale) Value(context *Context) (string, error) {
 	return fake.MaleFullName(), nil
 }
 
@@ -68,7 +68,7 @@ type ColumnNameLast struct {
 	Column Column
 }
 
-func (columnName ColumnNameLast) Value(context *Context) (string, error) {
+func (column ColumnNameLast) Value(context *Context) (string, error) {
 	return fake.LastName(), nil
 }
 
@@ -76,7 +76,7 @@ type ColumnNameLastFemale struct {
 	Column Column
 }
 
-func (columnName ColumnNameLastFemale) Value(context *Context) (string, error) {
+func (column ColumnNameLastFemale) Value(context *Context) (string, error) {
 	return fake.FemaleLastName(), nil
 }
 
@@ -84,6 +84,6 @@ type ColumnNameLastMale struct {
 	Column Column
 }
 
-func (columnName ColumnNameLastMale) Value(context *Context) (string, error) {
+func (column ColumnNameLastMale) Value(context *Context) (string, error) {
 	return fake.MaleLastName(), nil
 }

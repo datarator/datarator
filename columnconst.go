@@ -13,6 +13,6 @@ type ColumnConst struct {
 	Payload ColumnConstPayload `json:"payload"`
 }
 
-func (columnConst ColumnConst) Value(context *Context) (string, error) {
-	return columnConst.Payload.Value, nil
+func (column ColumnConst) Value(context *Context) (string, error) {
+	return column.Payload.Value, nil
 }

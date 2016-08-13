@@ -16,7 +16,7 @@ type ColumnRowIndex struct {
 	// Payload ColumnRowIndexPayload
 }
 
-func (columnRowIndex ColumnRowIndex) Value(context *Context) (string, error) {
+func (column ColumnRowIndex) Value(context *Context) (string, error) {
 	//	return context.RowIndex + columnRowIndex.Payload.Increment - columnRowIndex.Payload.Decrement, nil
 	return strconv.Itoa(context.CurrentRowIndex), nil
 }
