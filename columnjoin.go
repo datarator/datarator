@@ -17,16 +17,16 @@ type ColumnJoin struct {
 	Payload ColumnJoinPayload
 }
 
-func (columnJoin ColumnJoin) Value(context *Context) (string, error) {
+func (column ColumnJoin) Value(context *Context) (string, error) {
 	var buffer bytes.Buffer
 
-	for _, column := range columnJoin.Column.TypedColumns {
-		nestedVal, err := column.Value(context)
+	for _, nestedColumn := range column.Column.TypedColumns {
+		nestedVal, err := nestedColumn.Value(context)
 		if err != nil {
 			return "", nil
 		}
 		buffer.WriteString(nestedVal)
-		buffer.WriteString(columnJoin.Payload.Separator)
+		buffer.WriteString(column.Payload.Separator)
 	}
 
 	return buffer.String(), nil
