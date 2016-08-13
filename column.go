@@ -92,6 +92,15 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		typedColumn = ColumnNameLastMale{
 			Column: column,
 		}
+	case COLUMN_REGEX:
+		payload := ColumnRegexPayload{
+			Limit: 10,
+		}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnRegex{
+			Column:  column,
+			Payload: payload,
+		}
 	case COLUMN_ROW_INDEX:
 		// payload := ColumnRowIndexPayload{}
 		// errPayload = loadPayload(jSONColumn.JSONPayload, &payload)

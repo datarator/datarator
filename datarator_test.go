@@ -40,6 +40,10 @@ func TestCsv(t *testing.T) {
 			inFile:  "./testresource/csv_join_in.json",
 			outFile: "./testresource/csv_join_out",
 		},
+		{
+			inFile:  "./testresource/csv_regex_in.json",
+			outFile: "./testresource/csv_regex_out",
+		},
 	}
 
 	for _, test := range tests {

@@ -58,6 +58,9 @@
 					"$ref": "#/definitions/columnName"
 				},
 				{
+					"$ref": "#/definitions/columnRegex"
+				},
+				{
 					"$ref": "#/definitions/columnRowIndex"
 				}
 			]
@@ -189,6 +192,38 @@
 			"required": [
 				"name",
 				"type"
+			]
+		},
+		"columnRegex": {
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"enum": [
+						"regex"
+					]
+				},
+				"payload": {
+					"properties": {
+						"regex": {
+							"type": "string"
+						},
+						"limit": {
+							"type": "integer",
+							"minimum": 0,
+							"maximum": 50
+						}
+					},
+					"required": [
+						"regex"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type",
+				"payload"
 			]
 		},
 		"columnRowIndex": {

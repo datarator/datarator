@@ -236,6 +236,10 @@
 			"Rev": "19b0b332c9e4516a6370a0456e6182c3b5036720"
 		},
 		{
+			"ImportPath": "github.com/lucasjones/reggen",
+			"Rev": "bed4659921747845e0ff3be0d18a66778c87edfc"
+		},
+		{
 			"ImportPath": "github.com/mattn/go-colorable",
 			"Comment": "v0.0.5",
 			"Rev": "9056b7a9f2d1f2d96498d6d146acd1f9d5ed3d59"

@@ -1,0 +1,13 @@
+{
+    "template": "csv",
+    "count": 1,
+    "columns": [
+        {
+            "name": "foo",
+            "type": "regex",
+            "payload": {
+                "regex": "z{1,1}"
+            }
+        }
+    ]
+}
