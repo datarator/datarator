@@ -17,73 +17,108 @@ const (
 )
 
 type ColumnNameFirst struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFirst) Value(context *Context) (string, error) {
 	return fake.FirstName(), nil
 }
 
+func (column ColumnNameFirst) Column() Column {
+	return column.column
+}
+
 type ColumnNameFirstFemale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFirstFemale) Value(context *Context) (string, error) {
 	return fake.FemaleFirstName(), nil
 }
 
+func (column ColumnNameFirstFemale) Column() Column {
+	return column.column
+}
+
 type ColumnNameFirstMale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFirstMale) Value(context *Context) (string, error) {
 	return fake.MaleFirstName(), nil
 }
 
+func (column ColumnNameFirstMale) Column() Column {
+	return column.column
+}
+
 type ColumnNameFull struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFull) Value(context *Context) (string, error) {
 	return fake.FullName(), nil
 }
 
+func (column ColumnNameFull) Column() Column {
+	return column.column
+}
+
 type ColumnNameFullFemale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFullFemale) Value(context *Context) (string, error) {
 	return fake.FemaleFullName(), nil
 }
 
+func (column ColumnNameFullFemale) Column() Column {
+	return column.column
+}
+
 type ColumnNameFullMale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameFullMale) Value(context *Context) (string, error) {
 	return fake.MaleFullName(), nil
 }
 
+func (column ColumnNameFullMale) Column() Column {
+	return column.column
+}
+
 type ColumnNameLast struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameLast) Value(context *Context) (string, error) {
 	return fake.LastName(), nil
 }
 
+func (column ColumnNameLast) Column() Column {
+	return column.column
+}
+
 type ColumnNameLastFemale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameLastFemale) Value(context *Context) (string, error) {
 	return fake.FemaleLastName(), nil
 }
+func (column ColumnNameLastFemale) Column() Column {
+	return column.column
+}
 
 type ColumnNameLastMale struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnNameLastMale) Value(context *Context) (string, error) {
 	return fake.MaleLastName(), nil
+}
+
+func (column ColumnNameLastMale) Column() Column {
+	return column.column
 }

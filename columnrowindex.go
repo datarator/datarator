@@ -7,9 +7,13 @@ const (
 )
 
 type ColumnRowIndex struct {
-	Column Column
+	column Column
 }
 
 func (column ColumnRowIndex) Value(context *Context) (string, error) {
 	return strconv.Itoa(context.getCurrentIndex()), nil
+}
+
+func (column ColumnRowIndex) Column() Column {
+	return column.column
 }

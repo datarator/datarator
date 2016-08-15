@@ -13,14 +13,14 @@ type ColumnJoinPayload struct {
 }
 
 type ColumnJoin struct {
-	Column  Column
+	column  Column
 	Payload ColumnJoinPayload
 }
 
 func (column ColumnJoin) Value(context *Context) (string, error) {
 	var buffer bytes.Buffer
 
-	for _, nestedColumn := range column.Column.TypedColumns {
+	for _, nestedColumn := range column.column.TypedColumns {
 		nestedVal, err := nestedColumn.Value(context)
 		if err != nil {
 			return "", nil
@@ -30,4 +30,8 @@ func (column ColumnJoin) Value(context *Context) (string, error) {
 	}
 
 	return buffer.String(), nil
+}
+
+func (column ColumnJoin) Column() Column {
+	return column.column
 }

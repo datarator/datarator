@@ -13,7 +13,7 @@ func TestColumnJoinValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnJoin{
-				Column: Column{
+				column: Column{
 					TypedColumns: []TypedColumn{
 						ColumnConst{
 							Payload: ColumnConstPayload{
@@ -36,7 +36,7 @@ func TestColumnJoinValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnJoin{
-				Column: Column{
+				column: Column{
 					TypedColumns: []TypedColumn{
 						ColumnConst{
 							Payload: ColumnConstPayload{

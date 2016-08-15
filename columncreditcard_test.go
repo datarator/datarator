@@ -15,14 +15,14 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		// gets fixed
 		// {
 		// 	inColumn: ColumnCreditCardNumber{
-		// 		Column: Column{},
+		// 		column: Column{},
 		// 	},
 		// 	inContext: Context{},
 		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
 		// },
 		// {
 		// 	inColumn: ColumnCreditCardNumber{
-		// 		Column: Column{},
+		// 		column: Column{},
 		// 		Payload: ColumnCreditCardNumberPayload{
 		// 			Type: "amex",
 		// 		},
@@ -32,7 +32,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		// },
 		// {
 		// 	inColumn: ColumnCreditCardNumber{
-		// 		Column: Column{},
+		// 		column: Column{},
 		// 		Payload: ColumnCreditCardNumberPayload{
 		// 			Type: "discover",
 		// 		},
@@ -42,7 +42,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		// },
 		// {
 		// 	inColumn: ColumnCreditCardNumber{
-		// 		Column: Column{},
+		// 		column: Column{},
 		// 		Payload: ColumnCreditCardNumberPayload{
 		// 			Type: "mastercard",
 		// 		},
@@ -52,7 +52,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		// },
 		// {
 		// 	inColumn: ColumnCreditCardNumber{
-		// 		Column: Column{},
+		// 		column: Column{},
 		// 		Payload: ColumnCreditCardNumberPayload{
 		// 			Type: "visa",
 		// 		},
@@ -62,7 +62,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		// },
 		{
 			inColumn: ColumnCreditCardType{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^(VISA|MasterCard|American Express|Discover)$",

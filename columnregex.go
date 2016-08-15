@@ -14,10 +14,14 @@ type ColumnRegexPayload struct {
 }
 
 type ColumnRegex struct {
-	Column  Column
+	column  Column
 	Payload ColumnRegexPayload `json:"payload"`
 }
 
 func (column ColumnRegex) Value(context *Context) (string, error) {
 	return reggen.Generate(column.Payload.Regex, column.Payload.Limit)
+}
+
+func (column ColumnRegex) Column() Column {
+	return column.column
 }

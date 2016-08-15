@@ -13,7 +13,7 @@ func TestColumnConstValue(t *testing.T) {
 				Payload: ColumnConstPayload{
 					Value: "foo",
 				},
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "foo",

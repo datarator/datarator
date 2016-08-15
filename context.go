@@ -9,6 +9,7 @@ type Column struct {
 
 type TypedColumn interface {
 	Value(context *Context) (string, error)
+	Column() Column
 }
 
 type Schema struct {

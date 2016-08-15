@@ -35,62 +35,62 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		payload := ColumnConstPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnConst{
-			Column:  column,
+			column:  column,
 			Payload: payload,
 		}
 	case COLUMN_CREDIT_CARD_NUMBER:
 		payload := ColumnCreditCardNumberPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnCreditCardNumber{
-			Column:  column,
+			column:  column,
 			Payload: payload,
 		}
 	case COLUMN_CREDIT_CARD_TYPE:
 		typedColumn = ColumnCreditCardType{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_JOIN:
 		payload := ColumnJoinPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnJoin{
-			Column:  column,
+			column:  column,
 			Payload: payload,
 		}
 	case COLUMN_NAME_FIRST:
 		typedColumn = ColumnNameFirst{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_FIRST_FEMALE:
 		typedColumn = ColumnNameFirstFemale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_FIRST_MALE:
 		typedColumn = ColumnNameFirstMale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_FULL:
 		typedColumn = ColumnNameFull{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_FULL_FEMALE:
 		typedColumn = ColumnNameFullFemale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_FULL_MALE:
 		typedColumn = ColumnNameFullMale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_LAST:
 		typedColumn = ColumnNameLast{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_LAST_FEMALE:
 		typedColumn = ColumnNameLastFemale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_NAME_LAST_MALE:
 		typedColumn = ColumnNameLastMale{
-			Column: column,
+			column: column,
 		}
 	case COLUMN_REGEX:
 		payload := ColumnRegexPayload{
@@ -98,14 +98,14 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnRegex{
-			Column:  column,
+			column:  column,
 			Payload: payload,
 		}
 	case COLUMN_ROW_INDEX:
 		// payload := ColumnRowIndexPayload{}
 		// errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnRowIndex{
-			Column: column,
+			column: column,
 			// Payload: payload,
 		}
 	default:

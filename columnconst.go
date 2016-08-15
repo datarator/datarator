@@ -9,10 +9,14 @@ type ColumnConstPayload struct {
 }
 
 type ColumnConst struct {
-	Column  Column
+	column  Column
 	Payload ColumnConstPayload `json:"payload"`
 }
 
 func (column ColumnConst) Value(context *Context) (string, error) {
 	return column.Payload.Value, nil
+}
+
+func (column ColumnConst) Column() Column {
+	return column.column
 }

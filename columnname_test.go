@@ -13,63 +13,63 @@ func TestColumnNameValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnNameFirst{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameFirstMale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameFirstFemale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameLast{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameLastMale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameLastFemale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameFull{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameFullMale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
 			inColumn: ColumnNameFullFemale{
-				Column: Column{},
+				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
