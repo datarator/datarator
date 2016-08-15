@@ -2,6 +2,9 @@
 	"oneOf": [
 		{
 			"$ref": "#/definitions/templateCsv"
+		},
+		{
+			"$ref": "#/definitions/templateXml"
 		}
 	],
 	"definitions": {
@@ -40,6 +43,44 @@
 				"columns"
 			]
 		},
+		"templateXml": {
+			"properties": {
+				"template": {
+					"enum": [
+						"xml"
+					]
+				},
+				"count": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 1000000
+				},
+				"columns": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/column"
+					},
+					"minItems": 1
+				},
+				"payload": {
+					"properties": {
+						"pretty_print": {
+							"type": "boolean"
+						},
+						"pretty_print_spaces_used": {
+							"type": "boolean"
+						},
+						"pretty_print_spaces_count": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"required": [
+				"template",
+				"columns"
+			]
+		},
 		"column": {
 			"oneOf": [
 				{
@@ -68,7 +109,8 @@
 		"columnConst": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -95,7 +137,8 @@
 		"columnCreditCardNumber": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -123,7 +166,8 @@
 		"columnCreditCardType": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -139,7 +183,8 @@
 		"columnJoin": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -173,7 +218,8 @@
 		"columnName": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -197,7 +243,8 @@
 		"columnRegex": {
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [
@@ -230,7 +277,8 @@
 			"type": "object",
 			"properties": {
 				"name": {
-					"type": "string"
+					"type": "string",
+					"pattern": "^[^|]+$"
 				},
 				"type": {
 					"enum": [

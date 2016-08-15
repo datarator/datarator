@@ -44,6 +44,10 @@ func TestCsv(t *testing.T) {
 			inFile:  "./testresource/csv_regex_in.json",
 			outFile: "./testresource/csv_regex_out",
 		},
+		{
+			inFile:  "./testresource/xml_const_in.json",
+			outFile: "./testresource/xml_const_out",
+		},
 	}
 
 	for _, test := range tests {

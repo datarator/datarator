@@ -33,9 +33,9 @@ func IrisAPI() *iris.Framework {
 
 		// TODO slice to chunks + in separate go routines
 		context := Context{
-			CurrentRowIndex: 0,
-			FromIndex:       0,
-			ToIndex:         jSONSchema.Count,
+			FromIndex:    0,
+			ToIndex:      jSONSchema.Count,
+			CurrentIndex: []int{0},
 		}
 
 		out, err := template.Generate(&context)

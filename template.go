@@ -2,11 +2,6 @@ package main
 
 import "fmt"
 
-const (
-	CSV = "csv"
-	SQL = "sql"
-)
-
 var (
 	errUnsupportedTemplate = "Unsupported template: %s"
 )
@@ -34,10 +29,17 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSO
 	var errOpts error
 
 	switch jSONSchema.Template {
-	case CSV:
+	case TEMPLATE_CSV:
 		payload := TemplateCSVPayload{}
 		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
 		template = TemplateCSV{
+			Schema:  schema,
+			Payload: payload,
+		}
+	case TEMPLATE_XML:
+		payload := TemplateXMLPayload{}
+		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
+		template = TemplateXML{
 			Schema:  schema,
 			Payload: payload,
 		}

@@ -10,21 +10,19 @@ func TestColumnRowIndexValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnRowIndex{
-				// Payload: ColumnRowIndexPayload{},
 				Column: Column{},
 			},
 			inContext: Context{
-				CurrentRowIndex: 0,
+				CurrentIndex: []int{0},
 			},
 			outValue: "0",
 		},
 		{
 			inColumn: ColumnRowIndex{
-				// Payload: ColumnRowIndexPayload{},
 				Column: Column{},
 			},
 			inContext: Context{
-				CurrentRowIndex: 100,
+				CurrentIndex: []int{100},
 			},
 			outValue: "100",
 		},
