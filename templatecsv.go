@@ -16,20 +16,39 @@ type TemplateCSV struct {
 	Payload TemplateCSVPayload `json:"payload"`
 }
 
-func (templateCSV TemplateCSV) Generate(context *Context) (string, error) {
+func (template TemplateCSV) Generate(context *Context) (string, error) {
 	var buffer bytes.Buffer
+
+	buffer.WriteString(template.getHeader(context))
+
 	for context.setCurrentIndex(context.FromIndex); context.getCurrentIndex() < context.ToIndex; context.incrementCurrentIndex() {
-		for _, typedColumn := range templateCSV.Schema.TypedColumns {
+		for _, typedColumn := range template.Schema.TypedColumns {
 			val, err := typedColumn.Value(context)
 			if err != nil {
 				return "", err
 			}
 
 			buffer.WriteString(val)
-			buffer.WriteString(templateCSV.Payload.Separator)
+			buffer.WriteString(template.Payload.Separator)
 		}
-		buffer.Truncate(buffer.Len() - len(templateCSV.Payload.Separator))
+		buffer.Truncate(buffer.Len() - len(template.Payload.Separator))
 		buffer.WriteByte('\n')
 	}
 	return buffer.String(), nil
+}
+
+func (template TemplateCSV) getHeader(context *Context) string {
+	if !template.Payload.Header || context.getCurrentIndex() != 0 {
+		return ""
+	}
+
+	var buffer bytes.Buffer
+	for _, typedColumn := range template.Schema.TypedColumns {
+		buffer.WriteString(typedColumn.Column().Name)
+		buffer.WriteString(template.Payload.Separator)
+	}
+	buffer.Truncate(buffer.Len() - len(template.Payload.Separator))
+	buffer.WriteByte('\n')
+
+	return buffer.String()
 }
