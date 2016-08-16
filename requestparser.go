@@ -7,15 +7,14 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/MStoykov/jsonutils"
 	"github.com/kataras/iris"
 	"github.com/xeipuuv/gojsonschema"
-
-	"github.com/MStoykov/jsonutils"
 )
 
 var (
 	errPostDataEmpty       = "POST data empty"
-	errPostJsonDataInvalid = "POST JSON data invalid:\n%s"
+	errPostJSONDataInvalid = "POST JSON data invalid:\n%s"
 )
 
 type RequestParser interface {
@@ -88,7 +87,7 @@ func validateRequest(request []byte) error {
 		for _, desc := range result.Errors() {
 			buffer.WriteString(fmt.Sprintf("- %s\n", desc))
 		}
-		return fmt.Errorf(errPostJsonDataInvalid, buffer.String())
+		return fmt.Errorf(errPostJSONDataInvalid, buffer.String())
 	}
 
 	return nil
