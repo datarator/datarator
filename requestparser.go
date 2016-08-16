@@ -9,11 +9,13 @@ import (
 
 	"github.com/kataras/iris"
 	"github.com/xeipuuv/gojsonschema"
+
+	"github.com/MStoykov/jsonutils"
 )
 
 var (
-	errPostDataEmpty   = "POST data empty"
-	errPostDataInvalid = "POST JSON data invalid:\n%s"
+	errPostDataEmpty       = "POST data empty"
+	errPostJsonDataInvalid = "POST JSON data invalid:\n%s"
 )
 
 type RequestParser interface {
@@ -75,12 +77,18 @@ func validateRequest(request []byte) error {
 	documentLoader := gojsonschema.NewStringLoader(string(request))
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+	if err != nil {
+		if serr, ok := err.(*json.SyntaxError); ok {
+			return jsonutils.NewSyntaxError(serr, request, 5)
+		}
+		return err
+	}
 	if !result.Valid() {
 		var buffer bytes.Buffer
 		for _, desc := range result.Errors() {
 			buffer.WriteString(fmt.Sprintf("- %s\n", desc))
 		}
-		return fmt.Errorf(errPostDataInvalid, buffer.String())
+		return fmt.Errorf(errPostJsonDataInvalid, buffer.String())
 	}
 
 	return nil

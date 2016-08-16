@@ -45,9 +45,13 @@ func TestCsv(t *testing.T) {
 			outFile: "./testresource/csv_regex_out",
 		},
 		{
-			inFile:  "./testresource/xml_const_in.json",
-			outFile: "./testresource/xml_const_out",
+			inFile:  "./testresource/xml_flat_in.json",
+			outFile: "./testresource/xml_flat_out",
 		},
+		// {
+		// 	inFile:  "./testresource/xml_misc_xml_payload_in.json",
+		// 	outFile: "./testresource/xml_misc_xml_payload_out",
+		// },
 	}
 
 	for _, test := range tests {
@@ -85,6 +89,11 @@ func TestErr(t *testing.T) {
 			inFile:            "./testresource/err_unsupported_template.json",
 			outErrCode:        http.StatusBadRequest,
 			outErrStringRegex: "template: template must be one of the following: \"csv\"",
+		},
+		{
+			inFile:            "./testresource/err_invalid_json.json",
+			outErrCode:        http.StatusBadRequest,
+			outErrStringRegex: "on line 4 column 2 got :invalid character '}' looking for beginning of object key string",
 		},
 	}
 

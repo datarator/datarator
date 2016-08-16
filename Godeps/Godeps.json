@@ -8,6 +8,10 @@
 			"Rev": "db4d7e4f68708c5020c392b380e3565df2132840"
 		},
 		{
+			"ImportPath": "github.com/MStoykov/jsonutils",
+			"Rev": "f24c8bfd5a9847e08ad53622ac177182e9f2488a"
+		},
+		{
 			"ImportPath": "github.com/ajg/form",
 			"Rev": "7ff89c75808766205bfa4411abb436c98c33eb5e"
 		},
