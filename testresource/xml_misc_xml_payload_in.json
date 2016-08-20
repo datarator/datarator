@@ -1,0 +1,32 @@
+{
+    "template": "xml",
+    "count": 2,
+    "columns": [
+        {
+            "name": "book",
+            "type": "const",
+            "payload": {
+                "value": ""
+            },
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "row_index",
+                    "payload": {
+                        "xml": "attribute"
+                    }
+                },
+                {
+                    "name": "author",
+                    "type": "const",
+                    "payload": {
+                        "value": "C. S. Lewis"
+                    }
+                }
+            ]
+        }
+    ],
+    "payload": {
+        "pretty_print": true
+    }
+}

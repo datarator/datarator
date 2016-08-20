@@ -1,5 +1,11 @@
 package main
 
+import "errors"
+
+var (
+	errNestingIndexCantBeDecremented = "Nesting index: '0' can't be decremented!"
+)
+
 type Column struct {
 	Name         string
 	TypedColumns []TypedColumn
@@ -10,6 +16,7 @@ type Column struct {
 type TypedColumn interface {
 	Value(context *Context) (string, error)
 	Column() Column
+	XmlType() string
 }
 
 type Schema struct {
@@ -33,15 +40,31 @@ type Context struct {
 	CurrentNestingLevel int               // how deep are we in nesting
 }
 
-func (context Context) getCurrentIndex() int {
+func (context *Context) getCurrentIndex() int {
 	return context.CurrentIndex[context.CurrentNestingLevel]
 }
 
-func (context Context) setCurrentIndex(val int) {
+func (context *Context) setCurrentIndex(val int) {
 	context.CurrentIndex[context.CurrentNestingLevel] = val
 }
 
-func (context Context) incrementCurrentIndex() int {
-	context.CurrentIndex[context.CurrentNestingLevel] = context.CurrentIndex[context.CurrentNestingLevel] + 1
+func (context *Context) incrementCurrentIndex() int {
+	context.CurrentIndex[context.CurrentNestingLevel]++
 	return context.CurrentIndex[context.CurrentNestingLevel]
+}
+
+func (context *Context) nest() error {
+	context.CurrentNestingLevel++
+	context.CurrentIndex = append(context.CurrentIndex, 0)
+	return nil
+}
+
+func (context *Context) unnest() error {
+	if len(context.CurrentIndex) == 0 {
+		return errors.New(errNestingIndexCantBeDecremented)
+	}
+
+	context.CurrentIndex = context.CurrentIndex[:context.CurrentNestingLevel]
+	context.CurrentNestingLevel--
+	return nil
 }

@@ -46,8 +46,11 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			Payload: payload,
 		}
 	case COLUMN_CREDIT_CARD_TYPE:
+		payload := ColumnCreditCardTypePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnCreditCardType{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_JOIN:
 		payload := ColumnJoinPayload{}
@@ -57,40 +60,67 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			Payload: payload,
 		}
 	case COLUMN_NAME_FIRST:
+		payload := ColumnNameFirstPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFirst{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FIRST_FEMALE:
+		payload := ColumnNameFirstFemalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFirstFemale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FIRST_MALE:
+		payload := ColumnNameFirstMalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFirstMale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FULL:
+		payload := ColumnNameFullPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFull{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FULL_FEMALE:
+		payload := ColumnNameFullFemalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFullFemale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_FULL_MALE:
+		payload := ColumnNameFullMalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameFullMale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_LAST:
+		payload := ColumnNameLastPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameLast{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_LAST_FEMALE:
+		payload := ColumnNameLastFemalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameLastFemale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_NAME_LAST_MALE:
+		payload := ColumnNameLastMalePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnNameLastMale{
-			column: column,
+			column:  column,
+			Payload: payload,
 		}
 	case COLUMN_REGEX:
 		payload := ColumnRegexPayload{
@@ -102,11 +132,11 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			Payload: payload,
 		}
 	case COLUMN_ROW_INDEX:
-		// payload := ColumnRowIndexPayload{}
-		// errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		payload := ColumnRowIndexPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnRowIndex{
-			column: column,
-			// Payload: payload,
+			column:  column,
+			Payload: payload,
 		}
 	default:
 		return nil, fmt.Errorf(errUnsupportedType, jSONColumn.Name, jSONColumn.Type)

@@ -5,7 +5,8 @@ const (
 )
 
 type ColumnConstPayload struct {
-	Value string
+	XmlType string `json:"xml"`
+	Value   string
 }
 
 type ColumnConst struct {
@@ -19,4 +20,8 @@ func (column ColumnConst) Value(context *Context) (string, error) {
 
 func (column ColumnConst) Column() Column {
 	return column.column
+}
+
+func (column ColumnConst) XmlType() string {
+	return column.Payload.XmlType
 }

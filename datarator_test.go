@@ -48,10 +48,10 @@ func TestCsv(t *testing.T) {
 			inFile:  "./testresource/xml_flat_in.json",
 			outFile: "./testresource/xml_flat_out",
 		},
-		// {
-		// 	inFile:  "./testresource/xml_misc_xml_payload_in.json",
-		// 	outFile: "./testresource/xml_misc_xml_payload_out",
-		// },
+		{
+			inFile:  "./testresource/xml_misc_xml_payload_in.json",
+			outFile: "./testresource/xml_misc_xml_payload_out",
+		},
 	}
 
 	for _, test := range tests {

@@ -9,8 +9,9 @@ const (
 )
 
 type ColumnRegexPayload struct {
-	Regex string
-	Limit int // max number of times *,+,repeat should repeat
+	XmlType string `json:"xml"`
+	Regex   string
+	Limit   int // max number of times *,+,repeat should repeat
 }
 
 type ColumnRegex struct {
@@ -24,4 +25,8 @@ func (column ColumnRegex) Value(context *Context) (string, error) {
 
 func (column ColumnRegex) Column() Column {
 	return column.column
+}
+
+func (column ColumnRegex) XmlType() string {
+	return column.Payload.XmlType
 }

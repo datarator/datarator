@@ -9,6 +9,7 @@ const (
 )
 
 type ColumnJoinPayload struct {
+	XmlType   string `json:"xml"`
 	Separator string
 }
 
@@ -34,4 +35,8 @@ func (column ColumnJoin) Value(context *Context) (string, error) {
 
 func (column ColumnJoin) Column() Column {
 	return column.column
+}
+
+func (column ColumnJoin) XmlType() string {
+	return column.Payload.XmlType
 }

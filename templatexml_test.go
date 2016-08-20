@@ -17,13 +17,19 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
+							column: Column{
+								Name: "Hello",
+							},
 							Payload: ColumnConstPayload{
-								Value: "Hello",
+								Value: "",
 							},
 						},
 						ColumnConst{
+							column: Column{
+								Name: "datarator",
+							},
 							Payload: ColumnConstPayload{
-								Value: "datarator",
+								Value: "",
 							},
 						},
 					},
@@ -44,13 +50,40 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
+							column: Column{
+								Name: "Hello",
+								TypedColumns: []TypedColumn{
+									ColumnConst{
+										Payload: ColumnConstPayload{
+											Value: "Nestedval",
+										},
+										column: Column{
+											Name: "Nested",
+											TypedColumns: []TypedColumn{
+												ColumnConst{
+													Payload: ColumnConstPayload{
+														Value:   "NestedAttrVal",
+														XmlType: "attribute",
+													},
+													column: Column{
+														Name: "NestedAttr",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 							Payload: ColumnConstPayload{
-								Value: "Hello",
+								Value: "",
 							},
 						},
 						ColumnConst{
+							column: Column{
+								Name: "datarator",
+							},
 							Payload: ColumnConstPayload{
-								Value: "datarator",
+								Value: "",
 							},
 						},
 					},
@@ -60,7 +93,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 				CurrentIndex: []int{0},
 				ToIndex:      2,
 			},
-			outValue: "<Hello/>\n<datarator/>\n<Hello/>\n<datarator/>\n",
+			outValue: "<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n",
 		},
 	}
 

@@ -67,7 +67,7 @@
 						"pretty_print": {
 							"type": "boolean"
 						},
-						"pretty_print_spaces_used": {
+						"pretty_print_tabs": {
 							"type": "boolean"
 						},
 						"pretty_print_spaces_count": {
@@ -121,6 +121,9 @@
 					"properties": {
 						"value": {
 							"type": "string"
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
 						}
 					},
 					"required": [
@@ -154,6 +157,9 @@
 								"mastercard",
 								"visa"
 							]
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
 						}
 					}
 				}
@@ -173,6 +179,13 @@
 					"enum": [
 						"credit_card.type"
 					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
 				}
 			},
 			"required": [
@@ -202,6 +215,9 @@
 					"properties": {
 						"separator": {
 							"type": "string"
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
 						}
 					},
 					"required": [
@@ -233,6 +249,13 @@
 						"name.full.male",
 						"name.full.female"
 					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
 				}
 			},
 			"required": [
@@ -260,6 +283,9 @@
 							"type": "integer",
 							"minimum": 0,
 							"maximum": 50
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
 						}
 					},
 					"required": [
@@ -284,11 +310,26 @@
 					"enum": [
 						"row_index"
 					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
 				}
 			},
 			"required": [
 				"name",
 				"type"
+			]
+		},
+		"payloadXml": {
+			"enum": [
+				"attribute",
+				"element",
+				"cdata",
+				"comment"
 			]
 		}
 	}

@@ -10,7 +10,8 @@ const (
 )
 
 type ColumnCreditCardNumberPayload struct {
-	Type string
+	XmlType string `json:"xml"`
+	Type    string
 }
 
 type ColumnCreditCardNumber struct {
@@ -26,8 +27,17 @@ func (column ColumnCreditCardNumber) Column() Column {
 	return column.column
 }
 
+func (column ColumnCreditCardNumber) XmlType() string {
+	return column.Payload.XmlType
+}
+
+type ColumnCreditCardTypePayload struct {
+	XmlType string `json:"xml"`
+}
+
 type ColumnCreditCardType struct {
-	column Column
+	column  Column
+	Payload ColumnCreditCardTypePayload `json:"payload"`
 }
 
 func (column ColumnCreditCardType) Value(context *Context) (string, error) {
@@ -36,4 +46,8 @@ func (column ColumnCreditCardType) Value(context *Context) (string, error) {
 
 func (column ColumnCreditCardType) Column() Column {
 	return column.column
+}
+
+func (column ColumnCreditCardType) XmlType() string {
+	return column.Payload.XmlType
 }
