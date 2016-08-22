@@ -31,6 +31,20 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	var errPayload error
 
 	switch jSONColumn.Type {
+	case COLUMN_COLOR:
+		payload := ColumnColorPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnColor{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_COLOR_HEX:
+		payload := ColumnColorHexPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnColorHex{
+			column:  column,
+			Payload: payload,
+		}
 	case COLUMN_CONST:
 		payload := ColumnConstPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
