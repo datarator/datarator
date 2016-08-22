@@ -345,6 +345,107 @@
 		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "a408501be4d17ee978c04a618e7a1b22af058c0e"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/letsencrypt",
+			"Rev": "2a9ed749d24d8d2a8ece891b7b6242f0b3192d62"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/logger",
+			"Rev": "6a08b11d1faefa8ce79ed6d6efec9d2e05cbc549"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/data",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/json",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/jsonp",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/markdown",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/text",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/response/xml",
+			"Rev": "ff43c463ebf896c1cd86a236c67b653b48258e60"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/template/html",
+			"Rev": "1130d33ae375e4305f27f62f6793db587bcb6f83"
+		},
+		{
+			"ImportPath": "github.com/kardianos/osext",
+			"Rev": "c2c54e542fb797ad986b31721e1baedf214ca413"
+		},
+		{
+			"ImportPath": "github.com/kardianos/service",
+			"Rev": "ca5fc5f6dcec1d5bd6051c8a467d48a8a29046d9"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "github.com/xenolf/lego/acme",
+			"Comment": "v0.3.1-61-g823436d",
+			"Rev": "823436d61175269716a88cd6627bfa603812f10c"
+		},
+		{
+			"ImportPath": "golang.org/x/time/rate",
+			"Rev": "a4bde12657593d5e90d0533a3e4fd95e635124cb"
+		},
+		{
+			"ImportPath": "github.com/iris-contrib/color",
+			"Comment": "v0.2.0-2-g1f56595",
+			"Rev": "1f565954a55c42b9c66ead36206e91e1d79bafa1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/curve25519",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "github.com/miekg/dns",
+			"Rev": "db96a2b759cdef4f11a34506a42eb8d1290c598e"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ocsp",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v1",
+			"Comment": "v1.0.3",
+			"Rev": "a3927f83df1b1516f9e9dec71839c93e6bcf1db0"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ed25519/internal/edwards25519",
+			"Rev": "1ba5ec0bf2707bea17c84c4e642fcfda33740480"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v1/cipher",
+			"Comment": "v1.0.3",
+			"Rev": "a3927f83df1b1516f9e9dec71839c93e6bcf1db0"
+		},
+		{
+			"ImportPath": "gopkg.in/square/go-jose.v1/json",
+			"Comment": "v1.0.3",
+			"Rev": "a3927f83df1b1516f9e9dec71839c93e6bcf1db0"
 		}
 	]
 }
