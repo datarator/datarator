@@ -84,6 +84,12 @@
 		"column": {
 			"oneOf": [
 				{
+					"$ref": "#/definitions/columnColor"
+				},
+				{
+					"$ref": "#/definitions/columnColorHex"
+				},
+				{
 					"$ref": "#/definitions/columnConst"
 				},
 				{
@@ -104,6 +110,57 @@
 				{
 					"$ref": "#/definitions/columnRowIndex"
 				}
+			]
+		},
+		"columnColor": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"color"
+					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnColorHex": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"color.hex"
+					]
+				},
+				"payload": {
+					"properties": {
+						"short": {
+							"type": "boolean"
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
 			]
 		},
 		"columnConst": {
