@@ -11,6 +11,7 @@ const (
 	PAYLOAD_XML_CDATA     = "cdata"
 	PAYLOAD_XML_COMMENT   = "comment"
 	PAYLOAD_XML_ELEMENT   = "element"
+	CONTENT_TYPE_XML      = "text/xml; charset=UTF-8"
 )
 
 var (
@@ -40,6 +41,10 @@ func (template TemplateXML) Generate(context *Context) (string, error) {
 		buffer.WriteString(generated)
 	}
 	return buffer.String(), nil
+}
+
+func (template TemplateXML) ContentType(context *Context) string {
+	return CONTENT_TYPE_XML
 }
 
 func (template TemplateXML) generate(typedColumns []TypedColumn, context *Context) (string, error) {

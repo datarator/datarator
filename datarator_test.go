@@ -29,28 +29,34 @@ func TestCsv(t *testing.T) {
 	// }
 
 	var tests = []struct {
-		inFile  string
-		outFile string
+		inFile         string
+		outFile        string
+		outContentType string
 	}{
 		{
-			inFile:  "./testresource/csv_const_in.json",
-			outFile: "./testresource/csv_const_out",
+			inFile:         "./testresource/csv_const_in.json",
+			outFile:        "./testresource/csv_const_out",
+			outContentType: "text/csv",
 		},
 		{
-			inFile:  "./testresource/csv_join_in.json",
-			outFile: "./testresource/csv_join_out",
+			inFile:         "./testresource/csv_join_in.json",
+			outFile:        "./testresource/csv_join_out",
+			outContentType: "text/csv",
 		},
 		{
-			inFile:  "./testresource/csv_regex_in.json",
-			outFile: "./testresource/csv_regex_out",
+			inFile:         "./testresource/csv_regex_in.json",
+			outFile:        "./testresource/csv_regex_out",
+			outContentType: "text/csv",
 		},
 		{
-			inFile:  "./testresource/xml_flat_in.json",
-			outFile: "./testresource/xml_flat_out",
+			inFile:         "./testresource/xml_flat_in.json",
+			outFile:        "./testresource/xml_flat_out",
+			outContentType: "text/xml",
 		},
 		{
-			inFile:  "./testresource/xml_misc_xml_payload_in.json",
-			outFile: "./testresource/xml_misc_xml_payload_out",
+			inFile:         "./testresource/xml_misc_xml_payload_in.json",
+			outFile:        "./testresource/xml_misc_xml_payload_out",
+			outContentType: "text/xml",
 		},
 	}
 
@@ -70,6 +76,7 @@ func TestCsv(t *testing.T) {
 		irisTest.POST("/api/schemas/foo").WithBytes(in).
 			Expect().
 			Status(http.StatusOK).
+			ContentType(test.outContentType).
 			Body().Equal(string(out))
 	}
 }

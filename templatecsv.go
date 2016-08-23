@@ -3,7 +3,8 @@ package main
 import "bytes"
 
 const (
-	TEMPLATE_CSV = "csv"
+	TEMPLATE_CSV     = "csv"
+	CONTENT_TYPE_CSV = "text/csv; charset=UTF-8"
 )
 
 type TemplateCSVPayload struct {
@@ -35,6 +36,10 @@ func (template TemplateCSV) Generate(context *Context) (string, error) {
 		buffer.WriteByte('\n')
 	}
 	return buffer.String(), nil
+}
+
+func (template TemplateCSV) ContentType(context *Context) string {
+	return CONTENT_TYPE_CSV
 }
 
 func (template TemplateCSV) getHeader(context *Context) string {

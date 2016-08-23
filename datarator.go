@@ -11,6 +11,10 @@ var (
 )
 
 func IrisAPI() *iris.Framework {
+
+	// TODO
+	// iris.Config.Gzip = true
+
 	api := iris.New()
 	// define the api
 	api.Post("/api/schemas/:id", func(ctx *iris.Context) {
@@ -37,6 +41,7 @@ func IrisAPI() *iris.Framework {
 			ToIndex:      jSONSchema.Count,
 			CurrentIndex: []int{0},
 		}
+		ctx.SetContentType(template.ContentType(&context))
 
 		out, err := template.Generate(&context)
 		if err != nil {
@@ -46,7 +51,7 @@ func IrisAPI() *iris.Framework {
 
 		println("POST /api/schemas/" + id)
 
-		ctx.Text(iris.StatusOK, out)
+		ctx.Write(out)
 	})
 
 	return api
