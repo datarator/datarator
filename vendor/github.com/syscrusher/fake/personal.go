@@ -12,10 +12,7 @@ func Gender() string {
 // GenderAbbrev returns first downcased letter of the random gender
 func GenderAbbrev() string {
 	g := Gender()
-	if g != "" {
-		return strings.ToLower(string(g[0]))
-	}
-	return ""
+	return strings.ToLower(string(g[0]))
 }
 
 // Language generates random human language

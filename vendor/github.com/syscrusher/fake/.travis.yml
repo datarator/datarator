@@ -2,7 +2,6 @@ sudo: false
 language: go
 
 go:
-  - 1.6
   - tip
 
 install:
@@ -12,4 +11,4 @@ install:
 
 script:
   - go test -v -race ./...
-  - gometalinter --enable=gofmt,goimports --deadline=60s
+  - gometalinter --enable=gofmt,goimports,lll,misspell --deadline=60s

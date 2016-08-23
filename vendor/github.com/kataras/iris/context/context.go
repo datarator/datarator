@@ -2,22 +2,30 @@ package context
 
 import (
 	"bufio"
-	"html/template"
 	"io"
 	"time"
 
-	"github.com/kataras/iris/sessions/store"
 	"github.com/valyala/fasthttp"
 )
 
 type (
+	// Session is the domain-level session's store interface
+	// it's synced with the iris/sessions.go:session
+	Session interface {
+		ID() string
+		Get(string) interface{}
+		GetString(key string) string
+		GetInt(key string) int
+		GetAll() map[string]interface{}
+		VisitAll(cb func(k string, v interface{}))
+		Set(string, interface{})
+		Delete(string)
+		Clear()
+	}
+
 	// IContext the interface for the iris/context
 	// Used mostly inside packages which shouldn't be import ,directly, the kataras/iris.
 	IContext interface {
-		// deprecated Start
-		PostFormValue(string) string
-		PostFormMulti(string) []string
-		// deprecated End
 		Param(string) string
 		ParamInt(string) (int, error)
 		ParamInt64(string) (int64, error)
@@ -35,6 +43,9 @@ type (
 		RequestHeader(k string) string
 		FormValueString(string) string
 		FormValues(string) []string
+		PostValuesAll() map[string][]string
+		PostValues(name string) []string
+		PostValue(name string) string
 		SetStatusCode(int)
 		SetContentType(string)
 		SetHeader(string, string)
@@ -46,20 +57,19 @@ type (
 		Write(string, ...interface{})
 		HTML(int, string)
 		Data(int, []byte) error
-		RenderWithStatus(int, string, interface{}, ...string) error
-		Render(string, interface{}, ...string) error
-		MustRender(string, interface{}, ...string)
-		TemplateString(string, interface{}, ...string) string
+		RenderWithStatus(int, string, interface{}, ...map[string]interface{}) error
+		Render(string, interface{}, ...map[string]interface{}) error
+		MustRender(string, interface{}, ...map[string]interface{})
+		TemplateString(string, interface{}, ...map[string]interface{}) string
 		MarkdownString(string) string
 		Markdown(int, string)
 		JSON(int, interface{}) error
 		JSONP(int, string, interface{}) error
 		Text(int, string) error
 		XML(int, interface{}) error
-		ExecuteTemplate(*template.Template, interface{}) error
 		ServeContent(io.ReadSeeker, string, time.Time, bool) error
 		ServeFile(string, bool) error
-		SendFile(string, string) error
+		SendFile(string, string)
 		Stream(func(*bufio.Writer))
 		StreamWriter(cb func(*bufio.Writer))
 		StreamReader(io.Reader, int)
@@ -77,12 +87,10 @@ type (
 		GetFlashes() map[string]string
 		GetFlash(string) (string, error)
 		SetFlash(string, string)
-		Session() store.IStore
+		Session() Session
 		SessionDestroy()
 		Log(string, ...interface{})
-		Reset(*fasthttp.RequestCtx)
 		GetRequestCtx() *fasthttp.RequestCtx
-		Clone() IContext
 		Do()
 		Next()
 		StopExecution()

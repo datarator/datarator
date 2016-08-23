@@ -2,6 +2,139 @@
 
 **How to upgrade**: remove your `$GOPATH/src/github.com/kataras/iris` folder, open your command-line and execute this command: `go get -u github.com/kataras/iris/iris`.
 
+## 4.0.0 -> 4.1.1
+
+- **NEW FEATURE**: Basic remote control through SSH, example [here](https://github.com/iris-contrib/examples/blob/master/ssh/main.go)
+- **NEW FEATURE**: Optionally `OnError` foreach Party (by prefix, use it with your own risk), example [here](https://github.com/iris-contrib/examples/blob/master/httperrors/main.go#L37)
+- **NEW**: `iris.Config.Sessions.CookieLength`, You're able to customize the length of each sessionid's cookie's value. Default (and previous' implementation) is 32.
+- **FIX**: Websocket panic on non-websocket connection[*](https://github.com/kataras/iris/issues/367)
+- **FIX**: Multi websocket servers client-side source route panic[*](https://github.com/kataras/iris/issues/365)
+- Better gzip response managment
+
+
+## 4.0.0-alpha.5 -> 4.0.0
+
+- **Feature request has been implemented**: Add layout support for Pug/Jade, example [here](https://github.com/iris-contrib/examples/tree/master/template_engines/template_pug_2).
+- **Feature request has been implemented**: Forcefully closing a Websocket connection, `WebsocketConnection.Disconnect() error`.
+
+- **FIX**: WebsocketConnection.Leave() will hang websocket server if .Leave was called manually when the websocket connection has been closed.
+- **FIX**: StaticWeb not serving index.html correctly, align the func with the rest of Static funcs also, [example](https://github.com/iris-contrib/examples/tree/master/static_web) added.
+
+Notes: if you compare it with previous releases (13+ versions before v3 stable), the v4 stable release was fast, now we had only 6 versions before stable, that was happened because many of bugs have been already fixed and we hadn't new bug reports and secondly, and most important for me, some third-party features are implemented mostly by third-party packages via other developers!
+
+
+## 4.0.0-alpha.4 -> 4.0.0-alpha.5
+
+- **NEW FEATURE**: Letsencrypt.org integration[*](https://github.com/kataras/iris/issues/220)
+   - example [here](https://github.com/iris-contrib/examples/blob/master/letsencrypt/main.go)
+- **FIX**: (ListenUNIX adds :80 to filename)[https://github.com/kataras/iris/issues/321]
+- **FIX**: (Go-Bindata + ctx.Render)[https://github.com/kataras/iris/issues/315]
+- **FIX** (auto-gzip doesn't really compress data in latest code)[https://github.com/kataras/iris/issues/312]
+
+
+## 4.0.0-alpha.3 -> 4.0.0-alpha.4
+
+
+**The important** , is that the [book](https://kataras.gitbooks.io/iris/content/) is finally updated!
+
+If you're **willing to donate** click [here](DONATIONS.md)!
+
+
+- `iris.Config.Gzip`, enables gzip compression on your Render actions, this includes any type of render, templates and pure/raw content. If you don't want to enable it globaly, you could just use the third parameter on context.Render("myfileOrResponse", structBinding{}, iris.RenderOptions{"gzip": true}). It defaults to false
+
+
+-  **Added** `config.Server.Name` as requested
+
+
+**Fix**
+- https://github.com/kataras/iris/issues/301
+
+**Sessions changes **
+
+- `iris.Config.Sessions.Expires` it was time.Time, changed to time.Duration, which defaults to 0, means unlimited session life duration, if you change it then the correct date is setted on client's cookie but also server destroys the session automatically when the duration passed, this is better approach, see [here](https://github.com/kataras/iris/issues/301)
+
+
+## 4.0.0-alpha.2 -> 4.0.0-alpha.3
+
+**New**
+
+A **Response Engine** gives you the freedom to create/change the render/response writer for
+
+- `context.JSON`
+- `context.JSONP`
+- `context.XML`
+- `context.Text`
+- `context.Markdown`
+- `context.Data`
+- `context.Render("my_custom_type",mystructOrData{}, iris.RenderOptions{"gzip":false,"charset":"UTF-8"})`
+- `context.MarkdownString`
+- `iris.ResponseString(...)`
+
+
+**Fix**
+- https://github.com/kataras/iris/issues/294
+- https://github.com/kataras/iris/issues/303
+
+
+**Small changes**
+
+- `iris.Config.Charset`, before alpha.3 was `iris.Config.Rest.Charset` & `iris.Config.Render.Template.Charset`, but you can override it at runtime by passinth a map `iris.RenderOptions` on the `context.Render` call .
+- `iris.Config.IsDevelopment`, before alpha.1 was `iris.Config.Render.Template.IsDevelopment`
+
+
+**Websockets changes**
+
+No need to import the `github.com/kataras/iris/websocket` to use the `Connection` iteral, the websocket moved inside `kataras/iris` , now all exported variables' names have the prefix of `Websocket`, so the old `websocket.Connection` is now `iris.WebsocketConnection`.
+
+
+Generally, no other changes on the 'frontend API', for response engines examples and how you can register your own to add more features on existing response engines or replace them, look [here](https://github.com/iris-contrib/response).
+
+**BAD SIDE**: E-Book is still pointing on the v3 release, but will be updated soon.
+
+## 4.0.0-alpha.1 -> 4.0.0-alpha.2
+
+**Sessions were re-written **
+
+- Developers can use more than one 'session database', at the same time, to store the sessions
+- Easy to develop a custom session database (only two functions are required (Load & Update)), [learn more](https://github.com/iris-contrib/sessiondb/blob/master/redis/database.go)
+- Session databases are located [here](https://github.com/iris-contrib/sessiondb), contributions are welcome
+- The only frontend deleted 'thing' is the: **config.Sessions.Provider**
+- No need to register a database, the sessions works out-of-the-box
+- No frontend/API changes except the `context.Session().Set/Delete/Clear`, they doesn't return errors anymore, btw they (errors) were always nil :)
+- Examples (master branch) were updated.
+
+```sh
+$ go get github.com/iris-contrib/sessiondb/$DATABASE
+```
+
+```go
+db := $DATABASE.New(configurationHere{})
+iris.UseSessionDB(db)
+```
+
+
+> Note: Book is not updated yet, examples are up-to-date as always.
+
+
+## 3.0.0 -> 4.0.0-alpha.1
+
+[logger](https://github.com/iris-contrib/logger), [rest](https://github.com/iris-contrib/rest) and all [template engines](https://github.com/iris-contrib/template) **moved** to the [iris-contrib](https://github.com/iris-contrib).
+
+- `config.Logger` -> `iris.Logger.Config`
+- `config.Render/config.Render.Rest/config.Render.Template` -> **Removed**
+- `config.Render.Rest` -> `rest.Config`
+- `config.Render.Template` -> `$TEMPLATE_ENGINE.Config` except Directory,Extensions, Assets, AssetNames,
+- `config.Render.Template.Directory` -> `iris.UseTemplate($TEMPLAET_ENGINE.New()).Directory("./templates", ".html")`
+- `config.Render.Template.Assets` -> `iris.UseTemplate($TEMPLAET_ENGINE.New()).Directory("./templates",".html").Binary(assetFn func(name string) ([]byte, error), namesFn func() []string)`
+
+- `context.ExecuteTemplate` -> **Removed**, you can use the `context.Response.BodyWriter()` to get its writer and execute html/template engine manually, but this is useless because we support the best support for template engines among all other (golang) web frameworks
+- **Added** `config.Server.ReadBufferSize & config.Server.WriteBufferSize` which can be passed as configuration fields inside `iris.ListenTo(config.Server{...})`, which does the same job as `iris.Listen`
+- **Added** `iris.UseTemplate($TEMPLAET_ENGINE.New()).Directory("./templates", ".html")` to register a template engine, now iris supports multi template engines, each template engine has its own file extension, no big changes on context.Render except the last parameter:
+- `context.Render(filename string, binding interface{}, layout string{})` -> `context.Render(filename string, binding interface{}, options ...map[string]interface{})  | context.Render("myfile.html", myPage{}, iris.Map{"gzip":true,"layout":"layouts/MyLayout.html"}) |`
+
+E-book and examples are not yet updated, no big changes.
+
+
 ## 3.0.0-rc.4 -> 3.0.0-pre.release
 
 - `context.PostFormValue` -> `context.FormValueString`, old func stays until the next revision

@@ -1,6 +1,7 @@
 package fake
 
 import (
+	"math/rand"
 	"strings"
 
 	"strconv"
@@ -12,11 +13,12 @@ type creditCard struct {
 	prefixes []int
 }
 
+// https://en.wikipedia.org/wiki/Payment_card_number#Issuer_identification_number_.28IIN.29
 var creditCards = map[string]creditCard{
-	"visa":       {"VISA", 16, []int{4539, 4556, 4916, 4532, 4929, 40240071, 4485, 4716, 4}},
-	"mastercard": {"MasterCard", 16, []int{51, 52, 53, 54, 55}},
 	"amex":       {"American Express", 15, []int{34, 37}},
-	"discover":   {"Discover", 16, []int{6011}},
+	"discover":   {"Discover", 16, []int{6011, 622126, 622925, 644, 649, 65}},
+	"mastercard": {"MasterCard", 16, []int{5}},
+	"visa":       {"VISA", 16, []int{4}},
 }
 
 // CreditCardType returns one of the following credit values:
@@ -28,10 +30,11 @@ func CreditCardType() string {
 		vendors = append(vendors, cc.vendor)
 	}
 
-	return vendors[r.Intn(n)]
+	return vendors[rand.Intn(n)]
 }
 
-// CreditCardNum generated credit card number according to the card number rules
+// CreditCardNum generated credit card number according to the vendor's card number rules.
+// Currently supports amex, discover, mastercard, and visa.
 func CreditCardNum(vendor string) string {
 	if vendor != "" {
 		vendor = strings.ToLower(vendor)
@@ -40,10 +43,10 @@ func CreditCardNum(vendor string) string {
 		for v := range creditCards {
 			vendors = append(vendors, v)
 		}
-		vendor = vendors[r.Intn(len(vendors))]
+		vendor = vendors[rand.Intn(len(vendors))]
 	}
 	card := creditCards[vendor]
-	prefix := strconv.Itoa(card.prefixes[r.Intn(len(card.prefixes))])
+	prefix := strconv.Itoa(card.prefixes[rand.Intn(len(card.prefixes))])
 	num := []rune(prefix)
 	for i := 0; i < card.length-len(prefix); i++ {
 		num = append(num, genCCDigit(num))

@@ -5,7 +5,7 @@ import (
 
 	"github.com/iris-contrib/errors"
 
-	"github.com/kataras/iris/logger"
+	"github.com/iris-contrib/logger"
 	"github.com/kataras/iris/utils"
 )
 
@@ -248,7 +248,8 @@ func (p *pluginContainer) Add(plugins ...Plugin) error {
 		}
 		// Activate the plugin, if no error then add it to the plugins
 		if pluginObj, ok := plugin.(pluginActivate); ok {
-			tempPluginContainer := *p
+
+			tempPluginContainer := *p // contains the mutex but we' re safe here.
 			err := pluginObj.Activate(&tempPluginContainer)
 			if err != nil {
 				return errPluginActivate.Format(pName, err.Error())

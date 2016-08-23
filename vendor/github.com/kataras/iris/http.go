@@ -2,6 +2,7 @@ package iris
 
 import (
 	"bytes"
+	"crypto/tls"
 	"net"
 	"net/http"
 	"net/http/pprof"
@@ -13,8 +14,9 @@ import (
 	"time"
 
 	"github.com/iris-contrib/errors"
+	"github.com/iris-contrib/letsencrypt"
+	"github.com/iris-contrib/logger"
 	"github.com/kataras/iris/config"
-	"github.com/kataras/iris/logger"
 	"github.com/kataras/iris/utils"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
@@ -254,14 +256,11 @@ type (
 
 // newServer returns a pointer to a Server object, and set it's options if any,  nothing more
 func newServer(cfg config.Server) *Server {
-	s := &Server{Server: &fasthttp.Server{Name: config.ServerName}, Config: cfg}
-	s.prepare()
+	if cfg.Name == "" {
+		cfg.Name = config.DefaultServerName
+	}
+	s := &Server{Server: &fasthttp.Server{Name: cfg.Name}, Config: cfg}
 	return s
-}
-
-// prepare just prepares the listening addr
-func (s *Server) prepare() {
-	s.Config.ListeningAddr = config.ServerParseAddr(s.Config.ListeningAddr)
 }
 
 // IsListening returns true if server is listening/started, otherwise false
@@ -285,7 +284,7 @@ func (s *Server) IsOpened() bool {
 
 // IsSecure returns true if server uses TLS, otherwise false
 func (s *Server) IsSecure() bool {
-	return s.tls
+	return s.tls || s.Config.AutoTLS // for any case
 }
 
 // Listener returns the net.Listener which this server (is) listening to
@@ -294,34 +293,48 @@ func (s *Server) Listener() net.Listener {
 }
 
 // Host returns the registered host for the server
-func (s *Server) Host() (host string) {
+func (s *Server) Host() string {
+	if s.Config.VListeningAddr != "" {
+		return s.Config.VListeningAddr
+	}
 	return s.Config.ListeningAddr
 }
 
 // Port returns the port which server listening for
 // if no port given with the ListeningAddr, it returns 80
-func (s *Server) Port() (port int) {
-	a := s.Config.ListeningAddr
+func (s *Server) Port() int {
+	a := s.Host()
 	if portIdx := strings.IndexByte(a, ':'); portIdx != -1 {
 		p, err := strconv.Atoi(a[portIdx+1:])
 		if err != nil {
-			port = 80
-		} else {
-			port = p
+			if s.Config.AutoTLS {
+				return 443
+			}
+			return 80
 		}
-	} else {
-		port = 80
+		return p
 	}
-	return
+	if s.Config.AutoTLS {
+		return 443
+	}
+	return 80
+
 }
 
 // Scheme returns http:// or https:// if SSL is enabled
 func (s *Server) Scheme() string {
 	scheme := "http://"
 	// we need to be able to take that before(for testing &debugging) and after server's listen
-	if s.IsSecure() || (s.Config.CertFile != "" && s.Config.KeyFile != "") {
+	if s.IsSecure() || (s.Config.CertFile != "" && s.Config.KeyFile != "") || s.Config.AutoTLS {
 		scheme = "https://"
 	}
+	// but if virtual scheme is setted and it differs from the real scheme, return the vscheme
+	// the developer should set it correctly, http:// or https:// or anything at the future:P
+	vscheme := s.Config.VScheme
+	if len(vscheme) > 0 && vscheme != scheme {
+		return vscheme
+	}
+
 	return scheme
 }
 
@@ -332,7 +345,15 @@ func (s *Server) FullHost() string {
 
 // Hostname returns the hostname part of the host (host expect port)
 func (s *Server) Hostname() string {
-	return s.Host()[0:strings.IndexByte(s.Host(), ':')] // no the port
+	a := s.Host()
+	idxPort := strings.IndexByte(a, ':')
+	if idxPort > 0 {
+		// port exists, (it always exists for Config.ListeningAddr
+		return a[0:idxPort] // except the port
+	} // but for Config.VListeningAddr the developer maybe doesn't uses the host:port format
+
+	// so, if no port found, then return the Host as it is, it should be something 'mydomain.com'
+	return a
 }
 
 func (s *Server) listen() error {
@@ -382,8 +403,20 @@ func (s *Server) serve(l net.Listener) error {
 	if s.Config.CertFile != "" && s.Config.KeyFile != "" {
 		s.tls = true
 		return s.Server.ServeTLS(s.listener, s.Config.CertFile, s.Config.KeyFile)
+	} else if s.Config.AutoTLS {
+		var m letsencrypt.Manager
+		if err := m.CacheFile("letsencrypt.cache"); err != nil {
+			return err
+		}
+		tlsConfig := &tls.Config{GetCertificate: m.GetCertificate}
+
+		ln := tls.NewListener(l, tlsConfig)
+		s.tls = true
+		s.mu.Lock()
+		s.listener = ln
+		s.mu.Unlock()
 	}
-	s.tls = false
+
 	return s.Server.Serve(s.listener)
 }
 
@@ -397,12 +430,11 @@ func (s *Server) Open(h fasthttp.RequestHandler) error {
 		return errServerAlreadyStarted.Return()
 	}
 
-	s.prepare() // do it again for any case
-
-	if s.Config.MaxRequestBodySize > config.DefaultMaxRequestBodySize {
-		s.Server.MaxRequestBodySize = int(s.Config.MaxRequestBodySize)
-	}
-
+	s.Server.MaxRequestBodySize = s.Config.MaxRequestBodySize
+	s.Server.ReadBufferSize = s.Config.ReadBufferSize
+	s.Server.WriteBufferSize = s.Config.WriteBufferSize
+	s.Server.ReadTimeout = s.Config.ReadTimeout
+	s.Server.WriteTimeout = s.Config.WriteTimeout
 	if s.Config.RedirectTo != "" {
 		// override the handler and redirect all requests to this addr
 		s.Server.Handler = func(reqCtx *fasthttp.RequestCtx) {
@@ -417,13 +449,16 @@ func (s *Server) Open(h fasthttp.RequestHandler) error {
 		s.Server.Handler = h
 	}
 
+	if s.Config.Mode > 0 {
+		return s.listenUNIX()
+	}
+
+	s.Config.ListeningAddr = config.ServerParseAddr(s.Config.ListeningAddr)
+
 	if s.Config.Virtual {
 		return nil
 	}
 
-	if s.Config.Mode > 0 {
-		return s.listenUNIX()
-	}
 	return s.listen()
 
 }
@@ -523,18 +558,16 @@ func (s *ServerList) CloseAll() (err error) {
 // OpenAll starts all servers
 // returns the first error happens to one of these servers
 // if one server gets error it closes the previous servers and exits from this process
-func (s *ServerList) OpenAll() error {
+func (s *ServerList) OpenAll(reqHandler fasthttp.RequestHandler) error {
 	l := len(s.servers) - 1
-	h := s.mux.ServeRequest()
 	for i := range s.servers {
-
-		if err := s.servers[i].Open(h); err != nil {
+		if err := s.servers[i].Open(reqHandler); err != nil {
 			time.Sleep(2 * time.Second)
 			// for any case,
 			// we don't care about performance on initialization,
 			// we must make sure that the previous servers are running before closing them
 			s.CloseAll()
-			break
+			return err
 		}
 		if i == l {
 			s.mux.setHostname(s.servers[i].Hostname())
@@ -640,7 +673,7 @@ func joinMiddleware(middleware1 Middleware, middleware2 Middleware) Middleware {
 
 func profileMiddleware(debugPath string) Middleware {
 	htmlMiddleware := HandlerFunc(func(ctx *Context) {
-		ctx.SetContentType(contentHTML + "; charset=" + config.Charset)
+		ctx.SetContentType(contentHTML + "; charset=" + ctx.framework.Config.Charset)
 		ctx.Next()
 	})
 	indexHandler := ToHandlerFunc(pprof.Index)
@@ -1260,6 +1293,24 @@ func (r *route) SetMiddleware(m Middleware) {
 	r.middleware = m
 }
 
+// RouteConflicts checks for route's middleware conflicts
+func RouteConflicts(r *route, with string) bool {
+	for _, h := range r.middleware {
+		if m, ok := h.(interface {
+			Conflicts() string
+		}); ok {
+			if c := m.Conflicts(); c == with {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (r *route) hasCors() bool {
+	return RouteConflicts(r, "httpmethod")
+}
+
 const (
 	// subdomainIndicator where './' exists in a registed path then it contains subdomain
 	subdomainIndicator = "./"
@@ -1278,7 +1329,6 @@ type (
 	}
 
 	serveMux struct {
-		cPool   *sync.Pool
 		tree    *muxTree
 		lookups []*route
 
@@ -1287,7 +1337,7 @@ type (
 		api           *muxAPI
 		errorHandlers map[int]Handler
 		logger        *logger.Logger
-		// the main server host's name, ex:  localhost, 127.0.0.1, iris-go.com
+		// the main server host's name, ex:  localhost, 127.0.0.1, 0.0.0.0, iris-go.com
 		hostname string
 		// if any of the trees contains not empty subdomain
 		hosts bool
@@ -1301,12 +1351,11 @@ type (
 	}
 )
 
-func newServeMux(contextPool sync.Pool, logger *logger.Logger) *serveMux {
+func newServeMux(logger *logger.Logger) *serveMux {
 	mux := &serveMux{
-		cPool:         &contextPool,
 		lookups:       make([]*route, 0),
 		errorHandlers: make(map[int]Handler, 0),
-		hostname:      "127.0.0.1",
+		hostname:      config.DefaultServerHostname, // these are changing when the server is up
 		escapePath:    !config.DefaultDisablePathEscape,
 		correctPath:   !config.DefaultDisablePathCorrection,
 		logger:        logger,
@@ -1391,7 +1440,7 @@ func (mux *serveMux) register(method []byte, subdomain string, path string, midd
 // build collects all routes info and adds them to the registry in order to be served from the request handler
 // this happens once when server is setting the mux's handler.
 func (mux *serveMux) build() {
-
+	mux.tree = nil
 	sort.Sort(bySubdomain(mux.lookups))
 	for _, r := range mux.lookups {
 		// add to the registry tree
@@ -1431,26 +1480,37 @@ func (mux *serveMux) lookup(routeName string) *route {
 	return nil
 }
 
-func (mux *serveMux) ServeRequest() fasthttp.RequestHandler {
+func (mux *serveMux) Handler() HandlerFunc {
 
 	// initialize the router once
 	mux.build()
 	// optimize this once once, we could do that: context.RequestPath(mux.escapePath), but we lose some nanoseconds on if :)
-	getRequestPath := func(reqCtx *fasthttp.RequestCtx) string {
-		return utils.BytesToString(reqCtx.Path())
+	getRequestPath := func(ctx *Context) string {
+		return utils.BytesToString(ctx.Path()) //string(ctx.Path()[:]) // a little bit of memory allocation, old method used: BytesToString, If I see the benchmarks get low I will change it back to old, but this way is safer.
 	}
 	if !mux.escapePath {
-		getRequestPath = func(reqCtx *fasthttp.RequestCtx) string { return utils.BytesToString(reqCtx.RequestURI()) }
+		getRequestPath = func(ctx *Context) string { return utils.BytesToString(ctx.RequestCtx.RequestURI()) }
 	}
 
-	return func(reqCtx *fasthttp.RequestCtx) {
-		context := mux.cPool.Get().(*Context)
-		context.Reset(reqCtx)
+	methodEqual := func(treeMethod []byte, reqMethod []byte) bool {
+		return bytes.Equal(treeMethod, reqMethod)
+	}
 
-		routePath := getRequestPath(reqCtx)
+	// check for cors conflicts
+	for _, r := range mux.lookups {
+		if r.hasCors() {
+			methodEqual = func(treeMethod []byte, reqMethod []byte) bool {
+				return bytes.Equal(treeMethod, reqMethod) || bytes.Equal(reqMethod, methodOptionsBytes)
+			}
+			break
+		}
+	}
+
+	return func(context *Context) {
+		routePath := getRequestPath(context)
 		tree := mux.tree
 		for tree != nil {
-			if !bytes.Equal(tree.method, reqCtx.Method()) {
+			if !methodEqual(tree.method, context.Method()) {
 				// we break any CORS OPTIONS method
 				// but for performance reasons if user wants http method OPTIONS to be served
 				// then must register it with .Options(...)
@@ -1487,9 +1547,8 @@ func (mux *serveMux) ServeRequest() fasthttp.RequestHandler {
 				context.middleware = middleware
 				//ctx.Request.Header.SetUserAgentBytes(DefaultUserAgent)
 				context.Do()
-				mux.cPool.Put(context)
 				return
-			} else if mustRedirect && mux.correctPath && !bytes.Equal(reqCtx.Method(), methodConnectBytes) {
+			} else if mustRedirect && mux.correctPath && !bytes.Equal(context.Method(), methodConnectBytes) {
 
 				reqPath := routePath
 				pathLen := len(reqPath)
@@ -1514,7 +1573,6 @@ func (mux *serveMux) ServeRequest() fasthttp.RequestHandler {
 						note := "<a href=\"" + utils.HTMLEscape(urlToRedirect) + "\">Moved Permanently</a>.\n"
 						context.Write(note)
 					}
-					mux.cPool.Put(context)
 					return
 				}
 			}
@@ -1522,6 +1580,5 @@ func (mux *serveMux) ServeRequest() fasthttp.RequestHandler {
 			break
 		}
 		mux.fireError(StatusNotFound, context)
-		mux.cPool.Put(context)
 	}
 }

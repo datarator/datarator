@@ -10,7 +10,6 @@ import (
 	"mime/multipart"
 	"net"
 	"os"
-	"runtime/debug"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -223,8 +222,8 @@ type Server struct {
 	// if set to true.
 	//
 	// Try enabling this option only if the server consumes too much memory
-	// serving mostly idle keep-alive connections (more than 1M concurrent
-	// connections). This may reduce memory usage by up to 50%.
+	// serving mostly idle keep-alive connections. This may reduce memory
+	// usage by more than 50%.
 	//
 	// Aggressive memory usage reduction is disabled by default.
 	ReduceMemoryUsage bool
@@ -481,11 +480,34 @@ func (ctx *RequestCtx) UserValueBytes(key []byte) interface{} {
 	return ctx.userValues.GetBytes(key)
 }
 
+// VisitUserValues calls visitor for each existing userValue.
+//
+// visitor must not retain references to key and value after returning.
+// Make key and/or value copies if you need storing them after returning.
+func (ctx *RequestCtx) VisitUserValues(visitor func([]byte, interface{})) {
+	for i, n := 0, len(ctx.userValues); i < n; i++ {
+		kv := &ctx.userValues[i]
+		visitor(kv.key, kv.value)
+	}
+}
+
+type connTLSer interface {
+	ConnectionState() tls.ConnectionState
+}
+
 // IsTLS returns true if the underlying connection is tls.Conn.
 //
 // tls.Conn is an encrypted connection (aka SSL, HTTPS).
 func (ctx *RequestCtx) IsTLS() bool {
-	_, ok := ctx.c.(*tls.Conn)
+	// cast to (connTLSer) instead of (*tls.Conn), since it catches
+	// cases with overriden tls.Conn such as:
+	//
+	// type customConn struct {
+	//     *tls.Conn
+	//
+	//     // other custom fields here
+	// }
+	_, ok := ctx.c.(connTLSer)
 	return ok
 }
 
@@ -496,7 +518,7 @@ func (ctx *RequestCtx) IsTLS() bool {
 // The returned state may be used for verifying TLS version, client certificates,
 // etc.
 func (ctx *RequestCtx) TLSConnectionState() *tls.ConnectionState {
-	tlsConn, ok := ctx.c.(*tls.Conn)
+	tlsConn, ok := ctx.c.(connTLSer)
 	if !ok {
 		return nil
 	}
@@ -1408,6 +1430,7 @@ func (s *Server) serveConn(c net.Conn) error {
 
 	ctx := s.acquireCtx(c)
 	ctx.connTime = connTime
+	isTLS := ctx.IsTLS()
 	var (
 		br *bufio.Reader
 		bw *bufio.Writer
@@ -1440,6 +1463,7 @@ func (s *Server) serveConn(c net.Conn) error {
 			}
 		} else {
 			br, err = acquireByteReader(&ctx)
+			ctx.Request.isTLS = isTLS
 		}
 
 		if err == nil {
@@ -1660,20 +1684,13 @@ func (s *Server) updateWriteDeadline(c net.Conn, ctx *RequestCtx, lastDeadlineTi
 
 func hijackConnHandler(r io.Reader, c net.Conn, s *Server, h HijackHandler) {
 	hjc := s.acquireHijackConn(r, c)
-
-	defer func() {
-		if r := recover(); r != nil {
-			s.logger().Printf("panic on hijacked conn: %s\nStack trace:\n%s", r, debug.Stack())
-		}
-
-		if br, ok := r.(*bufio.Reader); ok {
-			releaseReader(s, br)
-		}
-		c.Close()
-		s.releaseHijackConn(hjc)
-	}()
-
 	h(hjc)
+
+	if br, ok := r.(*bufio.Reader); ok {
+		releaseReader(s, br)
+	}
+	c.Close()
+	s.releaseHijackConn(hjc)
 }
 
 func (s *Server) acquireHijackConn(r io.Reader, c net.Conn) *hijackConn {
@@ -1813,11 +1830,15 @@ func (s *Server) acquireCtx(c net.Conn) *RequestCtx {
 	v := s.ctxPool.Get()
 	var ctx *RequestCtx
 	if v == nil {
-		v = &RequestCtx{
+		ctx = &RequestCtx{
 			s: s,
 		}
+		keepBodyBuffer := !s.ReduceMemoryUsage
+		ctx.Request.keepBodyBuffer = keepBodyBuffer
+		ctx.Response.keepBodyBuffer = keepBodyBuffer
+	} else {
+		ctx = v.(*RequestCtx)
 	}
-	ctx = v.(*RequestCtx)
 	ctx.c = c
 	return ctx
 }

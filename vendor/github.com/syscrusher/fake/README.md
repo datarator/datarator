@@ -62,3 +62,7 @@ Use external data:
 fake.UseExternalData(true)
 password := fake.Paragraph()
 ```
+
+# Credit
+
+The common English wordlist located in data/en/words is from [Wiktionary](https://simple.wiktionary.org/wiki/Wiktionary:Most_frequent_1000_words_in_English), licensed under the [Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/3.0/)
