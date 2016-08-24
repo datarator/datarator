@@ -44,7 +44,7 @@ func IrisAPI() *iris.Framework {
 			ToIndex:      jSONSchema.Count,
 			CurrentIndex: []int{0},
 		}
-		ctx.SetContentType(template.ContentType(&context))
+		ctx.SetContentType(template.ContentType())
 		ctx.StreamWriter(func(writer *bufio.Writer) {
 			// TODO Gzip
 			// ctx.Response.WriteGzip()
