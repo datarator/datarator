@@ -43,7 +43,7 @@ func (template TemplateXML) Generate(context *Context) (string, error) {
 	return buffer.String(), nil
 }
 
-func (template TemplateXML) ContentType(context *Context) string {
+func (template TemplateXML) ContentType() string {
 	return CONTENT_TYPE_XML
 }
 

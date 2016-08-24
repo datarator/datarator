@@ -38,7 +38,7 @@ func (template TemplateCSV) Generate(context *Context) (string, error) {
 	return buffer.String(), nil
 }
 
-func (template TemplateCSV) ContentType(context *Context) string {
+func (template TemplateCSV) ContentType() string {
 	return CONTENT_TYPE_CSV
 }
 

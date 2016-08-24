@@ -29,7 +29,7 @@ type Schema struct {
 
 type Template interface {
 	Generate(context *Context) (string, error)
-	ContentType(context *Context) string
+	ContentType() string
 }
 
 type Context struct {

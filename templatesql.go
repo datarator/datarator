@@ -34,7 +34,7 @@ func (template TemplateSQL) Generate(context *Context) (string, error) {
 	return buffer.String(), nil
 }
 
-func (template TemplateSQL) ContentType(context *Context) string {
+func (template TemplateSQL) ContentType() string {
 	return CONTENT_TYPE_SQL
 }
 
