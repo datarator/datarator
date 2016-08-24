@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"net/http"
 
 	"github.com/kataras/iris"
@@ -56,7 +55,8 @@ func IrisAPI() *iris.Framework {
 				return
 			}
 
-			fmt.Fprintf(writer, "%s", out)
+			// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
+			writer.WriteString(out)
 
 			writer.Flush()
 		})
