@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"net/http"
 
 	"github.com/kataras/iris"
@@ -12,14 +14,16 @@ var (
 
 func IrisAPI() *iris.Framework {
 
-	// TODO
+	api := iris.New()
+
+	// TODO Gzip
 	// iris.Config.Gzip = true
 
-	api := iris.New()
 	// define the api
 	api.Post("/api/schemas/:id", func(ctx *iris.Context) {
 
 		id := ctx.Param("id")
+		println("POST /api/schemas/" + id)
 
 		// defaults
 		jSONSchema := JSONSchema{
@@ -42,16 +46,21 @@ func IrisAPI() *iris.Framework {
 			CurrentIndex: []int{0},
 		}
 		ctx.SetContentType(template.ContentType(&context))
+		ctx.StreamWriter(func(writer *bufio.Writer) {
+			// TODO Gzip
+			// ctx.Response.WriteGzip()
 
-		out, err := template.Generate(&context)
-		if err != nil {
-			emmitError(http.StatusInternalServerError, err.Error(), ctx)
-			return
-		}
+			out, err := template.Generate(&context)
+			if err != nil {
+				emmitError(http.StatusInternalServerError, err.Error(), ctx)
+				return
+			}
 
-		println("POST /api/schemas/" + id)
+			fmt.Fprintf(writer, "%s", out)
 
-		ctx.Write(out)
+			writer.Flush()
+		})
+
 	})
 
 	return api
