@@ -4,6 +4,9 @@
 			"$ref": "#/definitions/templateCsv"
 		},
 		{
+			"$ref": "#/definitions/templateSql"
+		},
+		{
 			"$ref": "#/definitions/templateXml"
 		}
 	],
@@ -36,6 +39,31 @@
 							"type": "string"
 						}
 					}
+				}
+			},
+			"required": [
+				"template",
+				"columns"
+			]
+		},
+		"templateSql": {
+			"properties": {
+				"template": {
+					"enum": [
+						"sql"
+					]
+				},
+				"count": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 1000000
+				},
+				"columns": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/column"
+					},
+					"minItems": 1
 				}
 			},
 			"required": [

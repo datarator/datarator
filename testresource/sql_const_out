@@ -1,0 +1,2 @@
+INSERT INTO foo ( id, greeting, from, server ) VALUES ( '0', 'hello', 'from', 'datarator' );
+INSERT INTO foo ( id, greeting, from, server ) VALUES ( '1', 'hello', 'from', 'datarator' );

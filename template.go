@@ -36,6 +36,10 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSO
 			Schema:  schema,
 			Payload: payload,
 		}
+	case TEMPLATE_SQL:
+		template = TemplateSQL{
+			Schema: schema,
+		}
 	case TEMPLATE_XML:
 		payload := TemplateXMLPayload{}
 		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
