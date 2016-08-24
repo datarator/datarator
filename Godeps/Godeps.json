@@ -213,7 +213,7 @@
 		},
 		{
 			"ImportPath": "github.com/syscrusher/fake",
-			"Rev": "5647d610dc76eea32b8b227bb4c14b6ee154e1f4"
+			"Rev": "f134e2077b0621b024d7288f3d09e54b5ca36864"
 		},
 		{
 			"ImportPath": "github.com/valyala/bytebufferpool",

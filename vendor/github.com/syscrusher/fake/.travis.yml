@@ -2,13 +2,11 @@ sudo: false
 language: go
 
 go:
+  - 1.7
   - tip
 
 install:
-  - go get github.com/alecthomas/gometalinter
-  - gometalinter --install --update
   - go get -v -d -t ./...
 
 script:
   - go test -v -race ./...
-  - gometalinter --enable=gofmt,goimports,lll,misspell --deadline=60s

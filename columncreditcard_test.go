@@ -11,55 +11,53 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		inContext Context
 		outValue  string
 	}{
-		// unless: https://github.com/syscrusher/fake/issues/2
-		// gets fixed
-		// {
-		// 	inColumn: ColumnCreditCardNumber{
-		// 		column: Column{},
-		// 	},
-		// 	inContext: Context{},
-		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
-		// },
-		// {
-		// 	inColumn: ColumnCreditCardNumber{
-		// 		column: Column{},
-		// 		Payload: ColumnCreditCardNumberPayload{
-		// 			Type: "amex",
-		// 		},
-		// 	},
-		// 	inContext: Context{},
-		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
-		// },
-		// {
-		// 	inColumn: ColumnCreditCardNumber{
-		// 		column: Column{},
-		// 		Payload: ColumnCreditCardNumberPayload{
-		// 			Type: "discover",
-		// 		},
-		// 	},
-		// 	inContext: Context{},
-		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
-		// },
-		// {
-		// 	inColumn: ColumnCreditCardNumber{
-		// 		column: Column{},
-		// 		Payload: ColumnCreditCardNumberPayload{
-		// 			Type: "mastercard",
-		// 		},
-		// 	},
-		// 	inContext: Context{},
-		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
-		// },
-		// {
-		// 	inColumn: ColumnCreditCardNumber{
-		// 		column: Column{},
-		// 		Payload: ColumnCreditCardNumberPayload{
-		// 			Type: "visa",
-		// 		},
-		// 	},
-		// 	inContext: Context{},
-		// 	outValue:  "^[0-9]{4}(-[0-9]{4}){3}$",
-		// },
+		{
+			inColumn: ColumnCreditCardNumber{
+				column: Column{},
+			},
+			inContext: Context{},
+			outValue:  "^[0-9]{15,16}$",
+		},
+		{
+			inColumn: ColumnCreditCardNumber{
+				column: Column{},
+				Payload: ColumnCreditCardNumberPayload{
+					Type: "amex",
+				},
+			},
+			inContext: Context{},
+			outValue:  "^[0-9]{15,16}$",
+		},
+		{
+			inColumn: ColumnCreditCardNumber{
+				column: Column{},
+				Payload: ColumnCreditCardNumberPayload{
+					Type: "discover",
+				},
+			},
+			inContext: Context{},
+			outValue:  "^[0-9]{15,16}$",
+		},
+		{
+			inColumn: ColumnCreditCardNumber{
+				column: Column{},
+				Payload: ColumnCreditCardNumberPayload{
+					Type: "mastercard",
+				},
+			},
+			inContext: Context{},
+			outValue:  "^[0-9]{15,16}$",
+		},
+		{
+			inColumn: ColumnCreditCardNumber{
+				column: Column{},
+				Payload: ColumnCreditCardNumberPayload{
+					Type: "visa",
+				},
+			},
+			inContext: Context{},
+			outValue:  "^[0-9]{15,16}$",
+		},
 		{
 			inColumn: ColumnCreditCardType{
 				column: Column{},
