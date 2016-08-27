@@ -112,6 +112,9 @@
 		"column": {
 			"oneOf": [
 				{
+					"$ref": "#/definitions/columnAddress"
+				},
+				{
 					"$ref": "#/definitions/columnColor"
 				},
 				{
@@ -138,6 +141,36 @@
 				{
 					"$ref": "#/definitions/columnRowIndex"
 				}
+			]
+		},
+		"columnAddress": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"address.continent",
+						"address.country",
+						"address.city",
+						"address.phone",
+						"address.state",
+						"address.street",
+						"address.zip"
+					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
 			]
 		},
 		"columnColor": {

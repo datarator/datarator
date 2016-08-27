@@ -31,6 +31,55 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	var errPayload error
 
 	switch jSONColumn.Type {
+	case COLUMN_ADDRESS_CONTINENT:
+		payload := ColumnAddressContinentPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressContinent{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_COUNTRY:
+		payload := ColumnAddressCountryPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressCountry{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_CITY:
+		payload := ColumnAddressCityPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressCity{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_PHONE:
+		payload := ColumnAddressPhonePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressPhone{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_STATE:
+		payload := ColumnAddressStatePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressState{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_STREET:
+		payload := ColumnAddressStreetPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressStreet{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_ADDRESS_ZIP:
+		payload := ColumnAddressZipPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnAddressZip{
+			column:  column,
+			Payload: payload,
+		}
 	case COLUMN_COLOR:
 		payload := ColumnColorPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)

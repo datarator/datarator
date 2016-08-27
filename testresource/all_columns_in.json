@@ -3,6 +3,34 @@
     "count": 1,
     "columns": [
         {
+            "name": "address.continent",
+            "type": "address.continent"
+        },
+        {
+            "name": "address.country",
+            "type": "address.country"
+        },
+        {
+            "name": "address.city",
+            "type": "address.city"
+        },
+        {
+            "name": "address.phone",
+            "type": "address.phone"
+        },
+        {
+            "name": "address.state",
+            "type": "address.state"
+        },
+        {
+            "name": "address.street",
+            "type": "address.street"
+        },
+        {
+            "name": "address.zip",
+            "type": "address.zip"
+        },
+        {
             "name": "color",
             "type": "color"
         },
