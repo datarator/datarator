@@ -38,26 +38,31 @@ func IrisAPI() *iris.Framework {
 			return
 		}
 
-		// TODO slice to chunks + in separate go routines
-		context := Context{
-			FromIndex:    0,
-			ToIndex:      jSONSchema.Count,
-			CurrentIndex: []int{0},
-		}
 		ctx.SetContentType(template.ContentType())
 		ctx.StreamWriter(func(writer *bufio.Writer) {
 			// TODO Gzip
 			// ctx.Response.WriteGzip()
 
-			out, err := template.Generate(&context)
+			processor, err := ChunkProcessorFactory{}.CreateChunkProcessor()
 			if err != nil {
 				emmitError(http.StatusInternalServerError, err.Error(), ctx)
 				return
 			}
 
-			// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
-			writer.WriteString(out)
+			doneChannel := make(chan struct{})
+			defer close(doneChannel)
 
+			outChannel := processor.Process(jSONSchema.Count, template, doneChannel)
+			for out := range outChannel {
+				if out.err != nil {
+					emmitError(http.StatusInternalServerError, out.err.Error(), ctx)
+					return
+				}
+
+				// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
+				writer.WriteString(out.out)
+			}
+			// }
 			writer.Flush()
 		})
 
