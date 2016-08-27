@@ -79,13 +79,50 @@
                 }
             ]
         },
-         {
+        {
             "name": "currency",
             "type": "currency"
         },
         {
             "name": "currency.code",
             "type": "currency.code"
+        },
+        {
+            "name": "date.day.of_week",
+            "type": "date.day.of_week"
+        },
+        {
+            "name": "date.day.of_week.name",
+            "type": "date.day.of_week.name",
+            "payload": {
+                "short": true
+            }
+        },
+        {
+            "name": "date.day.of_month",
+            "type": "date.day.of_month"
+        },
+        {
+            "name": "date.month",
+            "type": "date.month"
+        },
+        {
+            "name": "date.month.name",
+            "type": "date.month.name",
+            "payload": {
+                "short": true
+            }
+        },
+        {
+            "name": "date.year",
+            "type": "date.year"
+        },
+        {
+            "name": "date.of_birth",
+            "type": "date.of_birth",
+            "payload": {
+                "age": 18
+            }
         },
         {
             "name": "name.first",

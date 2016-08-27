@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/kataras/iris"
 )
@@ -72,6 +74,7 @@ func IrisAPI() *iris.Framework {
 }
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	IrisAPI().Listen(":9292")
 }
 

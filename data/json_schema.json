@@ -133,6 +133,15 @@
 					"$ref": "#/definitions/columnCurrency"
 				},
 				{
+					"$ref": "#/definitions/columnDate"
+				},
+				{
+					"$ref": "#/definitions/columnDateName"
+				},
+				{
+					"$ref": "#/definitions/columnDateOfBirth"
+				},
+				{
 					"$ref": "#/definitions/columnJoin"
 				},
 				{
@@ -328,6 +337,88 @@
 				},
 				"payload": {
 					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnDate": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"date.day.of_week",
+						"date.day.of_month",
+						"date.month",
+						"date.year"
+					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnDateName": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"date.day.of_week.name",
+						"date.month.name"
+					]
+				},
+				"payload": {
+					"properties": {
+						"short": {
+							"type": "boolean"
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnDateOfBirth": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"date.of_birth"
+					]
+				},
+				"payload": {
+					"properties": {
+						"age": {
+							"type": "integer"
+						},
 						"xml": {
 							"$ref": "#/definitions/payloadXml"
 						}

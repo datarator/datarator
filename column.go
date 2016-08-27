@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math/rand"
 )
 
 var (
@@ -126,6 +127,55 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		payload := ColumnCreditCardTypePayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnCreditCardType{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_DAY_OF_WEEK:
+		payload := ColumnDateDayOfWeekPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateDayOfWeek{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_DAY_OF_WEEK_NAME:
+		payload := ColumnDateDayOfWeekNamePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateDayOfWeekName{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_DAY_OF_MONTH:
+		payload := ColumnDateDayOfMonthPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateDayOfMonth{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_MONTH:
+		payload := ColumnDateMonthPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateMonth{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_MONTH_NAME:
+		payload := ColumnDateMonthNamePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateMonthName{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_YEAR:
+		payload := ColumnDateYearPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateYear{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_DATE_OF_BIRTH:
+		payload := ColumnDateOfBirthPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnDateOfBirth{
 			column:  column,
 			Payload: payload,
 		}
@@ -258,4 +308,8 @@ func loadPayload(jSONPayload json.RawMessage, payload interface{}) error {
 		}
 	}
 	return nil
+}
+
+func randInt(min, max int) int {
+	return min + rand.Intn(max-min)
 }
