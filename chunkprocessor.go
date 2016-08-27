@@ -21,7 +21,6 @@ type ChunkProcessorFactory struct {
 func (cf ChunkProcessorFactory) CreateChunkProcessor() (ChunkProcessor, error) {
 
 	return ChunkProcessorSerial{}, nil
-
 	// return ChunkProcessorParallelUnordered{}, nil
 }
 
@@ -78,4 +77,18 @@ func merge(done <-chan struct{}, cs [](<-chan Output)) <-chan Output {
 		close(out)
 	}()
 	return out
+}
+
+func processChunk(context *Context, template Template, doneChannel <-chan struct{}) <-chan Output {
+	outChannel := make(chan Output)
+	go func() {
+		defer close(outChannel)
+		out, err := template.Generate(context)
+		outChannel <- Output{
+			out: out,
+			err: err,
+		}
+	}()
+
+	return outChannel
 }
