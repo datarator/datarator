@@ -101,6 +101,20 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			column:  column,
 			Payload: payload,
 		}
+	case COLUMN_CURRENCY:
+		payload := ColumnCurrencyPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnCurrency{
+			column:  column,
+			Payload: payload,
+		}
+	case COLUMN_CURRENCY_CODE:
+		payload := ColumnCurrencyCodePayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnCurrencyCode{
+			column:  column,
+			Payload: payload,
+		}
 	case COLUMN_CREDIT_CARD_NUMBER:
 		payload := ColumnCreditCardNumberPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)

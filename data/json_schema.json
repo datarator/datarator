@@ -130,6 +130,9 @@
 					"$ref": "#/definitions/columnCreditCardType"
 				},
 				{
+					"$ref": "#/definitions/columnCurrency"
+				},
+				{
 					"$ref": "#/definitions/columnJoin"
 				},
 				{
@@ -296,6 +299,31 @@
 				"type": {
 					"enum": [
 						"credit_card.type"
+					]
+				},
+				"payload": {
+					"properties": {
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					}
+				}
+			},
+			"required": [
+				"name",
+				"type"
+			]
+		},
+		"columnCurrency": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^|]+$"
+				},
+				"type": {
+					"enum": [
+						"currency",
+						"currency.code"
 					]
 				},
 				"payload": {

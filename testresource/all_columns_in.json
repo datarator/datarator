@@ -79,6 +79,14 @@
                 }
             ]
         },
+         {
+            "name": "currency",
+            "type": "currency"
+        },
+        {
+            "name": "currency.code",
+            "type": "currency.code"
+        },
         {
             "name": "name.first",
             "type": "name.first"
