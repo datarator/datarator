@@ -23,7 +23,7 @@ func TestColumnAddressValue(t *testing.T) {
 				column: Column{},
 			},
 			inContext: Context{},
-			outValue:  "^[a-zA-Z ]+$",
+			outValue:  "^[a-zA-Z ,]+$",
 		},
 		{
 			inColumn: ColumnAddressCity{
