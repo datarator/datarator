@@ -17,18 +17,24 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							column: Column{
-								Name: "Hello",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "Hello",
+								},
+								payload: TypedColumnBasePayload{},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "",
 							},
 						},
 						ColumnConst{
-							column: Column{
-								Name: "datarator",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "datarator",
+								},
+								payload: TypedColumnBasePayload{},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "",
 							},
 						},
@@ -50,39 +56,52 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							column: Column{
-								Name: "Hello",
-								TypedColumns: []TypedColumn{
-									ColumnConst{
-										Payload: ColumnConstPayload{
-											Value: "Nestedval",
-										},
-										column: Column{
-											Name: "Nested",
-											TypedColumns: []TypedColumn{
-												ColumnConst{
-													Payload: ColumnConstPayload{
-														Value:   "NestedAttrVal",
-														XmlType: "attribute",
-													},
-													column: Column{
-														Name: "NestedAttr",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "Hello",
+									TypedColumns: []TypedColumn{
+										ColumnConst{
+											TypedColumnBase: TypedColumnBase{
+												column: Column{
+													Name: "Nested",
+													TypedColumns: []TypedColumn{
+														ColumnConst{
+															TypedColumnBase: TypedColumnBase{
+																column: Column{
+																	Name: "NestedAttr",
+																},
+																payload: TypedColumnBasePayload{
+																	Xml: "attribute",
+																},
+															},
+															payload: ColumnConstPayload{
+																Value: "NestedAttrVal",
+															},
+														},
 													},
 												},
+												payload: TypedColumnBasePayload{},
+											},
+											payload: ColumnConstPayload{
+												Value: "Nestedval",
 											},
 										},
 									},
 								},
+								payload: TypedColumnBasePayload{},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "",
 							},
 						},
 						ColumnConst{
-							column: Column{
-								Name: "datarator",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "datarator",
+								},
+								payload: TypedColumnBasePayload{},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "",
 							},
 						},

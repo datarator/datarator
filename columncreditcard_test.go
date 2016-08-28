@@ -12,16 +12,13 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnCreditCardNumber{
-				column: Column{},
-			},
+			inColumn:  ColumnCreditCardNumber{},
 			inContext: Context{},
 			outValue:  "^[0-9]{15,16}$",
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
-				column: Column{},
-				Payload: ColumnCreditCardNumberPayload{
+				payload: ColumnCreditCardNumberPayload{
 					Type: "amex",
 				},
 			},
@@ -30,8 +27,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
-				column: Column{},
-				Payload: ColumnCreditCardNumberPayload{
+				payload: ColumnCreditCardNumberPayload{
 					Type: "discover",
 				},
 			},
@@ -40,8 +36,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
-				column: Column{},
-				Payload: ColumnCreditCardNumberPayload{
+				payload: ColumnCreditCardNumberPayload{
 					Type: "mastercard",
 				},
 			},
@@ -50,8 +45,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
-				column: Column{},
-				Payload: ColumnCreditCardNumberPayload{
+				payload: ColumnCreditCardNumberPayload{
 					Type: "visa",
 				},
 			},
@@ -59,9 +53,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 			outValue:  "^[0-9]{15,16}$",
 		},
 		{
-			inColumn: ColumnCreditCardType{
-				column: Column{},
-			},
+			inColumn:  ColumnCreditCardType{},
 			inContext: Context{},
 			outValue:  "^(VISA|MasterCard|American Express|Discover)$",
 		},

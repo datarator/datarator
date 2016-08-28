@@ -9,7 +9,7 @@ import (
 	"github.com/kataras/iris"
 )
 
-var (
+const (
 	errStaticDataNotFound = "File: %s was not found"
 )
 

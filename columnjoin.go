@@ -5,17 +5,16 @@ import (
 )
 
 const (
-	COLUMN_JOIN = "join"
+	columnJoin = "join"
 )
 
 type ColumnJoinPayload struct {
-	XmlType   string `json:"xml"`
 	Separator string
 }
 
 type ColumnJoin struct {
-	column  Column
-	Payload ColumnJoinPayload
+	TypedColumnBase
+	payload ColumnJoinPayload
 }
 
 func (column ColumnJoin) Value(context *Context) (string, error) {
@@ -27,16 +26,8 @@ func (column ColumnJoin) Value(context *Context) (string, error) {
 			return "", nil
 		}
 		buffer.WriteString(nestedVal)
-		buffer.WriteString(column.Payload.Separator)
+		buffer.WriteString(column.payload.Separator)
 	}
 
 	return buffer.String(), nil
-}
-
-func (column ColumnJoin) Column() Column {
-	return column.column
-}
-
-func (column ColumnJoin) XmlType() string {
-	return column.Payload.XmlType
 }

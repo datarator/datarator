@@ -12,10 +12,7 @@ func TestColumnColorValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnColor{
-				Payload: ColumnColorPayload{},
-				column:  Column{},
-			},
+			inColumn:  ColumnColor{},
 			inContext: Context{},
 			outValue:  "^[A-Z][a-z]+$",
 		},
@@ -37,19 +34,15 @@ func TestColumnColorHexValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnColorHex{
-				Payload: ColumnColorHexPayload{},
-				column:  Column{},
-			},
+			inColumn:  ColumnColorHex{},
 			inContext: Context{},
 			outValue:  "^[0-9a-z]{6}$",
 		},
 		{
 			inColumn: ColumnColorHex{
-				Payload: ColumnColorHexPayload{
-					short: true,
+				payload: ColumnColorHexPayload{
+					Short: true,
 				},
-				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "^[0-9a-z]{3}$",

@@ -3,8 +3,8 @@ package main
 import "bytes"
 
 const (
-	TEMPLATE_SQL     = "sql"
-	CONTENT_TYPE_SQL = "application/octet-stream"
+	templateSQL    = "sql"
+	contentTypeSQL = "application/octet-stream"
 )
 
 type TemplateSQL struct {
@@ -35,7 +35,7 @@ func (template TemplateSQL) Generate(context *Context) (string, error) {
 }
 
 func (template TemplateSQL) ContentType() string {
-	return CONTENT_TYPE_SQL
+	return contentTypeSQL
 }
 
 func (template TemplateSQL) getInsertPrefix(context *Context) string {

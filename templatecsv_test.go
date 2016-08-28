@@ -15,12 +15,12 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "Hello",
 							},
 						},
 						ColumnConst{
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "datarator",
 							},
 						},
@@ -42,12 +42,12 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "Hello",
 							},
 						},
 						ColumnConst{
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "datarator",
 							},
 						},
@@ -70,18 +70,22 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							column: Column{
-								Name: "foo",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "foo",
+								},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "Hello",
 							},
 						},
 						ColumnConst{
-							column: Column{
-								Name: "bar",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "bar",
+								},
 							},
-							Payload: ColumnConstPayload{
+							payload: ColumnConstPayload{
 								Value: "datarator",
 							},
 						},

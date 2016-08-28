@@ -1,27 +1,18 @@
 package main
 
 const (
-	COLUMN_CONST = "const"
+	columnConst = "const"
 )
 
 type ColumnConstPayload struct {
-	XmlType string `json:"xml"`
-	Value   string
+	Value string
 }
 
 type ColumnConst struct {
-	column  Column
-	Payload ColumnConstPayload `json:"payload"`
+	TypedColumnBase
+	payload ColumnConstPayload
 }
 
 func (column ColumnConst) Value(context *Context) (string, error) {
-	return column.Payload.Value, nil
-}
-
-func (column ColumnConst) Column() Column {
-	return column.column
-}
-
-func (column ColumnConst) XmlType() string {
-	return column.Payload.XmlType
+	return column.payload.Value, nil
 }

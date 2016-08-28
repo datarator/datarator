@@ -12,51 +12,37 @@ func TestColumnDateValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnDateDayOfWeek{
-				column: Column{},
-			},
+			inColumn:  ColumnDateDayOfWeek{},
 			inContext: Context{},
 			outValue:  "^[1-7]$",
 		},
 		{
-			inColumn: ColumnDateDayOfWeekName{
-				column: Column{},
-			},
+			inColumn:  ColumnDateDayOfWeekName{},
 			inContext: Context{},
 			outValue:  "^[A-Za-z]+$",
 		},
 		{
-			inColumn: ColumnDateDayOfMonth{
-				column: Column{},
-			},
+			inColumn:  ColumnDateDayOfMonth{},
 			inContext: Context{},
 			outValue:  "^[0-9]+$",
 		},
 		{
-			inColumn: ColumnDateMonth{
-				column: Column{},
-			},
+			inColumn:  ColumnDateMonth{},
 			inContext: Context{},
 			outValue:  "^[0-9]+$",
 		},
 		{
-			inColumn: ColumnDateMonthName{
-				column: Column{},
-			},
+			inColumn:  ColumnDateMonthName{},
 			inContext: Context{},
 			outValue:  "^[A-Za-z]+$",
 		},
 		{
-			inColumn: ColumnDateYear{
-				column: Column{},
-			},
+			inColumn:  ColumnDateYear{},
 			inContext: Context{},
 			outValue:  "^[0-9]+$",
 		},
 		{
-			inColumn: ColumnDateOfBirth{
-				column: Column{},
-			},
+			inColumn:  ColumnDateOfBirth{},
 			inContext: Context{},
 			outValue:  "^[-+: 0-9A-Z]+$",
 		},

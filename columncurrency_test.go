@@ -12,16 +12,12 @@ func TestColumnCurrencyValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnCurrency{
-				column: Column{},
-			},
+			inColumn:  ColumnCurrency{},
 			inContext: Context{},
 			outValue:  "^[a-zA-Z ()]+$",
 		},
 		{
-			inColumn: ColumnCurrencyCode{
-				column: Column{},
-			},
+			inColumn:  ColumnCurrencyCode{},
 			inContext: Context{},
 			outValue:  "^[A-Z]{3}$",
 		},

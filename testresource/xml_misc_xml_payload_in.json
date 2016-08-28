@@ -17,6 +17,14 @@
                     }
                 },
                 {
+                    "name": "title",
+                    "type": "const",
+                    "payload": {
+                        "value": "Cronicles of Narnia",
+                        "xml": "attribute"
+                    }
+                },
+                {
                     "name": "author",
                     "type": "const",
                     "payload": {

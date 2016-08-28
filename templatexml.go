@@ -6,16 +6,14 @@ import (
 )
 
 const (
-	TEMPLATE_XML          = "xml"
-	PAYLOAD_XML_ATTRIBUTE = "attribute"
-	PAYLOAD_XML_CDATA     = "cdata"
-	PAYLOAD_XML_COMMENT   = "comment"
-	PAYLOAD_XML_ELEMENT   = "element"
-	CONTENT_TYPE_XML      = "text/xml; charset=UTF-8"
-)
+	templateXML         = "xml"
+	payloadXMLAttribute = "attribute"
+	payloadXMLCdata     = "cdata"
+	payloadXMLComment   = "comment"
+	payloadXMLElement   = "element"
+	contentTypeXML      = "text/xml; charset=UTF-8"
 
-var (
-	errUnsupportedXmlType = "Column: %s has unsupported XML type: %s"
+	errUnsupportedXMLType = "Column: %s has unsupported XML type: %s"
 )
 
 type TemplateXMLPayload struct {
@@ -44,20 +42,20 @@ func (template TemplateXML) Generate(context *Context) (string, error) {
 }
 
 func (template TemplateXML) ContentType() string {
-	return CONTENT_TYPE_XML
+	return contentTypeXML
 }
 
 func (template TemplateXML) generate(typedColumns []TypedColumn, context *Context) (string, error) {
 	var buffer bytes.Buffer
 	if typedColumns != nil {
 		for _, typedColumn := range typedColumns {
-			xmlType := typedColumn.XmlType()
+			xmlType := typedColumn.Payload().XmlType()
 			if len(xmlType) == 0 {
-				xmlType = PAYLOAD_XML_ELEMENT
+				xmlType = payloadXMLElement
 			}
 
 			switch xmlType {
-			case PAYLOAD_XML_ELEMENT:
+			case payloadXMLElement:
 				buffer.WriteString(template.getIndent(context))
 				buffer.WriteByte('<')
 				buffer.WriteString(typedColumn.Column().Name)
@@ -66,7 +64,7 @@ func (template TemplateXML) generate(typedColumns []TypedColumn, context *Contex
 				if nestedColumns != nil {
 					// iterate nested attributes only
 					for _, typedColumnNested := range nestedColumns {
-						if typedColumnNested.XmlType() == PAYLOAD_XML_ATTRIBUTE {
+						if typedColumnNested.Payload().XmlType() == payloadXMLAttribute {
 							val, err := typedColumnNested.Value(context)
 							if err != nil {
 								return "", err
@@ -111,9 +109,9 @@ func (template TemplateXML) generate(typedColumns []TypedColumn, context *Contex
 					buffer.WriteByte('\n')
 				}
 
-			case PAYLOAD_XML_ATTRIBUTE:
+			case payloadXMLAttribute:
 				// already covered in the default case => nothing to do here
-			case PAYLOAD_XML_CDATA:
+			case payloadXMLCdata:
 				val, err := typedColumn.Value(context)
 				if err != nil {
 					return "", err
@@ -122,7 +120,7 @@ func (template TemplateXML) generate(typedColumns []TypedColumn, context *Contex
 				buffer.WriteString("CDATA[\n")
 				buffer.WriteString(val)
 				buffer.WriteString("\n]\n")
-			case PAYLOAD_XML_COMMENT:
+			case payloadXMLComment:
 				val, err := typedColumn.Value(context)
 				if err != nil {
 					return "", err
@@ -133,7 +131,7 @@ func (template TemplateXML) generate(typedColumns []TypedColumn, context *Contex
 				buffer.WriteString(val)
 				buffer.WriteString("-->")
 			default:
-				return "", fmt.Errorf(errUnsupportedXmlType, typedColumn.Column().Name, xmlType)
+				return "", fmt.Errorf(errUnsupportedXMLType, typedColumn.Column().Name, xmlType)
 			}
 		}
 

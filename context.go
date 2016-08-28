@@ -6,30 +6,12 @@ var (
 	errNestingIndexCantBeDecremented = "Nesting index: '0' can't be decremented!"
 )
 
-type Column struct {
-	Name         string
-	TypedColumns []TypedColumn
-	EmptyIndeces []int
-	Locale       string
-}
-
-type TypedColumn interface {
-	Value(context *Context) (string, error)
-	Column() Column
-	XmlType() string
-}
-
 type Schema struct {
 	Document     string
 	EmptyValue   string
 	Count        int
 	TypedColumns []TypedColumn
 	Locale       string
-}
-
-type Template interface {
-	Generate(context *Context) (string, error)
-	ContentType() string
 }
 
 type Context struct {

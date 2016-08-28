@@ -14,19 +14,23 @@ func TestTemplateSQLGenerate(t *testing.T) {
 					Count: 2,
 					TypedColumns: []TypedColumn{
 						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "Hello",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "col1",
+								},
 							},
-							column: Column{
-								Name: "col1",
+							payload: ColumnConstPayload{
+								Value: "Hello",
 							},
 						},
 						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "datarator",
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									Name: "col2",
+								},
 							},
-							column: Column{
-								Name: "col2",
+							payload: ColumnConstPayload{
+								Value: "datarator",
 							},
 						},
 					},

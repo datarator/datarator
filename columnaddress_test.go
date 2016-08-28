@@ -12,58 +12,42 @@ func TestColumnAddressValue(t *testing.T) {
 		outValue  string
 	}{
 		{
-			inColumn: ColumnAddressContinent{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressContinent{},
 			inContext: Context{},
 			outValue:  "^[a-zA-Z ]+$",
 		},
 		{
-			inColumn: ColumnAddressCountry{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressCountry{},
 			inContext: Context{},
 			outValue:  "^[a-zA-Z ,]+$",
 		},
 		{
-			inColumn: ColumnAddressCity{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressCity{},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
-			inColumn: ColumnAddressPhone{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressPhone{},
 			inContext: Context{},
 			outValue:  "^[0-9-]+$",
 		},
 		{
-			inColumn: ColumnAddressState{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressState{},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
-			inColumn: ColumnAddressState{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressState{},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
-			inColumn: ColumnAddressStreet{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressStreet{},
 			inContext: Context{},
 			outValue:  "^[- a-zA-Z.]+$",
 		},
 		{
-			inColumn: ColumnAddressZip{
-				column: Column{},
-			},
+			inColumn:  ColumnAddressZip{},
 			inContext: Context{},
 			outValue:  "^[0-9]+$",
 		},

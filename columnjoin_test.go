@@ -13,21 +13,23 @@ func TestColumnJoinValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnJoin{
-				column: Column{
-					TypedColumns: []TypedColumn{
-						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "Hello",
+				TypedColumnBase: TypedColumnBase{
+					column: Column{
+						TypedColumns: []TypedColumn{
+							ColumnConst{
+								payload: ColumnConstPayload{
+									Value: "Hello",
+								},
 							},
-						},
-						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "datarator",
+							ColumnConst{
+								payload: ColumnConstPayload{
+									Value: "datarator",
+								},
 							},
 						},
 					},
 				},
-				Payload: ColumnJoinPayload{
+				payload: ColumnJoinPayload{
 					Separator: " ",
 				},
 			},
@@ -36,16 +38,18 @@ func TestColumnJoinValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnJoin{
-				column: Column{
-					TypedColumns: []TypedColumn{
-						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "Hello",
+				TypedColumnBase: TypedColumnBase{
+					column: Column{
+						TypedColumns: []TypedColumn{
+							ColumnConst{
+								payload: ColumnConstPayload{
+									Value: "Hello",
+								},
 							},
-						},
-						ColumnConst{
-							Payload: ColumnConstPayload{
-								Value: "datarator",
+							ColumnConst{
+								payload: ColumnConstPayload{
+									Value: "datarator",
+								},
 							},
 						},
 					},

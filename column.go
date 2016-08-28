@@ -7,9 +7,47 @@ import (
 	"math/rand"
 )
 
-var (
+const (
 	errUnsupportedType = "Column: %s has unsupported type: %s"
 )
+
+type Column struct {
+	Name         string
+	TypedColumns []TypedColumn
+	EmptyIndeces []int
+	Locale       string
+}
+
+type TypedColumn interface {
+	Value(context *Context) (string, error)
+	Column() Column
+	Payload() TypedColumnPayload
+}
+
+type TypedColumnBase struct {
+	column  Column
+	payload TypedColumnPayload
+}
+
+func (column TypedColumnBase) Column() Column {
+	return column.column
+}
+
+func (column TypedColumnBase) Payload() TypedColumnPayload {
+	return column.payload
+}
+
+type TypedColumnPayload interface {
+	XmlType() string
+}
+
+type TypedColumnBasePayload struct {
+	Xml string `json:"xml"`
+}
+
+func (payload TypedColumnBasePayload) XmlType() string {
+	return payload.Xml
+}
 
 type ColumnFactory struct {
 }
@@ -31,239 +69,175 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	var typedColumn TypedColumn
 	var errPayload error
 
+	basePayload := TypedColumnBasePayload{}
+	errBasePayload := loadPayload(jSONColumn.JSONPayload, &basePayload)
+	if errBasePayload != nil {
+		return nil, errBasePayload
+	}
+	typedColumnBase := TypedColumnBase{
+		column:  column,
+		payload: basePayload,
+	}
+
 	switch jSONColumn.Type {
-	case COLUMN_ADDRESS_CONTINENT:
-		payload := ColumnAddressContinentPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressContinent:
 		typedColumn = ColumnAddressContinent{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_COUNTRY:
-		payload := ColumnAddressCountryPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressCountry:
 		typedColumn = ColumnAddressCountry{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_CITY:
-		payload := ColumnAddressCityPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressCity:
 		typedColumn = ColumnAddressCity{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_PHONE:
-		payload := ColumnAddressPhonePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressPhone:
 		typedColumn = ColumnAddressPhone{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_STATE:
-		payload := ColumnAddressStatePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressState:
 		typedColumn = ColumnAddressState{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_STREET:
-		payload := ColumnAddressStreetPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressStreet:
 		typedColumn = ColumnAddressStreet{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_ADDRESS_ZIP:
-		payload := ColumnAddressZipPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnAddressZip:
 		typedColumn = ColumnAddressZip{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_COLOR:
-		payload := ColumnColorPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnColor:
 		typedColumn = ColumnColor{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_COLOR_HEX:
+	case columnColorHex:
 		payload := ColumnColorHexPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnColorHex{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_CONST:
+	case columnConst:
 		payload := ColumnConstPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnConst{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_CURRENCY:
-		payload := ColumnCurrencyPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
-		typedColumn = ColumnCurrency{
-			column:  column,
-			Payload: payload,
-		}
-	case COLUMN_CURRENCY_CODE:
-		payload := ColumnCurrencyCodePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
-		typedColumn = ColumnCurrencyCode{
-			column:  column,
-			Payload: payload,
-		}
-	case COLUMN_CREDIT_CARD_NUMBER:
+	case columnCreditCardNumber:
 		payload := ColumnCreditCardNumberPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnCreditCardNumber{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_CREDIT_CARD_TYPE:
-		payload := ColumnCreditCardTypePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnCreditCardType:
 		typedColumn = ColumnCreditCardType{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_DATE_DAY_OF_WEEK:
-		payload := ColumnDateDayOfWeekPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnCurrency:
+		typedColumn = ColumnCurrency{
+			TypedColumnBase: typedColumnBase,
+		}
+	case columnCurrencyCode:
+		typedColumn = ColumnCurrencyCode{
+			TypedColumnBase: typedColumnBase,
+		}
+
+	case columnDateDayOfWeek:
 		typedColumn = ColumnDateDayOfWeek{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_DATE_DAY_OF_WEEK_NAME:
+	case columnDateDayOfWeekName:
 		payload := ColumnDateDayOfWeekNamePayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnDateDayOfWeekName{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_DATE_DAY_OF_MONTH:
-		payload := ColumnDateDayOfMonthPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnDateDayOfMonth:
 		typedColumn = ColumnDateDayOfMonth{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_DATE_MONTH:
-		payload := ColumnDateMonthPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnDateMonth:
 		typedColumn = ColumnDateMonth{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_DATE_MONTH_NAME:
+	case columnDateMonthName:
 		payload := ColumnDateMonthNamePayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnDateMonthName{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_DATE_YEAR:
-		payload := ColumnDateYearPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnDateYear:
 		typedColumn = ColumnDateYear{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_DATE_OF_BIRTH:
+	case columnDateOfBirth:
 		payload := ColumnDateOfBirthPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnDateOfBirth{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_JOIN:
+	case columnJoin:
 		payload := ColumnJoinPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnJoin{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_NAME_FIRST:
-		payload := ColumnNameFirstPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFirst:
 		typedColumn = ColumnNameFirst{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_FIRST_FEMALE:
-		payload := ColumnNameFirstFemalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFirstFemale:
 		typedColumn = ColumnNameFirstFemale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_FIRST_MALE:
-		payload := ColumnNameFirstMalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFirstMale:
 		typedColumn = ColumnNameFirstMale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_FULL:
-		payload := ColumnNameFullPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFull:
 		typedColumn = ColumnNameFull{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_FULL_FEMALE:
-		payload := ColumnNameFullFemalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFullFemale:
 		typedColumn = ColumnNameFullFemale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_FULL_MALE:
-		payload := ColumnNameFullMalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameFullMale:
 		typedColumn = ColumnNameFullMale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_LAST:
-		payload := ColumnNameLastPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameLast:
 		typedColumn = ColumnNameLast{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_LAST_FEMALE:
-		payload := ColumnNameLastFemalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameLastFemale:
 		typedColumn = ColumnNameLastFemale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_NAME_LAST_MALE:
-		payload := ColumnNameLastMalePayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnNameLastMale:
 		typedColumn = ColumnNameLastMale{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
-	case COLUMN_REGEX:
+	case columnRegex:
 		payload := ColumnRegexPayload{
 			Limit: 10,
 		}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
 		typedColumn = ColumnRegex{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
 		}
-	case COLUMN_ROW_INDEX:
-		payload := ColumnRowIndexPayload{}
-		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+	case columnRowIndex:
 		typedColumn = ColumnRowIndex{
-			column:  column,
-			Payload: payload,
+			TypedColumnBase: typedColumnBase,
 		}
 	default:
 		return nil, fmt.Errorf(errUnsupportedType, jSONColumn.Name, jSONColumn.Type)

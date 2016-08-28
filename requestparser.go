@@ -12,7 +12,7 @@ import (
 	"github.com/xeipuuv/gojsonschema"
 )
 
-var (
+const (
 	errPostDataEmpty       = "POST data empty"
 	errPostJSONDataInvalid = "POST JSON data invalid:\n%s"
 )

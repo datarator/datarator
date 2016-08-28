@@ -13,8 +13,7 @@ func TestColumnRegexValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnRegex{
-				column: Column{},
-				Payload: ColumnRegexPayload{
+				payload: ColumnRegexPayload{
 					Regex: "foo",
 					Limit: 10,
 				},
@@ -24,8 +23,7 @@ func TestColumnRegexValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnRegex{
-				column: Column{},
-				Payload: ColumnRegexPayload{
+				payload: ColumnRegexPayload{
 					Regex: "f{1,1}",
 					Limit: 10,
 				},
@@ -35,8 +33,7 @@ func TestColumnRegexValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnRegex{
-				column: Column{},
-				Payload: ColumnRegexPayload{
+				payload: ColumnRegexPayload{
 					Regex: "f{1,1}",
 					Limit: 10,
 				},

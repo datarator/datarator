@@ -10,10 +10,9 @@ func TestColumnConstValue(t *testing.T) {
 	}{
 		{
 			inColumn: ColumnConst{
-				Payload: ColumnConstPayload{
+				payload: ColumnConstPayload{
 					Value: "foo",
 				},
-				column: Column{},
 			},
 			inContext: Context{},
 			outValue:  "foo",
