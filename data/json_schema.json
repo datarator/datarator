@@ -159,7 +159,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -189,7 +189,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -213,7 +213,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -240,7 +240,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -271,7 +271,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -303,7 +303,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -327,7 +327,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -352,7 +352,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -379,7 +379,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -407,7 +407,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -434,7 +434,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -472,7 +472,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -504,7 +504,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [
@@ -541,7 +541,7 @@
 			"properties": {
 				"name": {
 					"type": "string",
-					"pattern": "^[^|]+$"
+					"pattern": "^[^/]+$"
 				},
 				"type": {
 					"enum": [

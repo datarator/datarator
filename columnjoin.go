@@ -17,11 +17,11 @@ type ColumnJoin struct {
 	payload ColumnJoinPayload
 }
 
-func (column ColumnJoin) Value(context *Context) (string, error) {
+func (column ColumnJoin) Value(chunk *Chunk) (string, error) {
 	var buffer bytes.Buffer
 
-	for _, nestedColumn := range column.column.TypedColumns {
-		nestedVal, err := nestedColumn.Value(context)
+	for _, columns := range column.column.columns {
+		nestedVal, err := columns.Value(chunk)
 		if err != nil {
 			return "", nil
 		}

@@ -20,7 +20,7 @@ type ColumnDateDayOfWeek struct {
 	TypedColumnBase
 }
 
-func (column ColumnDateDayOfWeek) Value(context *Context) (string, error) {
+func (column ColumnDateDayOfWeek) Value(chunk *Chunk) (string, error) {
 	return strconv.Itoa(fake.WeekdayNum()), nil
 }
 
@@ -33,7 +33,7 @@ type ColumnDateDayOfWeekName struct {
 	payload ColumnDateDayOfWeekNamePayload
 }
 
-func (column ColumnDateDayOfWeekName) Value(context *Context) (string, error) {
+func (column ColumnDateDayOfWeekName) Value(chunk *Chunk) (string, error) {
 	if column.payload.Short {
 		return fake.WeekDayShort(), nil
 	}
@@ -44,7 +44,7 @@ type ColumnDateDayOfMonth struct {
 	TypedColumnBase
 }
 
-func (column ColumnDateDayOfMonth) Value(context *Context) (string, error) {
+func (column ColumnDateDayOfMonth) Value(chunk *Chunk) (string, error) {
 	return strconv.Itoa(fake.Day()), nil
 }
 
@@ -52,7 +52,7 @@ type ColumnDateMonth struct {
 	TypedColumnBase
 }
 
-func (column ColumnDateMonth) Value(context *Context) (string, error) {
+func (column ColumnDateMonth) Value(chunk *Chunk) (string, error) {
 	return strconv.Itoa(fake.MonthNum()), nil
 }
 
@@ -65,7 +65,7 @@ type ColumnDateMonthName struct {
 	payload ColumnDateMonthNamePayload
 }
 
-func (column ColumnDateMonthName) Value(context *Context) (string, error) {
+func (column ColumnDateMonthName) Value(chunk *Chunk) (string, error) {
 	if column.payload.Short {
 		return fake.MonthShort(), nil
 	}
@@ -76,7 +76,7 @@ type ColumnDateYear struct {
 	TypedColumnBase
 }
 
-func (column ColumnDateYear) Value(context *Context) (string, error) {
+func (column ColumnDateYear) Value(chunk *Chunk) (string, error) {
 	min := randInt(0, 2000)
 	return strconv.Itoa(fake.Year(min, randInt(min, 2000))), nil
 }
@@ -90,7 +90,7 @@ type ColumnDateOfBirth struct {
 	payload ColumnDateOfBirthPayload
 }
 
-func (column ColumnDateOfBirth) Value(context *Context) (string, error) {
+func (column ColumnDateOfBirth) Value(chunk *Chunk) (string, error) {
 	if column.payload.Age > 0 {
 		return fake.Birthdate(column.payload.Age).String(), nil
 	}

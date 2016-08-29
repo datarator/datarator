@@ -4,9 +4,8 @@ import "testing"
 
 func TestColumnConstValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  ColumnConst
-		inContext Context
-		outValue  string
+		inColumn ColumnConst
+		outValue string
 	}{
 		{
 			inColumn: ColumnConst{
@@ -14,13 +13,12 @@ func TestColumnConstValue(t *testing.T) {
 					Value: "foo",
 				},
 			},
-			inContext: Context{},
-			outValue:  "foo",
+			outValue: "foo",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}

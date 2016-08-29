@@ -6,8 +6,16 @@ const (
 	errUnsupportedTemplate = "Unsupported template: %s"
 )
 
+type Schema struct {
+	document   string
+	emptyValue string
+	count      int
+	columns    []TypedColumn
+	locale     string
+}
+
 type Template interface {
-	Generate(context *Context) (string, error)
+	Generate(chunk *Chunk) (string, error)
 	ContentType() string
 }
 
@@ -15,49 +23,49 @@ type TemplateFactory struct {
 }
 
 func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSONSchema) (Template, error) {
+	var err error
 
-	nestedColums, err := createColumns(jSONSchema.Columns)
+	columns, err := createColumns(jSONSchema.Columns)
 	if err != nil {
 		return nil, err
 	}
 
 	schema := Schema{
-		Document:     id,
-		EmptyValue:   jSONSchema.EmptyValue,
-		Count:        jSONSchema.Count,
-		TypedColumns: nestedColums,
+		document:   id,
+		emptyValue: jSONSchema.EmptyValue,
+		count:      jSONSchema.Count,
+		columns:    columns,
 	}
 	// "EmptyIndeces":     countEmptyIndeces(jSONColumn.EmptyPercent),
 	// "Locale":      retrieveLocale(jSONColumn),
 
 	var template Template
-	var errOpts error
 
 	switch jSONSchema.Template {
 	case templateCSV:
 		payload := TemplateCSVPayload{}
-		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
+		err = loadPayload(jSONSchema.JSONPayload, &payload)
 		template = TemplateCSV{
-			Schema:  schema,
-			Payload: payload,
+			schema:  schema,
+			payload: payload,
 		}
 	case templateSQL:
 		template = TemplateSQL{
-			Schema: schema,
+			schema: schema,
 		}
 	case templateXML:
 		payload := TemplateXMLPayload{}
-		errOpts = loadPayload(jSONSchema.JSONPayload, &payload)
+		err = loadPayload(jSONSchema.JSONPayload, &payload)
 		template = TemplateXML{
-			Schema:  schema,
-			Payload: payload,
+			schema:  schema,
+			payload: payload,
 		}
 	default:
-		return nil, fmt.Errorf(errUnsupportedTemplate, jSONSchema.Template)
+		err = fmt.Errorf(errUnsupportedTemplate, jSONSchema.Template)
 	}
 
-	if errOpts != nil {
-		return nil, errOpts
+	if err != nil {
+		return nil, err
 	}
 
 	return template, nil

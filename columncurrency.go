@@ -13,7 +13,7 @@ type ColumnCurrency struct {
 	TypedColumnBase
 }
 
-func (column ColumnCurrency) Value(context *Context) (string, error) {
+func (column ColumnCurrency) Value(chunk *Chunk) (string, error) {
 	return fake.Currency(), nil
 }
 
@@ -21,6 +21,6 @@ type ColumnCurrencyCode struct {
 	TypedColumnBase
 }
 
-func (column ColumnCurrencyCode) Value(context *Context) (string, error) {
+func (column ColumnCurrencyCode) Value(chunk *Chunk) (string, error) {
 	return fake.CurrencyCode(), nil
 }

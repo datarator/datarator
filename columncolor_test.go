@@ -7,19 +7,17 @@ import (
 
 func TestColumnColorValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  ColumnColor
-		inContext Context
-		outValue  string
+		inColumn ColumnColor
+		outValue string
 	}{
 		{
-			inColumn:  ColumnColor{},
-			inContext: Context{},
-			outValue:  "^[A-Z][a-z]+$",
+			inColumn: ColumnColor{},
+			outValue: "^[A-Z][a-z]+$",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
@@ -29,14 +27,12 @@ func TestColumnColorValue(t *testing.T) {
 
 func TestColumnColorHexValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  ColumnColorHex
-		inContext Context
-		outValue  string
+		inColumn ColumnColorHex
+		outValue string
 	}{
 		{
-			inColumn:  ColumnColorHex{},
-			inContext: Context{},
-			outValue:  "^[0-9a-z]{6}$",
+			inColumn: ColumnColorHex{},
+			outValue: "^[0-9a-z]{6}$",
 		},
 		{
 			inColumn: ColumnColorHex{
@@ -44,13 +40,12 @@ func TestColumnColorHexValue(t *testing.T) {
 					Short: true,
 				},
 			},
-			inContext: Context{},
-			outValue:  "^[0-9a-z]{3}$",
+			outValue: "^[0-9a-z]{3}$",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)

@@ -13,7 +13,7 @@ type ColumnColor struct {
 	TypedColumnBase
 }
 
-func (column ColumnColor) Value(context *Context) (string, error) {
+func (column ColumnColor) Value(chunk *Chunk) (string, error) {
 	return fake.Color(), nil
 }
 
@@ -26,7 +26,7 @@ type ColumnColorHex struct {
 	payload ColumnColorHexPayload
 }
 
-func (column ColumnColorHex) Value(context *Context) (string, error) {
+func (column ColumnColorHex) Value(chunk *Chunk) (string, error) {
 	if column.payload.Short {
 		return fake.HexColorShort(), nil
 	}

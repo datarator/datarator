@@ -12,14 +12,14 @@ const (
 )
 
 type Column struct {
-	Name         string
-	TypedColumns []TypedColumn
-	EmptyIndeces []int
-	Locale       string
+	name         string
+	columns      []TypedColumn
+	emptyIndeces []int
+	locale       string
 }
 
 type TypedColumn interface {
-	Value(context *Context) (string, error)
+	Value(chunk *Chunk) (string, error)
 	Column() Column
 	Payload() TypedColumnPayload
 }
@@ -60,8 +60,8 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	}
 
 	column := Column{
-		Name:         jSONColumn.Name,
-		TypedColumns: nestedColums,
+		name:    jSONColumn.Name,
+		columns: nestedColums,
 	}
 	// "EmptyIndeces":     countEmptyIndeces(jSONColumn.EmptyPercent),
 	// "Locale":      retrieveLocale(jSONColumn),

@@ -5,21 +5,21 @@ import "testing"
 func TestTemplateXMLGenerate(t *testing.T) {
 	var tests = []struct {
 		inTemplate TemplateXML
-		inContext  Context
+		inContext  Chunk
 		outValue   string
 	}{
 		{
 			inTemplate: TemplateXML{
-				Payload: TemplateXMLPayload{
+				payload: TemplateXMLPayload{
 					PrettyPrint: false,
 				},
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "Hello",
+									name: "Hello",
 								},
 								payload: TypedColumnBasePayload{},
 							},
@@ -30,7 +30,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "datarator",
+									name: "datarator",
 								},
 								payload: TypedColumnBasePayload{},
 							},
@@ -41,34 +41,34 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inContext: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "<Hello/>\n<datarator/>\n<Hello/>\n<datarator/>\n",
 		},
 		{
 			inTemplate: TemplateXML{
-				Payload: TemplateXMLPayload{
+				payload: TemplateXMLPayload{
 					PrettyPrint: true,
 				},
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "Hello",
-									TypedColumns: []TypedColumn{
+									name: "Hello",
+									columns: []TypedColumn{
 										ColumnConst{
 											TypedColumnBase: TypedColumnBase{
 												column: Column{
-													Name: "Nested",
-													TypedColumns: []TypedColumn{
+													name: "Nested",
+													columns: []TypedColumn{
 														ColumnConst{
 															TypedColumnBase: TypedColumnBase{
 																column: Column{
-																	Name: "NestedAttr",
+																	name: "NestedAttr",
 																},
 																payload: TypedColumnBasePayload{
 																	Xml: "attribute",
@@ -97,7 +97,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "datarator",
+									name: "datarator",
 								},
 								payload: TypedColumnBasePayload{},
 							},
@@ -108,9 +108,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inContext: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n",
 		},

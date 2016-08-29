@@ -10,6 +10,6 @@ type ColumnRowIndex struct {
 	TypedColumnBase
 }
 
-func (column ColumnRowIndex) Value(context *Context) (string, error) {
-	return strconv.Itoa(context.getCurrentIndex()), nil
+func (column ColumnRowIndex) Value(chunk *Chunk) (string, error) {
+	return strconv.Itoa(chunk.index), nil
 }

@@ -7,9 +7,8 @@ import (
 
 func TestColumnRegexValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  TypedColumn
-		inContext Context
-		outValue  string
+		inColumn TypedColumn
+		outValue string
 	}{
 		{
 			inColumn: ColumnRegex{
@@ -18,8 +17,7 @@ func TestColumnRegexValue(t *testing.T) {
 					Limit: 10,
 				},
 			},
-			inContext: Context{},
-			outValue:  "foo",
+			outValue: "foo",
 		},
 		{
 			inColumn: ColumnRegex{
@@ -28,8 +26,7 @@ func TestColumnRegexValue(t *testing.T) {
 					Limit: 10,
 				},
 			},
-			inContext: Context{},
-			outValue:  "f",
+			outValue: "f",
 		},
 		{
 			inColumn: ColumnRegex{
@@ -38,13 +35,12 @@ func TestColumnRegexValue(t *testing.T) {
 					Limit: 10,
 				},
 			},
-			inContext: Context{},
-			outValue:  "f",
+			outValue: "f",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)

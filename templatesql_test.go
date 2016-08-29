@@ -5,18 +5,18 @@ import "testing"
 func TestTemplateSQLGenerate(t *testing.T) {
 	var tests = []struct {
 		inTemplate TemplateSQL
-		inContext  Context
+		inContext  Chunk
 		outValue   string
 	}{
 		{
 			inTemplate: TemplateSQL{
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "col1",
+									name: "col1",
 								},
 							},
 							payload: ColumnConstPayload{
@@ -26,7 +26,7 @@ func TestTemplateSQLGenerate(t *testing.T) {
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "col2",
+									name: "col2",
 								},
 							},
 							payload: ColumnConstPayload{
@@ -34,12 +34,12 @@ func TestTemplateSQLGenerate(t *testing.T) {
 							},
 						},
 					},
-					Document: "foo",
+					document: "foo",
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inContext: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "INSERT INTO foo ( col1, col2 ) VALUES ( 'Hello', 'datarator' );\nINSERT INTO foo ( col1, col2 ) VALUES ( 'Hello', 'datarator' );\n",
 		},

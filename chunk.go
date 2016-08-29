@@ -6,6 +6,14 @@ const (
 	chunkSize = 1000
 )
 
+type Chunk struct {
+	from   int
+	to     int
+	index  int
+	values map[string]string
+	parent *Chunk
+}
+
 type Output struct {
 	out string
 	err error
@@ -24,25 +32,27 @@ func (cf ChunkProcessorFactory) CreateChunkProcessor() (ChunkProcessor, error) {
 	// return ChunkProcessorParallelUnordered{}, nil
 }
 
-func buildChunks(count int) []Context {
-	chunks := []Context{}
+func buildChunks(count int) []Chunk {
+	chunks := []Chunk{}
 
 	chunksCount := count / chunkSize
 	for i := 0; i < chunksCount; i++ {
-		chunks = append(chunks, Context{
-			FromIndex:    i * chunkSize,
-			ToIndex:      (i + 1) * chunkSize,
-			CurrentIndex: []int{i * chunkSize},
+		chunks = append(chunks, Chunk{
+			from:   i * chunkSize,
+			to:     (i + 1) * chunkSize,
+			index:  i * chunkSize,
+			values: make(map[string]string),
 		})
 
 	}
 
 	oneMoreChunkNeeded := count%chunkSize > 0
 	if oneMoreChunkNeeded {
-		chunks = append(chunks, Context{
-			FromIndex:    chunksCount * chunkSize,
-			ToIndex:      count,
-			CurrentIndex: []int{chunksCount * chunkSize},
+		chunks = append(chunks, Chunk{
+			from:   chunksCount * chunkSize,
+			to:     count,
+			index:  chunksCount * chunkSize,
+			values: make(map[string]string),
 		})
 	}
 	return chunks
@@ -79,7 +89,7 @@ func merge(done <-chan struct{}, cs [](<-chan Output)) <-chan Output {
 	return out
 }
 
-func processChunk(context *Context, template Template, doneChannel <-chan struct{}) <-chan Output {
+func processChunk(context *Chunk, template Template, doneChannel <-chan struct{}) <-chan Output {
 	outChannel := make(chan Output)
 	go func() {
 		defer close(outChannel)

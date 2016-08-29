@@ -4,28 +4,26 @@ import "testing"
 
 func TestColumnRowIndexValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  TypedColumn
-		inContext Context
-		outValue  string
+		inColumn TypedColumn
+		inChunk  Chunk
+		outValue string
 	}{
 		{
 			inColumn: ColumnRowIndex{},
-			inContext: Context{
-				CurrentIndex: []int{0},
-			},
+			inChunk:  Chunk{},
 			outValue: "0",
 		},
 		{
 			inColumn: ColumnRowIndex{},
-			inContext: Context{
-				CurrentIndex: []int{100},
+			inChunk: Chunk{
+				index: 100,
 			},
 			outValue: "100",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(&test.inChunk)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}

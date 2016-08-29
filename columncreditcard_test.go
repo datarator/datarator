@@ -7,14 +7,12 @@ import (
 
 func TestColumnCreditCardTypeValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  TypedColumn
-		inContext Context
-		outValue  string
+		inColumn TypedColumn
+		outValue string
 	}{
 		{
-			inColumn:  ColumnCreditCardNumber{},
-			inContext: Context{},
-			outValue:  "^[0-9]{15,16}$",
+			inColumn: ColumnCreditCardNumber{},
+			outValue: "^[0-9]{15,16}$",
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
@@ -22,8 +20,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 					Type: "amex",
 				},
 			},
-			inContext: Context{},
-			outValue:  "^[0-9]{15,16}$",
+			outValue: "^[0-9]{15,16}$",
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
@@ -31,8 +28,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 					Type: "discover",
 				},
 			},
-			inContext: Context{},
-			outValue:  "^[0-9]{15,16}$",
+			outValue: "^[0-9]{15,16}$",
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
@@ -40,8 +36,7 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 					Type: "mastercard",
 				},
 			},
-			inContext: Context{},
-			outValue:  "^[0-9]{15,16}$",
+			outValue: "^[0-9]{15,16}$",
 		},
 		{
 			inColumn: ColumnCreditCardNumber{
@@ -49,18 +44,16 @@ func TestColumnCreditCardTypeValue(t *testing.T) {
 					Type: "visa",
 				},
 			},
-			inContext: Context{},
-			outValue:  "^[0-9]{15,16}$",
+			outValue: "^[0-9]{15,16}$",
 		},
 		{
-			inColumn:  ColumnCreditCardType{},
-			inContext: Context{},
-			outValue:  "^(VISA|MasterCard|American Express|Discover)$",
+			inColumn: ColumnCreditCardType{},
+			outValue: "^(VISA|MasterCard|American Express|Discover)$",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)

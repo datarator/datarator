@@ -13,6 +13,6 @@ type ColumnConst struct {
 	payload ColumnConstPayload
 }
 
-func (column ColumnConst) Value(context *Context) (string, error) {
+func (column ColumnConst) Value(chunk *Chunk) (string, error) {
 	return column.payload.Value, nil
 }

@@ -26,7 +26,7 @@ type JSONColumn struct {
 	Type         string
 	EmptyPercent float32 `json:"emptyPercent"`
 	Locale       string
-	Columns      []JSONColumn    `json:"columns"`
+	Columns      []JSONColumn
 	JSONPayload  json.RawMessage `json:"payload"`
 }
 
@@ -35,7 +35,7 @@ type JSONSchema struct {
 	EmptyValue  string `json:"emptyValue"`
 	Locale      string
 	Count       int
-	Columns     []JSONColumn    `json:"columns"`
+	Columns     []JSONColumn
 	JSONPayload json.RawMessage `json:"payload"`
 }
 

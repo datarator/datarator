@@ -5,15 +5,15 @@ import "testing"
 func TestTemplateCSVGenerate(t *testing.T) {
 	var tests = []struct {
 		inTemplate TemplateCSV
-		inContext  Context
+		inChunk    Chunk
 		outValue   string
 	}{
 		{
 			inTemplate: TemplateCSV{
-				Payload: TemplateCSVPayload{},
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				payload: TemplateCSVPayload{},
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							payload: ColumnConstPayload{
 								Value: "Hello",
@@ -27,20 +27,20 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inChunk: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "Hellodatarator\nHellodatarator\n",
 		},
 		{
 			inTemplate: TemplateCSV{
-				Payload: TemplateCSVPayload{
+				payload: TemplateCSVPayload{
 					Separator: ",",
 				},
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							payload: ColumnConstPayload{
 								Value: "Hello",
@@ -54,25 +54,25 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inChunk: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "Hello,datarator\nHello,datarator\n",
 		},
 		{
 			inTemplate: TemplateCSV{
-				Payload: TemplateCSVPayload{
+				payload: TemplateCSVPayload{
 					Header:    true,
 					Separator: ",",
 				},
-				Schema: Schema{
-					Count: 2,
-					TypedColumns: []TypedColumn{
+				schema: Schema{
+					count: 2,
+					columns: []TypedColumn{
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "foo",
+									name: "foo",
 								},
 							},
 							payload: ColumnConstPayload{
@@ -82,7 +82,7 @@ func TestTemplateCSVGenerate(t *testing.T) {
 						ColumnConst{
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
-									Name: "bar",
+									name: "bar",
 								},
 							},
 							payload: ColumnConstPayload{
@@ -92,16 +92,16 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{
-				CurrentIndex: []int{0},
-				ToIndex:      2,
+			inChunk: Chunk{
+				to:     2,
+				values: make(map[string]string),
 			},
 			outValue: "foo,bar\nHello,datarator\nHello,datarator\n",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inTemplate.Generate(&test.inContext)
+		actual, _ := test.inTemplate.Generate(&test.inChunk)
 		if actual != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}

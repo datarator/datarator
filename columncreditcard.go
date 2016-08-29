@@ -18,7 +18,7 @@ type ColumnCreditCardNumber struct {
 	payload ColumnCreditCardNumberPayload
 }
 
-func (column ColumnCreditCardNumber) Value(context *Context) (string, error) {
+func (column ColumnCreditCardNumber) Value(chunk *Chunk) (string, error) {
 	return fake.CreditCardNum(column.payload.Type), nil
 }
 
@@ -26,6 +26,6 @@ type ColumnCreditCardType struct {
 	TypedColumnBase
 }
 
-func (column ColumnCreditCardType) Value(context *Context) (string, error) {
+func (column ColumnCreditCardType) Value(chunk *Chunk) (string, error) {
 	return fake.CreditCardType(), nil
 }

@@ -18,6 +18,6 @@ type ColumnRegex struct {
 	payload ColumnRegexPayload
 }
 
-func (column ColumnRegex) Value(context *Context) (string, error) {
+func (column ColumnRegex) Value(chunk *Chunk) (string, error) {
 	return reggen.Generate(column.payload.Regex, column.payload.Limit)
 }

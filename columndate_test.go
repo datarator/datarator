@@ -7,49 +7,41 @@ import (
 
 func TestColumnDateValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  TypedColumn
-		inContext Context
-		outValue  string
+		inColumn TypedColumn
+		outValue string
 	}{
 		{
-			inColumn:  ColumnDateDayOfWeek{},
-			inContext: Context{},
-			outValue:  "^[1-7]$",
+			inColumn: ColumnDateDayOfWeek{},
+			outValue: "^[1-7]$",
 		},
 		{
-			inColumn:  ColumnDateDayOfWeekName{},
-			inContext: Context{},
-			outValue:  "^[A-Za-z]+$",
+			inColumn: ColumnDateDayOfWeekName{},
+			outValue: "^[A-Za-z]+$",
 		},
 		{
-			inColumn:  ColumnDateDayOfMonth{},
-			inContext: Context{},
-			outValue:  "^[0-9]+$",
+			inColumn: ColumnDateDayOfMonth{},
+			outValue: "^[0-9]+$",
 		},
 		{
-			inColumn:  ColumnDateMonth{},
-			inContext: Context{},
-			outValue:  "^[0-9]+$",
+			inColumn: ColumnDateMonth{},
+			outValue: "^[0-9]+$",
 		},
 		{
-			inColumn:  ColumnDateMonthName{},
-			inContext: Context{},
-			outValue:  "^[A-Za-z]+$",
+			inColumn: ColumnDateMonthName{},
+			outValue: "^[A-Za-z]+$",
 		},
 		{
-			inColumn:  ColumnDateYear{},
-			inContext: Context{},
-			outValue:  "^[0-9]+$",
+			inColumn: ColumnDateYear{},
+			outValue: "^[0-9]+$",
 		},
 		{
-			inColumn:  ColumnDateOfBirth{},
-			inContext: Context{},
-			outValue:  "^[-+: 0-9A-Z]+$",
+			inColumn: ColumnDateOfBirth{},
+			outValue: "^[-+: 0-9A-Z]+$",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)

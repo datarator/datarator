@@ -7,15 +7,14 @@ import (
 
 func TestColumnJoinValue(t *testing.T) {
 	var tests = []struct {
-		inColumn  TypedColumn
-		inContext Context
-		outValue  string
+		inColumn TypedColumn
+		outValue string
 	}{
 		{
 			inColumn: ColumnJoin{
 				TypedColumnBase: TypedColumnBase{
 					column: Column{
-						TypedColumns: []TypedColumn{
+						columns: []TypedColumn{
 							ColumnConst{
 								payload: ColumnConstPayload{
 									Value: "Hello",
@@ -33,14 +32,13 @@ func TestColumnJoinValue(t *testing.T) {
 					Separator: " ",
 				},
 			},
-			inContext: Context{},
-			outValue:  "Hello datarator",
+			outValue: "Hello datarator",
 		},
 		{
 			inColumn: ColumnJoin{
 				TypedColumnBase: TypedColumnBase{
 					column: Column{
-						TypedColumns: []TypedColumn{
+						columns: []TypedColumn{
 							ColumnConst{
 								payload: ColumnConstPayload{
 									Value: "Hello",
@@ -55,13 +53,12 @@ func TestColumnJoinValue(t *testing.T) {
 					},
 				},
 			},
-			inContext: Context{},
-			outValue:  "Hellodatarator",
+			outValue: "Hellodatarator",
 		},
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inColumn.Value(&test.inContext)
+		actual, _ := test.inColumn.Value(nil)
 		matched, _ := regexp.MatchString(test.outValue, actual)
 		if !matched {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
