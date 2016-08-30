@@ -126,6 +126,13 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 			TypedColumnBase: typedColumnBase,
 			payload:         payload,
 		}
+	case columnCopy:
+		payload := ColumnCopyPayload{}
+		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)
+		typedColumn = ColumnCopy{
+			TypedColumnBase: typedColumnBase,
+			payload:         payload,
+		}
 	case columnCreditCardNumber:
 		payload := ColumnCreditCardNumberPayload{}
 		errPayload = loadPayload(jSONColumn.JSONPayload, &payload)

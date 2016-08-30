@@ -112,10 +112,7 @@
 		"column": {
 			"oneOf": [
 				{
-					"$ref": "#/definitions/columnAddress"
-				},
-				{
-					"$ref": "#/definitions/columnColor"
+					"$ref": "#/definitions/columnPayloadless"
 				},
 				{
 					"$ref": "#/definitions/columnColorHex"
@@ -124,16 +121,10 @@
 					"$ref": "#/definitions/columnConst"
 				},
 				{
+					"$ref": "#/definitions/columnCopy"
+				},
+				{
 					"$ref": "#/definitions/columnCreditCardNumber"
-				},
-				{
-					"$ref": "#/definitions/columnCreditCardType"
-				},
-				{
-					"$ref": "#/definitions/columnCurrency"
-				},
-				{
-					"$ref": "#/definitions/columnDate"
 				},
 				{
 					"$ref": "#/definitions/columnDateName"
@@ -145,9 +136,6 @@
 					"$ref": "#/definitions/columnJoin"
 				},
 				{
-					"$ref": "#/definitions/columnName"
-				},
-				{
 					"$ref": "#/definitions/columnRegex"
 				},
 				{
@@ -155,7 +143,7 @@
 				}
 			]
 		},
-		"columnAddress": {
+		"columnPayloadless": {
 			"properties": {
 				"name": {
 					"type": "string",
@@ -169,31 +157,24 @@
 						"address.phone",
 						"address.state",
 						"address.street",
-						"address.zip"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnColor": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"color"
+						"address.zip",
+						"color",
+						"credit_card.type",
+						"currency",
+						"currency.code",
+						"date.day.of_week",
+						"date.day.of_month",
+						"date.month",
+						"date.year",
+						"name.first",
+						"name.first.male",
+						"name.first.female",
+						"name.last",
+						"name.last.male",
+						"name.last.female",
+						"name.full",
+						"name.full.male",
+						"name.full.female"
 					]
 				},
 				"payload": {
@@ -267,6 +248,37 @@
 				"payload"
 			]
 		},
+		"columnCopy": {
+			"properties": {
+				"name": {
+					"type": "string",
+					"pattern": "^[^/]+$"
+				},
+				"type": {
+					"enum": [
+						"copy"
+					]
+				},
+				"payload": {
+					"properties": {
+						"from": {
+							"type": "string"
+						},
+						"xml": {
+							"$ref": "#/definitions/payloadXml"
+						}
+					},
+					"required": [
+						"from"
+					]
+				}
+			},
+			"required": [
+				"name",
+				"type",
+				"payload"
+			]
+		},
 		"columnCreditCardNumber": {
 			"properties": {
 				"name": {
@@ -288,82 +300,6 @@
 								"visa"
 							]
 						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnCreditCardType": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"credit_card.type"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnCurrency": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"currency",
-						"currency.code"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnDate": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"date.day.of_week",
-						"date.day.of_month",
-						"date.month",
-						"date.year"
-					]
-				},
-				"payload": {
-					"properties": {
 						"xml": {
 							"$ref": "#/definitions/payloadXml"
 						}
@@ -466,38 +402,6 @@
 				"name",
 				"type",
 				"columns"
-			]
-		},
-		"columnName": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"name.first",
-						"name.first.male",
-						"name.first.female",
-						"name.last",
-						"name.last.male",
-						"name.last.female",
-						"name.full",
-						"name.full.male",
-						"name.full.female"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
 			]
 		},
 		"columnRegex": {

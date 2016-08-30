@@ -7,6 +7,13 @@
             "type": "address.continent"
         },
         {
+            "name": "copy",
+            "type": "copy",
+            "payload": {
+                "from": "address.continent"
+            }
+        },
+        {
             "name": "address.country",
             "type": "address.country"
         },
