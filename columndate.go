@@ -77,8 +77,7 @@ type ColumnDateYear struct {
 }
 
 func (column ColumnDateYear) Value(chunk *Chunk) (string, error) {
-	min := randInt(0, 2000)
-	return strconv.Itoa(fake.Year(min, randInt(min, 2000))), nil
+	return strconv.Itoa(fake.Year(0, 2000)), nil
 }
 
 type ColumnDateOfBirthPayload struct {
