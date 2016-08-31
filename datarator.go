@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"time"
@@ -64,7 +65,6 @@ func IrisAPI() *iris.Framework {
 				// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
 				writer.WriteString(out.out)
 			}
-			// }
 			writer.Flush()
 		})
 
@@ -75,6 +75,7 @@ func IrisAPI() *iris.Framework {
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
+	fmt.Printf("Starting datarator (v. %s)...\n", version)
 	IrisAPI().Listen(":9292")
 }
 
