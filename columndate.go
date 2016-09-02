@@ -93,5 +93,5 @@ func (column ColumnDateOfBirth) Value(chunk *Chunk) (string, error) {
 	if column.payload.Age > 0 {
 		return fake.Birthdate(column.payload.Age).String(), nil
 	}
-	return fake.Birthdate(randInt(0, 2000)).String(), nil
+	return fake.Birthdate(randInt(0, 120)).String(), nil
 }
