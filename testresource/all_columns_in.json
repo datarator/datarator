@@ -144,6 +144,10 @@
             "type": "name.first.male"
         },
         {
+            "name": "name.full",
+            "type": "name.full"
+        },
+        {
             "name": "name.full.female",
             "type": "name.full.female"
         },
