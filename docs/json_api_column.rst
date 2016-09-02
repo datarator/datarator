@@ -465,7 +465,27 @@ could result in value:
 Column: date.month
 -------------------------
 
-Generates the random day of month value.
+Generates the random month value.
+
+For **example**, input JSON:
+::
+
+    "columns": [{
+        "name": "name1",
+        "type": "date.month"
+    }]
+
+could result in value:
+::
+
+    	11
+
+.. _date.month.name:
+
+Column: date.month.name
+-------------------------
+
+Generates the random month name value.
 
 Optional :ref:`payload` available:
 
@@ -476,7 +496,7 @@ For **example**, input JSON:
 
     "columns": [{
         "name": "name1",
-        "type": "date.month",
+        "type": "date.month.name",
         "payload": {
             "short": true
         }
