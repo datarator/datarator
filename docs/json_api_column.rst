@@ -802,9 +802,9 @@ could result in value:
 
     	Mciltrot
 
-.. _name.regex:
+.. _regex:
 
-Column: name.regex
+Column: regex
 -------------------------
 
 Generates the random male last name value (to examine full capabilities, refer to project: `lucasjones/reggen <https://github.com/lucasjones/reggen>`_ beeing used under the hood),
@@ -822,7 +822,7 @@ For **example**, input JSON:
 
     "columns": [{
         "name": "name1",
-        "type": "name.last.male",
+        "type": "regex",
         "payload": {
             "pattern": "z{1,3}",
             "limit": 10
@@ -834,9 +834,9 @@ could result in value:
 
     	zzz
 
-.. _name.row_index:
+.. _row_index:
 
-Column: name.row_index
+Column: row_index
 -------------------------
 
 Generates the current row index value.
@@ -846,7 +846,7 @@ For **example**, input JSON:
 
     "columns": [{
         "name": "name1",
-        "type": "name.row_index"
+        "type": "row_index"
     }]
 
 results in values:
