@@ -19,7 +19,7 @@ Datarator is the stateless data generator with HTTP based JSON API.
     json_api
     json_api_template
     json_api_column
-..    development
+    CHANGELOG
 
 
 ..  Indices and tables
