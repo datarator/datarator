@@ -11,10 +11,10 @@ JSON API
 
 Legend:
 
-* ``<template_name>`` - name of the output template (see :doc:`json_api_template`)
+* ``<template_name>`` - :doc:`json_api_template` name
 * ``<count>`` - generated rows count
-* ``<column>`` - column to generate (see :doc:`json_api_column`)
-* ``<payload>`` - additional options for generation (see :ref:`payload`)
+* ``<column>`` - see :doc:`json_api_column`
+* ``<payload>`` - see :ref:`payload`
 
 .. _payload:
 
