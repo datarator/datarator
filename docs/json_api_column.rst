@@ -13,8 +13,8 @@ Syntax:
 Legend:
 
 * `<name>` - name of the column
-* `<value>` - value of the column
-* `<payload>` - (optional) column :ref:`payload`
+* `<type>` - type of the column
+* `<payload>` - :ref:`payload`
 
 Following column types are available:
 
