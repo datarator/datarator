@@ -10,7 +10,7 @@ const (
 
 type ColumnRegexPayload struct {
 	Regex string
-	Limit int // max number of times *,+,repeat should repeat
+	Limit int // max number of times *,+ or repeat should repeat
 }
 
 type ColumnRegex struct {

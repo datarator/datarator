@@ -25,3 +25,6 @@ _testmain.go
 
 debug
 debug.test
+
+# read the docs
+_build/
