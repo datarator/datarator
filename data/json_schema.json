@@ -167,14 +167,14 @@
 						"date.month",
 						"date.year",
 						"name.first",
-						"name.first.male",
 						"name.first.female",
+						"name.first.male",
 						"name.last",
-						"name.last.male",
 						"name.last.female",
+						"name.last.male",
 						"name.full",
-						"name.full.male",
-						"name.full.female"
+						"name.full.female",
+						"name.full.male"
 					]
 				},
 				"payload": {
