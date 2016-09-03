@@ -3,7 +3,9 @@ sudo: false # see: https://docs.travis-ci.com/user/ci-environment/
 addons:
   apt:
     packages:
-      - rpm
+      - rpm # fpm requirement for building rpms
+rvm:
+  - 2.3.1 # chandler needs ruby version >= 2.1
 go:
   - 1.7
 env:
