@@ -1,5 +1,9 @@
 language: go
 sudo: false # see: https://docs.travis-ci.com/user/ci-environment/
+addons:
+  apt:
+    packages:
+      - rpm
 go:
   - 1.7
 env:
