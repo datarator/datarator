@@ -3,8 +3,7 @@ sudo: false # see: https://docs.travis-ci.com/user/ci-environment/
 go:
   - 1.7
 env:
-  - VERSION=0.1.0
-  - FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/usr/local/bin' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
+  - VERSION=0.1.0 FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/usr/local/bin' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
 script:
   - go generate
   - go test -v ./...
