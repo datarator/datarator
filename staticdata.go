@@ -10,7 +10,7 @@ import (
 
 func readFile(fileName string) (f []byte, err error) {
 	// "true" for development only
-	useExternalData := true
+	useExternalData := false
 	fullPath := fmt.Sprintf("/data/%s", fileName)
 	file, err := FS(useExternalData).Open(fullPath)
 	if err != nil {
