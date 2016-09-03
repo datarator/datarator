@@ -2,32 +2,67 @@ language: go
 sudo: false # see: https://docs.travis-ci.com/user/ci-environment/
 go:
   - 1.7
+env:
+  - VERSION=0.1.0
+  - FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/usr/local/bin' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
 script:
   - go generate
   - go test -v ./...
-before_deploy: 
-  - go get github.com/mitchellh/gox
-  - gox
+before_deploy:
+  # build cross-arch binaries
+  - go get github.com/mitchellh/gox && gox -output='dist/{{.Dir}}_{{.OS}}_{{.Arch}}'
+  # build platform specific packages
+  - gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done
+  # datarator file is beeing kept on purpose, as it is used for heroku deployment 
+  # sync changelog with gh releases
+  - gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n    login typekpb\n    password ${OAUTH_TOkEN}" > ~/.nertc && chandler --changelog=dist/CHANGELOG.md push
+
 deploy:
   provider: releases
   api_key:
     secure: CmQG72+0QP+NKSMybCAwnR5pY0xYqMPfJgpSNPHW910IIkNsx39pZyGINDUXuwfoHwMkjCdloQpodfkLLjjc+gPhZ7Rt0cMb8NfOUQJeYWUme/yV+KTAk19nMzC/O78xNM1OnwqWCWwPmtH55pvTcqT3R3LjaSlHVveLQsJQa1rYbDxKaGlVPIfezR3HV0DsxRtwNCLOaNoRC3rIT2ILxPeovKhiUG3dbetboO1I1KbcyuDkNqWPLRggNy93NO9VvmkLMVm2Z5CMpkzRv+WLbhedVYfTzM05VOu2UMirh8aSjVSfRMlSHVAxDRXvtGP3hOJlV03LwMeV8zxJo+/nyPna/T7fXTM26w8MKB+uWJlXynHKE/W5t8XUB0BS1KAlum8ZnUhoTZ4YRU6rXAImlT8kJT6ouuVhe5z6ihIVpGjTdT3A7plqFBRQQVc0bp5G+t15VQY3nY39S/kBvjPf24wR6T7BCf939AAOxU7tEeRPk3YPeIikf5j8gfek+8GoN0Aaruzs1LqFisFvVs/yDAwF9gRXQ4FanrygqJH2t3PD5MgOjdBAdySie6lfZ9vGxZ7iESeEaL+feG80VZY2g+bTHcS2wiEL/PUToo4yL6/FbSIwAsEJCIQkFKPFw+EKa2b9/S86YFuF3/97HH/7+J0avFGihXr3yZrUopcPgMU=
+  file_glob: true
   file:
-    - "datarator_darwin_386"
-    - "datarator_darwin_amd64"
-    - "datarator_freebsd_386"
-    - "datarator_freebsd_amd64"
-    - "datarator_freebsd_arm"
-    - "datarator_linux_386"
-    - "datarator_linux_amd64"
-    - "datarator_linux_arm"
-    - "datarator_netbsd_386"
-    - "datarator_netbsd_amd64"
-    - "datarator_netbsd_arm"
-    - "datarator_openbsd_386"
-    - "datarator_openbsd_amd64"
-    - "datarator_windows_386.exe"
-    - "datarator_windows_amd64.exe"
+    - "dist/*"    
+  skip_cleanup: true
+  on:
+    repo: datarator/datarator
+    tags: true
+
+  provider: bintray
+  file: "bintray.json"
+  user: "typekpb"
+  key:
+    secure: eV1c3ZYp/r8ExVPyXSWYMqFwPf6JW65apZmkU7vLLzvR2cYbC7rXAoCWjTxyjjUs0Nsfq+OGr7eo9Z0ynEeChZCzsdHrPJU8m5LfsQrfbKiKsGptMtgi7twgX9ZSr/NwWumCS0vmVTklLByAUd82OmIhomxRsilcVtZaA9TI3frkYsjMVQ+s5zB4aW2B8xQmFQYcR0SuPvVNsvxG0kZ+5qAg1IgTrQ/PUzMQf3mjWi+F1kyaotMzBRhGJIMXmVyHHBmVOcVTpsCb26xheHwDjJmheGGJbBguqkQgpVvo7/eU0J/HcJ+Klz+yD2tfYs4BJqq3eRIjLDSu+FuwMh5mSf9O7b2wt53bxVzkjro3624dZOL2rKcfoq/Jtxmj6OlGYTWz+bA1CjamSmOEGFV49l5a7LhN6fVQTBORJnXvEzioIH0HL3V1vvg5VYkts4Bfiq94mSDs9CCvoYuY9HkIGz39llL7nXJoMTP8Oq9iV5rfvJHnXh8SDj/NbRvp972uUjC5mUmisHPFFrc9FDec0nJB3dpC3EXyK302SS4CHXxPTNHbRHe4AAzSETKzCl+UFCKgSIQRS1bn2ywSi5vsVW1fYSirVw0g+GU2hnMgBscajyZTt4hX5vIJxwbBpV6hdL4AIGhzwuowxz2CJ9h7ZpkbPC9InEVoOG66yEIP/Nw=
+  skip_cleanup: true
+  on:
+    repo: datarator/datarator
+    tags: true
+
+  provider: bintray
+  file: "bintray_deb.json"
+  user: "typekpb"
+  key:
+    secure: eV1c3ZYp/r8ExVPyXSWYMqFwPf6JW65apZmkU7vLLzvR2cYbC7rXAoCWjTxyjjUs0Nsfq+OGr7eo9Z0ynEeChZCzsdHrPJU8m5LfsQrfbKiKsGptMtgi7twgX9ZSr/NwWumCS0vmVTklLByAUd82OmIhomxRsilcVtZaA9TI3frkYsjMVQ+s5zB4aW2B8xQmFQYcR0SuPvVNsvxG0kZ+5qAg1IgTrQ/PUzMQf3mjWi+F1kyaotMzBRhGJIMXmVyHHBmVOcVTpsCb26xheHwDjJmheGGJbBguqkQgpVvo7/eU0J/HcJ+Klz+yD2tfYs4BJqq3eRIjLDSu+FuwMh5mSf9O7b2wt53bxVzkjro3624dZOL2rKcfoq/Jtxmj6OlGYTWz+bA1CjamSmOEGFV49l5a7LhN6fVQTBORJnXvEzioIH0HL3V1vvg5VYkts4Bfiq94mSDs9CCvoYuY9HkIGz39llL7nXJoMTP8Oq9iV5rfvJHnXh8SDj/NbRvp972uUjC5mUmisHPFFrc9FDec0nJB3dpC3EXyK302SS4CHXxPTNHbRHe4AAzSETKzCl+UFCKgSIQRS1bn2ywSi5vsVW1fYSirVw0g+GU2hnMgBscajyZTt4hX5vIJxwbBpV6hdL4AIGhzwuowxz2CJ9h7ZpkbPC9InEVoOG66yEIP/Nw=
+  skip_cleanup: true
+  on:
+    repo: datarator/datarator
+    tags: true
+
+  provider: bintray
+  file: "bintray_rpm.json"
+  user: "typekpb"
+  key:
+    secure: eV1c3ZYp/r8ExVPyXSWYMqFwPf6JW65apZmkU7vLLzvR2cYbC7rXAoCWjTxyjjUs0Nsfq+OGr7eo9Z0ynEeChZCzsdHrPJU8m5LfsQrfbKiKsGptMtgi7twgX9ZSr/NwWumCS0vmVTklLByAUd82OmIhomxRsilcVtZaA9TI3frkYsjMVQ+s5zB4aW2B8xQmFQYcR0SuPvVNsvxG0kZ+5qAg1IgTrQ/PUzMQf3mjWi+F1kyaotMzBRhGJIMXmVyHHBmVOcVTpsCb26xheHwDjJmheGGJbBguqkQgpVvo7/eU0J/HcJ+Klz+yD2tfYs4BJqq3eRIjLDSu+FuwMh5mSf9O7b2wt53bxVzkjro3624dZOL2rKcfoq/Jtxmj6OlGYTWz+bA1CjamSmOEGFV49l5a7LhN6fVQTBORJnXvEzioIH0HL3V1vvg5VYkts4Bfiq94mSDs9CCvoYuY9HkIGz39llL7nXJoMTP8Oq9iV5rfvJHnXh8SDj/NbRvp972uUjC5mUmisHPFFrc9FDec0nJB3dpC3EXyK302SS4CHXxPTNHbRHe4AAzSETKzCl+UFCKgSIQRS1bn2ywSi5vsVW1fYSirVw0g+GU2hnMgBscajyZTt4hX5vIJxwbBpV6hdL4AIGhzwuowxz2CJ9h7ZpkbPC9InEVoOG66yEIP/Nw=
+  skip_cleanup: true
+  on:
+    repo: datarator/datarator
+    tags: true
+
+  provider: heroku
+  user: typekpb
+  api_key:
+    secure: eV1c3ZYp/r8ExVPyXSWYMqFwPf6JW65apZmkU7vLLzvR2cYbC7rXAoCWjTxyjjUs0Nsfq+OGr7eo9Z0ynEeChZCzsdHrPJU8m5LfsQrfbKiKsGptMtgi7twgX9ZSr/NwWumCS0vmVTklLByAUd82OmIhomxRsilcVtZaA9TI3frkYsjMVQ+s5zB4aW2B8xQmFQYcR0SuPvVNsvxG0kZ+5qAg1IgTrQ/PUzMQf3mjWi+F1kyaotMzBRhGJIMXmVyHHBmVOcVTpsCb26xheHwDjJmheGGJbBguqkQgpVvo7/eU0J/HcJ+Klz+yD2tfYs4BJqq3eRIjLDSu+FuwMh5mSf9O7b2wt53bxVzkjro3624dZOL2rKcfoq/Jtxmj6OlGYTWz+bA1CjamSmOEGFV49l5a7LhN6fVQTBORJnXvEzioIH0HL3V1vvg5VYkts4Bfiq94mSDs9CCvoYuY9HkIGz39llL7nXJoMTP8Oq9iV5rfvJHnXh8SDj/NbRvp972uUjC5mUmisHPFFrc9FDec0nJB3dpC3EXyK302SS4CHXxPTNHbRHe4AAzSETKzCl+UFCKgSIQRS1bn2ywSi5vsVW1fYSirVw0g+GU2hnMgBscajyZTt4hX5vIJxwbBpV6hdL4AIGhzwuowxz2CJ9h7ZpkbPC9InEVoOG66yEIP/Nw=
   skip_cleanup: true
   on:
     repo: datarator/datarator

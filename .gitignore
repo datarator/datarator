@@ -28,3 +28,6 @@ debug.test
 
 # read the docs
 _build/
+
+# build artifacts
+dist/
