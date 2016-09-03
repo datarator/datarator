@@ -13,7 +13,8 @@ script:
   - go test -v ./...
 before_deploy:
   # chandler needs ruby version >= 2.2 => install it via rvm
-  - ruby -v && curl -L https://get.rvm.io | bash -s -- --ignore-dotfiles --autolibs=0 --ruby && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
+  #- ruby -v && curl -L https://get.rvm.io | bash -s -- --ignore-dotfiles --autolibs=0 --ruby && rvm install 2.3.1 && source /home/travis/.rvm/scripts/rvm && rvm use --default 2.3.1 && ruby -v
+  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
   # build cross-arch binaries
   - go get github.com/mitchellh/gox && gox -output='dist/{{.Dir}}_{{.OS}}_{{.Arch}}'
   # build platform specific packages
