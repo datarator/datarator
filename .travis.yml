@@ -20,7 +20,7 @@ before_deploy:
 #  - gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done
   # datarator file is beeing kept on purpose, as it is used for heroku deployment 
   # sync changelog with gh releases
-  - gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push
+  - gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && cat ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push
 
 deploy:
   provider: releases
