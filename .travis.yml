@@ -13,11 +13,12 @@ script:
   - go test -v ./...
 before_deploy:
   # build cross-arch binaries
-  - go get github.com/mitchellh/gox && gox -output='dist/{{.Dir}}_{{.OS}}_{{.Arch}}'
+  - go get github.com/mitchellh/gox && gox -output='dist/{{.Dir}}_{{.OS}}_{{.Arch}}' -osarch="linux/amd64"
   # chandler needs ruby version >= 2.2 => install it via rvm (while reuse travis installed rvm)
-  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
+#  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
   # build platform specific packages
-  - gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done
+#  - gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}
+  - gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done
   # datarator file is beeing kept on purpose, as it is used for heroku deployment 
   # sync changelog with gh releases
   # disabled for now, see: https://travis-ci.org/datarator/datarator/builds/157375756
