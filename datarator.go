@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -14,6 +15,10 @@ const (
 	errStaticDataNotFound = "File: %s was not found"
 )
 
+func init() {
+	initFlags()
+}
+
 func IrisAPI() *iris.Framework {
 
 	api := iris.New()
@@ -23,6 +28,9 @@ func IrisAPI() *iris.Framework {
 
 	// define the api
 	api.Post("/api/schemas/:id", func(ctx *iris.Context) {
+
+		// TODO implement timeout
+		// time.After(time.Duration(*timeoutFlag) * time.Millisecond)
 
 		id := ctx.Param("id")
 		println("POST /api/schemas/" + id)
@@ -68,15 +76,23 @@ func IrisAPI() *iris.Framework {
 			writer.Flush()
 		})
 
+		// TODO implement timeout
+		// select {
+		// 	case <-ch:
+		// 		// a read from ch has occurred
+		// 	case <-timeout:
+		// 		// the read from ch has timed out
+		// }
 	})
 
 	return api
 }
 
 func main() {
+	flag.Parse()
 	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Printf("Starting datarator (v. %s)...\n", version)
-	IrisAPI().Listen(":9292")
+	IrisAPI().Listen(fmt.Sprintf(":%d", *portFlag))
 }
 
 func emmitError(errorCode int, errorString string, ctx *iris.Context) {
