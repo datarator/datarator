@@ -20,12 +20,65 @@
     },
     "files": [
         {
-            "includePattern": "./dist/datarator_([a-z].*[64m])", /* [a-z] => not linux packages (they hold version number at place) && [62m] => non-windows binaries (386/64/arm)  */
-            "uploadPattern": "0.1.0/datarator_$1/datarator"
+            "includePattern": "./dist/datarator_darwin_386",
+            "uploadPattern": "0.1.0/datarator_darwin_386/datarator"
         },
         {
-            "includePattern": "./dist/datarator_([a-z].*).exe", /* windows binaries */
-            "uploadPattern": "0.1.0/datarator_$1/datarator.exe"
+            "includePattern": "./dist/datarator_darwin_amd64",
+            "uploadPattern": "0.1.0/datarator_darwin_amd64/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_freebsd_386",
+            "uploadPattern": "0.1.0/datarator_freebsd_386/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_freebsd_amd64",
+            "uploadPattern": "0.1.0/datarator_freebsd_amd64/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_freebsd_arm",
+            "uploadPattern": "0.1.0/datarator_freebsd_arm/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_linux_386",
+            "uploadPattern": "0.1.0/datarator_linux_386/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_linux_amd64",
+            "uploadPattern": "0.1.0/datarator_linux_amd64/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_linux_arm",
+            "uploadPattern": "0.1.0/datarator_linux_arm/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_netbsd_386",
+            "uploadPattern": "0.1.0/datarator_netbsd_386/datarator"
+        },
+
+        {
+            "includePattern": "./dist/datarator_netbsd_amd64",
+            "uploadPattern": "0.1.0/datarator_netbsd_amd64/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_netbsd_arm",
+            "uploadPattern": "0.1.0/datarator_netbsd_arm/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_openbsd_386",
+            "uploadPattern": "0.1.0/datarator_openbsd_386/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_openbsd_amd64",
+            "uploadPattern": "0.1.0/datarator_openbsd_amd64/datarator"
+        },
+        {
+            "includePattern": "./dist/datarator_windows_386.exe",
+            "uploadPattern": "0.1.0/datarator_windows_386/datarator.exe"
+        },
+        {
+            "includePattern": "./dist/datarator_windows_amd64.exe",
+            "uploadPattern": "0.1.0/datarator_windows_amd64/datarator.exe"
         }
     ],
     "publish": true
