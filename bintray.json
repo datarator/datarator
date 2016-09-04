@@ -5,7 +5,7 @@
     "package": {
         "name": "datarator", // Bintray package name
         "repo": "datartator", // Bintray repository name
-        "subject": "myBintrayUser", // Bintray subject (user or organization)
+        "subject": "typekpb", // Bintray subject (user or organization)
         "website_url": "github.com/datarator/datarator",
         "issue_tracker_url": "http://github.com/datarator/datarator/issues",
         "vcs_url": "http://github.com/datarator/datarator.git",
