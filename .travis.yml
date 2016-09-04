@@ -25,16 +25,16 @@ before_deploy:
 #  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && cat ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push; fi
 
 deploy:
-  - provider: releases
-    api_key:
-      secure: CmQG72+0QP+NKSMybCAwnR5pY0xYqMPfJgpSNPHW910IIkNsx39pZyGINDUXuwfoHwMkjCdloQpodfkLLjjc+gPhZ7Rt0cMb8NfOUQJeYWUme/yV+KTAk19nMzC/O78xNM1OnwqWCWwPmtH55pvTcqT3R3LjaSlHVveLQsJQa1rYbDxKaGlVPIfezR3HV0DsxRtwNCLOaNoRC3rIT2ILxPeovKhiUG3dbetboO1I1KbcyuDkNqWPLRggNy93NO9VvmkLMVm2Z5CMpkzRv+WLbhedVYfTzM05VOu2UMirh8aSjVSfRMlSHVAxDRXvtGP3hOJlV03LwMeV8zxJo+/nyPna/T7fXTM26w8MKB+uWJlXynHKE/W5t8XUB0BS1KAlum8ZnUhoTZ4YRU6rXAImlT8kJT6ouuVhe5z6ihIVpGjTdT3A7plqFBRQQVc0bp5G+t15VQY3nY39S/kBvjPf24wR6T7BCf939AAOxU7tEeRPk3YPeIikf5j8gfek+8GoN0Aaruzs1LqFisFvVs/yDAwF9gRXQ4FanrygqJH2t3PD5MgOjdBAdySie6lfZ9vGxZ7iESeEaL+feG80VZY2g+bTHcS2wiEL/PUToo4yL6/FbSIwAsEJCIQkFKPFw+EKa2b9/S86YFuF3/97HH/7+J0avFGihXr3yZrUopcPgMU=
-    file_glob: true
-    file:
-      - "dist/*"    
-    skip_cleanup: true
-    on:
-      repo: datarator/datarator
-      tags: true
+  # - provider: releases
+  #   api_key:
+  #     secure: CmQG72+0QP+NKSMybCAwnR5pY0xYqMPfJgpSNPHW910IIkNsx39pZyGINDUXuwfoHwMkjCdloQpodfkLLjjc+gPhZ7Rt0cMb8NfOUQJeYWUme/yV+KTAk19nMzC/O78xNM1OnwqWCWwPmtH55pvTcqT3R3LjaSlHVveLQsJQa1rYbDxKaGlVPIfezR3HV0DsxRtwNCLOaNoRC3rIT2ILxPeovKhiUG3dbetboO1I1KbcyuDkNqWPLRggNy93NO9VvmkLMVm2Z5CMpkzRv+WLbhedVYfTzM05VOu2UMirh8aSjVSfRMlSHVAxDRXvtGP3hOJlV03LwMeV8zxJo+/nyPna/T7fXTM26w8MKB+uWJlXynHKE/W5t8XUB0BS1KAlum8ZnUhoTZ4YRU6rXAImlT8kJT6ouuVhe5z6ihIVpGjTdT3A7plqFBRQQVc0bp5G+t15VQY3nY39S/kBvjPf24wR6T7BCf939AAOxU7tEeRPk3YPeIikf5j8gfek+8GoN0Aaruzs1LqFisFvVs/yDAwF9gRXQ4FanrygqJH2t3PD5MgOjdBAdySie6lfZ9vGxZ7iESeEaL+feG80VZY2g+bTHcS2wiEL/PUToo4yL6/FbSIwAsEJCIQkFKPFw+EKa2b9/S86YFuF3/97HH/7+J0avFGihXr3yZrUopcPgMU=
+  #   file_glob: true
+  #   file:
+  #     - "dist/*"    
+  #   skip_cleanup: true
+  #   on:
+  #     repo: datarator/datarator
+  #     tags: true
 
   - provider: bintray
     file: bintray.json
@@ -46,26 +46,26 @@ deploy:
       repo: datarator/datarator
       tags: true
 
-  - provider: bintray
-    file: bintray_deb.json
-    user: typekpb
-    key:
-      secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
-    skip_cleanup: true
-    on:
-      repo: datarator/datarator
-      tags: true
+  # - provider: bintray
+  #   file: bintray_deb.json
+  #   user: typekpb
+  #   key:
+  #     secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
+  #   skip_cleanup: true
+  #   on:
+  #     repo: datarator/datarator
+  #     tags: true
 
-  - provider: bintray
-    file: bintray_rpm.json
-    user: typekpb
-    key:
-      secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
-    skip_cleanup: true
-    on:
-      repo: datarator/datarator
-      tags: true
-      
+  # - provider: bintray
+  #   file: bintray_rpm.json
+  #   user: typekpb
+  #   key:
+  #     secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
+  #   skip_cleanup: true
+  #   on:
+  #     repo: datarator/datarator
+  #     tags: true
+
   - provider: heroku
     api_key:
       secure: oZC94TkxGRF9ZxPKvFo5iSSqKwb5t3LFeLRbQ3xosYR7aP3lRBghkqqlFXorT3GM4+8p2jYwb61OZ2xAWjun98+E62gPWHYtc8v5tNoXJ9CgjV4i30z8mELfmllWFgmzJ0Hco/lJHbKMyuiaNUevlg7MfKBlU597HgABZ52IUWHt5pl9/3oX+zoeqy/Dcxs8O7vXJsghr31gYbwPS/OCp4203RV6uhrYin1EDbJoVZpXRVirO/KVjOJC4V4+jONwg0qwkrL9mLx3d6nLKnPqgWdt+2PPUn97qLzkK089Qa5UYEM5IkcgF73nP14UUYimaj6LbWp552JsyBkmkazml6fD8vkBbAu8THF4v1l1BqOw/WrjP4NCvxXv8fdwU3vHop0JvMFVo9hmP355AU3x2MriN5mJJCmHc5QGNNoqCJrpdKtW0OOftNiLEjYr/Gz76IUyxJ/3vCXXinl5/KIhuiZ4M7hTPwaPTL+ISawyWIGl1e+vKQzx8GPYXWSRbZMfO68DGLyN2OeEcYdtouKu9OOwVShMpMVJ2Dwx7FNlPX2pdC2Tk9UkzR2ysvpAF0BCd9vRNCPf0bFGV0Cc5eQtY7JZIU6SZpYkTJBHqnOHnL6e7s8OtMkaMrlPWoM1wAQoe1YJF8f3lQqV26M6nj3Q4J/hJhtvG1vrx30KB7ZzF6c=
