@@ -85,6 +85,10 @@ func IrisAPI() *iris.Framework {
 		// }
 	})
 
+	api.Get("/", func(ctx *iris.Context) {
+		ctx.WriteString("Datarator at your service")
+	})
+
 	return api
 }
 
