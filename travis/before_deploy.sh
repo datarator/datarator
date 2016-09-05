@@ -63,7 +63,9 @@ ruby -v
 rvm install 2.3.1 
 rvm use --default 2.3.1 
 ruby -v
-   
+/bin/bash --login
+ruby -v
+
 gem install --no-ri --no-rdoc chandler
 
 # setup credentials
