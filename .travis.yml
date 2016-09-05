@@ -13,28 +13,32 @@ script:
   - go test -v ./...
 before_deploy:
   # build cross-arch binaries
-  - if [ ! -d dist ]; then go get github.com/mitchellh/gox && gox -output='dist/{{.Dir}}_{{.OS}}_{{.Arch}}'; fi
+  - if [ ! -d dist ]; then go get github.com/mitchellh/gox && gox -output="dist/{{.Dir}}-${version}-{{.OS}}_{{.Arch}}"; fi
+  - if [ ! -d dist]: for dir in `ls | grep -v ".exe"`; do mv ${dir} datarator; tar -cvzf ${dir}.tgz datarator; done
+  - if [ ! -d dist]: for dir in `ls | grep ".exe"`; do mv ${dir} datarator.exe; zip `echo ${dir} | sed 's/\.exe$//'`.zip datarator.exe; rm -rf datarator.exe ; done
   # chandler needs ruby version >= 2.2 => install it via rvm (while reuse travis installed rvm)
 #  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
   # build platform specific packages
-#  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}; fi
-#  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done; fi
+  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}; fi
+  #- if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done; fi
   # datarator file is beeing kept on purpose, as it is used for heroku deployment 
   # sync changelog with gh releases
   # disabled for now, see: https://travis-ci.org/datarator/datarator/builds/157375756
-#  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && cat ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push; fi
+#  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push; fi
+  # keep bintray.json in sync with current version
+  - if [ ! -d dist]: then sed -e "s/###VERSION###/${VERSION}/" bintray.json; fi
 
 deploy:
-  # - provider: releases
-  #   api_key:
-  #     secure: CmQG72+0QP+NKSMybCAwnR5pY0xYqMPfJgpSNPHW910IIkNsx39pZyGINDUXuwfoHwMkjCdloQpodfkLLjjc+gPhZ7Rt0cMb8NfOUQJeYWUme/yV+KTAk19nMzC/O78xNM1OnwqWCWwPmtH55pvTcqT3R3LjaSlHVveLQsJQa1rYbDxKaGlVPIfezR3HV0DsxRtwNCLOaNoRC3rIT2ILxPeovKhiUG3dbetboO1I1KbcyuDkNqWPLRggNy93NO9VvmkLMVm2Z5CMpkzRv+WLbhedVYfTzM05VOu2UMirh8aSjVSfRMlSHVAxDRXvtGP3hOJlV03LwMeV8zxJo+/nyPna/T7fXTM26w8MKB+uWJlXynHKE/W5t8XUB0BS1KAlum8ZnUhoTZ4YRU6rXAImlT8kJT6ouuVhe5z6ihIVpGjTdT3A7plqFBRQQVc0bp5G+t15VQY3nY39S/kBvjPf24wR6T7BCf939AAOxU7tEeRPk3YPeIikf5j8gfek+8GoN0Aaruzs1LqFisFvVs/yDAwF9gRXQ4FanrygqJH2t3PD5MgOjdBAdySie6lfZ9vGxZ7iESeEaL+feG80VZY2g+bTHcS2wiEL/PUToo4yL6/FbSIwAsEJCIQkFKPFw+EKa2b9/S86YFuF3/97HH/7+J0avFGihXr3yZrUopcPgMU=
-  #   file_glob: true
-  #   file:
-  #     - "dist/*"    
-  #   skip_cleanup: true
-  #   on:
-  #     repo: datarator/datarator
-  #     tags: true
+  - provider: releases
+    api_key:
+      secure: CmQG72+0QP+NKSMybCAwnR5pY0xYqMPfJgpSNPHW910IIkNsx39pZyGINDUXuwfoHwMkjCdloQpodfkLLjjc+gPhZ7Rt0cMb8NfOUQJeYWUme/yV+KTAk19nMzC/O78xNM1OnwqWCWwPmtH55pvTcqT3R3LjaSlHVveLQsJQa1rYbDxKaGlVPIfezR3HV0DsxRtwNCLOaNoRC3rIT2ILxPeovKhiUG3dbetboO1I1KbcyuDkNqWPLRggNy93NO9VvmkLMVm2Z5CMpkzRv+WLbhedVYfTzM05VOu2UMirh8aSjVSfRMlSHVAxDRXvtGP3hOJlV03LwMeV8zxJo+/nyPna/T7fXTM26w8MKB+uWJlXynHKE/W5t8XUB0BS1KAlum8ZnUhoTZ4YRU6rXAImlT8kJT6ouuVhe5z6ihIVpGjTdT3A7plqFBRQQVc0bp5G+t15VQY3nY39S/kBvjPf24wR6T7BCf939AAOxU7tEeRPk3YPeIikf5j8gfek+8GoN0Aaruzs1LqFisFvVs/yDAwF9gRXQ4FanrygqJH2t3PD5MgOjdBAdySie6lfZ9vGxZ7iESeEaL+feG80VZY2g+bTHcS2wiEL/PUToo4yL6/FbSIwAsEJCIQkFKPFw+EKa2b9/S86YFuF3/97HH/7+J0avFGihXr3yZrUopcPgMU=
+    file_glob: true
+    file:
+      - "dist/*"    
+    skip_cleanup: true
+    on:
+      repo: datarator/datarator
+      tags: true
 
   - provider: bintray
     file: bintray.json
