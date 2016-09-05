@@ -20,63 +20,63 @@
     },
     "files": [
         {
-            "includePattern": ",/dist/datarator-###VERSION###-darwin_386.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-darwin_386.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-darwin_386.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-darwin_amd64.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-darwin_amd64.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-darwin_amd64.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-freebsd_386.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-freebsd_386.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-freebsd_386.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-freebsd_amd64.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-freebsd_amd64.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-freebsd_amd64,tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-freebsd_arm.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-freebsd_arm.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-freebsd_arm.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-linux_386.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-linux_386.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-linux_386.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-linux_amd64.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-linux_amd64.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-linux_amd64.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-linux_arm.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-linux_arm.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-linux_arm.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-netbsd_386.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-netbsd_386.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-netbsd_386.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-netbsd_amd64.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-netbsd_amd64.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-netbsd_amd64.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-netbsd_arm.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-netbsd_arm.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-netbsd_arm.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-openbsd_386.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-openbsd_386.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-openbsd_386.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-openbsd_amd64.tgz",
+            "includePattern": "./dist/datarator-###VERSION###-openbsd_amd64.tgz",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-openbsd_amd64.tgz"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-windows_386.zip",
+            "includePattern": "./dist/datarator-###VERSION###-windows_386.zip",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-windows_386.zip"
         },
         {
-            "includePattern": ",/dist/datarator-###VERSION###-windows_amd64.zip",
+            "includePattern": "./dist/datarator-###VERSION###-windows_amd64.zip",
             "uploadPattern": "###VERSION###/datarator-###VERSION###-windows_amd64.zip"
         }
     ],

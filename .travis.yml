@@ -7,27 +7,13 @@ addons:
 go:
   - 1.7
 env:
-  - VERSION=0.1.0 FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/usr/local/bin' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
+  - VERSION=0.1.0
 script:
   - go generate
   - go test -v ./...
 before_deploy:
-  # build cross-arch binaries
-  - if [ ! -d dist ]; then go get github.com/mitchellh/gox && gox -output="dist/{{.Dir}}-${version}-{{.OS}}_{{.Arch}}"; fi
-  - if [ ! -d dist]: for dir in `ls | grep -v ".exe"`; do mv ${dir} datarator; tar -cvzf ${dir}.tgz datarator; done
-  - if [ ! -d dist]: for dir in `ls | grep ".exe"`; do mv ${dir} datarator.exe; zip `echo ${dir} | sed 's/\.exe$//'`.zip datarator.exe; rm -rf datarator.exe ; done
-  # chandler needs ruby version >= 2.2 => install it via rvm (while reuse travis installed rvm)
-#  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
-  # build platform specific packages
-  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm apk; do echo fpm -t ${target} "${FPM_ARGS}; fi
-  #- if [ ! -d dist ]; then gem install --no-ri --no-rdoc fpm && cp -f dist/datarator_linux_386 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash; done && cp -f dist/datarator_linux_amd64 datarator && for target in deb rpm; do echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash; done; fi
-  # datarator file is beeing kept on purpose, as it is used for heroku deployment 
-  # sync changelog with gh releases
-  # disabled for now, see: https://travis-ci.org/datarator/datarator/builds/157375756
-#  - if [ ! -d dist ]; then gem install --no-ri --no-rdoc chandler && echo "machine api.github.com\n  login typekpb\n  password ${OAUTH_TOKEN}" >> ~/.netrc && chmod 600 ~/.netrc && chandler --changelog=$(pwd)/docs/CHANGELOG.md --github=datarator/datarator push; fi
-  # keep bintray.json in sync with current version
-  - if [ ! -d dist]: then sed -e "s/###VERSION###/${VERSION}/" bintray.json; fi
-
+  - ./travis/before_deploy.sh
+  
 deploy:
   - provider: releases
     api_key:
@@ -41,7 +27,7 @@ deploy:
       tags: true
 
   - provider: bintray
-    file: bintray.json
+    file: travis/bintray.json
     user: typekpb
     key:
       secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
@@ -51,7 +37,7 @@ deploy:
       tags: true
 
   # - provider: bintray
-  #   file: bintray_deb.json
+  #   file: travis/bintray_deb.json
   #   user: typekpb
   #   key:
   #     secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=
@@ -61,7 +47,7 @@ deploy:
   #     tags: true
 
   # - provider: bintray
-  #   file: bintray_rpm.json
+  #   file: travis/bintray_rpm.json
   #   user: typekpb
   #   key:
   #     secure: YDGGhABiuiczVgI5knZ/u5VLVIBvBLfCTefoP196Lc2uzx7McFehCrk/n1XI6ilnk6abBQOhHP8cTcBQcWeEbgvJjAWAiE5OP04pBp001oMjOw1YrmhOtIUmgzcJtMAZOZaQGm4lhpRO5tDTufExRJ76b5ScmImXZqzj1elADEBxQID9+nmcfDDsa8roAmKLgD63mpwjortSRtMU2b8hxzYghhSjCtee4oyNvo64nrWaaqPm7OGVhukdYqkcZ5cSdLVj17M2lCSmuBLdd25uToS1jZq+VF114rRdsjSlVyysJOSdABR7Jx7xX5UQ6A5f12ic6XBwFnkRBbsl08RCRUuAr2V5Gjr4IPt9ibgs/pnHFPCQTw3UGPl0pqZli6b0dJcpWLR7gf6GGeyP0ReETqItdYPXJsk6MP4o3Jp1rIGBDwOsGTJllGN9sSFQQrpXRBOasPAIYMrStqqlA1fR974wQqXHQeqkImWH9U0eKAB/t3s7Y0XFES95sKU0f2X7v0Y7vVnAGYu8WThVUsh7IMR/67ia1LR4WmQBxYZVLQgS91D/qZyWjA9FpH2FnG7KQlPttDRU5mpujxWByOyLj+3IoSoy78goLb7PdPFi7s+AOUKe0nbyzYLIqxVz5VptXnkJFGzheIT1w7JjYxcqSmksNkwpgT5A6snAKEj+YDA=

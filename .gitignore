@@ -31,3 +31,5 @@ _build/
 
 # build artifacts
 dist/
+
+*.bak
