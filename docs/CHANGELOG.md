@@ -8,9 +8,9 @@ Datarator is in a pre-1.0 state. This means that its APIs and behavior are subje
 
 * TODO
 
-## 0.1.0 (2016-09-03)
+## 0.1.0 (2016-09-06)
 
 * Initial release
 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/datarator/datarator/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/datarator/datarator/compare/v0.1.0...master
