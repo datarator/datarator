@@ -24,7 +24,7 @@ for target in deb rpm apk
 do 
     echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash
 done
-rm -f datarator 
+rm -rf datarator 
 
 # 64 bit
 cp datarator-${VERSION}-linux_amd64 datarator 
@@ -32,7 +32,7 @@ for target in deb rpm apk
 do 
     echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash
 done
-rm -f datarator
+rm -rf datarator
 
 #####################
 # pack binaries using (g)zip
