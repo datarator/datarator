@@ -12,6 +12,8 @@ script:
   - go generate
   - go test -v ./...
 before_deploy:
+  # chandler needs ruby version >= 2.2 => install it via rvm (reuse travis installed one)
+  - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v
   - ./travis/before_deploy.sh
   
 deploy:
