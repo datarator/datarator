@@ -7,10 +7,16 @@ addons:
 go:
   - 1.7
 env:
-  - VERSION=0.1.1-dev
+  global:
+    - VERSION=0.1.1-dev
+    # for coveralls.io
+    - secure: "B3WQ6A4mXZY/Hw7aSlSf6GHW2NYuDHjRSyqmS9FWMq8vUSrggIcmZrZkGMKfGc82y/F7+NMLXn2PFfbLxp7YeTe6ExUjPx6iAl1+zt9BLzNtSrSnTCtdM//QWy1L+Mm6NTctihvVn2v4hjbxRd3HWYmkPXpD06AeMXP30qT0jyaIKy0a6hnsVP+s6KPxi5xU5u5qiZpG4PQ3ulokkY+CDFymNovU0KwGgtrTKK96Z6fJGX4xvU2J1PD1ZotpQRO9j3I35c+XXHP0x3pvnD68S7W8Iw3brMrD9MddSFBkhcxx0H2PNpy3uE7iPi1x9CvoKaSo2lrByAoWfYsnd3FWj7DXo4IMvFlBJj9k8FALPt7fC15MeHOLHxku/mIrtXc30WpfmNX5guRLhlApZ7fY+R5PJGxBJ5w9HFGbt5tZV5Dgf5QAg+q+oNiSq+8idc4fSWExuRUcmBuczJ1qAsU+TN3KMsyntPrHKYgi271H8cy+fWIOiOJnnVTyD4Ht3felx50CXTSZQoosRi2vUOzVFuaSYaWlyrEcghUINsY15Eq7KCKfWfHvrTvW+9S7QEmj8W1WdJZKhqRfduub+IDun0WPt0AJpivrRGXwOsCH63yDNwODuV72I6PsFPBtgrQXPHxslx1LTVZhyHOrZp0bY6vQr54In8PNPpTUeEci8TY="
+before_install:
+  - go get github.com/mattn/goveralls
 script:
   - go generate
   - go test -v ./...
+  - $HOME/gopath/bin/goveralls -service=travis-ci
 before_deploy:
   # chandler needs ruby version >= 2.2 => install it via rvm (reuse travis installed one)
   - ruby -v && rvm install 2.3.1 && rvm use --default 2.3.1 && ruby -v

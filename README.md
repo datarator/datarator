@@ -1,4 +1,8 @@
-[![Travis](http://travis-ci.org/datarator/datarator.png?branch=master)](http://travis-ci.org/datarator/datarator) [![Docs](http://readthedocs.org/projects/datarator/badge/?version=latest)](http://datarator.readthedocs.io/) [![Bintray](https://img.shields.io/bintray/v/datarator/datarator/datarator.svg?maxAge=2592000)](https://bintray.com/datarator/datarator/datarator) [![Go Report Card](https://goreportcard.com/badge/github.com/datarator/datarator)](https://goreportcard.com/report/github.com/datarator/datarator)
+[![Travis](http://travis-ci.org/datarator/datarator.png?branch=master)](http://travis-ci.org/datarator/datarator) 
+[![Docs](http://readthedocs.org/projects/datarator/badge/?version=latest)](http://datarator.readthedocs.io/) 
+[![Bintray](https://img.shields.io/bintray/v/datarator/datarator/datarator.svg?maxAge=2592000)](https://bintray.com/datarator/datarator/datarator)
+[![Coverage Status](https://coveralls.io/repos/github/datarator/datarator/badge.svg?branch=master)](https://coveralls.io/github/datarator/datarator?branch=master) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/datarator/datarator)](https://goreportcard.com/report/github.com/datarator/datarator)
 
 # Datarator
 
