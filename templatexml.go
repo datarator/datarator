@@ -130,10 +130,12 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 				}
 				chunk.values[column.Column().name] = val
 
+				buffer.WriteByte('\n')
 				buffer.WriteString(template.getIndent(chunk))
 				buffer.WriteString("<!--")
 				buffer.WriteString(val)
 				buffer.WriteString("-->")
+				buffer.WriteByte('\n')
 			default:
 				return "", fmt.Errorf(errUnsupportedXMLType, column.Column().name, xmlType)
 			}

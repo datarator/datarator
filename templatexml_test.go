@@ -93,6 +93,49 @@ func TestTemplateXMLGenerate(t *testing.T) {
 		{
 			inTemplate: TemplateXML{
 				payload: TemplateXMLPayload{
+					PrettyPrint: false,
+				},
+				schema: Schema{
+					count: 1,
+					columns: []TypedColumn{
+						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									name: "Hello",
+									columns: []TypedColumn{
+										ColumnConst{
+											TypedColumnBase: TypedColumnBase{
+												column: Column{
+													name: "datarator",
+												},
+												payload: TypedColumnBasePayload{
+													Xml: "comment",
+												},
+											},
+											payload: ColumnConstPayload{
+												Value: "datarator",
+											},
+										},
+									},
+								},
+								payload: TypedColumnBasePayload{},
+							},
+							payload: ColumnConstPayload{
+								Value: "",
+							},
+						},
+					},
+				},
+			},
+			inContext: Chunk{
+				to:     1,
+				values: make(map[string]string),
+			},
+			outValue: "<Hello>\n<!--datarator-->\n</Hello>\n",
+		},
+		{
+			inTemplate: TemplateXML{
+				payload: TemplateXMLPayload{
 					PrettyPrint: true,
 				},
 				schema: Schema{
