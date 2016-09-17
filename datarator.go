@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -14,10 +13,6 @@ import (
 const (
 	errStaticDataNotFound = "File: %s was not found"
 )
-
-func init() {
-	initFlags()
-}
 
 func IrisAPI() *iris.Framework {
 
@@ -93,10 +88,10 @@ func IrisAPI() *iris.Framework {
 }
 
 func main() {
-	flag.Parse()
+	parseFlags()
 	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Printf("Starting datarator (v. %s)...\n", version)
-	IrisAPI().Listen(fmt.Sprintf(":%d", *portFlag))
+	IrisAPI().Listen(fmt.Sprintf(":%d", opts.Port))
 }
 
 func emmitError(errorCode int, errorString string, ctx *iris.Context) {

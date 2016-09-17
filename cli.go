@@ -1,24 +1,24 @@
 package main
 
-import "flag"
+import (
+	"os"
 
-const (
-	embedFlagDefault   = true
-	embedFlagDesc      = "Whether to use embedded static data or not"
-	portFlagDefault    = 9292
-	portFlagDesc       = "Port to listen on"
-	timeoutFlagDefault = 5000
-	timeoutFlagDesc    = "Timeout [ms] for response generation"
+	flags "github.com/jessevdk/go-flags"
 )
+
+type options struct {
+	Embed   bool `short:"e" long:"embed" description:"Use embedded rather than external static resources" default:"false"`
+	Port    int  `short:"p" long:"port" description:"Port to listen on" default:"9292"`
+	Timeout int  `short:"t" long:"timeout" description:"Timeout in [ms] for maximum request processing" default:"3000"`
+}
 
 var (
-	embedFlag   = flag.Bool("embed", embedFlagDefault, embedFlagDesc)
-	portFlag    = flag.Int("port", portFlagDefault, portFlagDesc)
-	timeoutFlag = flag.Int("timeout", 5000, timeoutFlagDesc)
+	opts   options
+	parser = flags.NewParser(&opts, flags.Default)
 )
 
-func initFlags() {
-	flag.BoolVar(embedFlag, "e", embedFlagDefault, embedFlagDesc)
-	flag.IntVar(portFlag, "p", portFlagDefault, portFlagDesc)
-	flag.IntVar(timeoutFlag, "t", timeoutFlagDefault, timeoutFlagDesc)
+func parseFlags() {
+	if _, err := parser.Parse(); err != nil {
+		os.Exit(1)
+	}
 }

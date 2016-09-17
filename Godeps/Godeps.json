@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/datarator/datarator",
-	"GoVersion": "go1.6",
+	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Deps": [
 		{
@@ -104,6 +104,11 @@
 			"ImportPath": "github.com/iris-contrib/websocket",
 			"Comment": "v1.0.0-6-g2f1c3fd",
 			"Rev": "2f1c3fd901de3359a6452a212c8be784f04b7073"
+		},
+		{
+			"ImportPath": "github.com/jessevdk/go-flags",
+			"Comment": "v1-372-g4cc2832",
+			"Rev": "4cc2832a6e6d1d3b815e2b9d544b2a4dfb3ce8fa"
 		},
 		{
 			"ImportPath": "github.com/kardianos/osext",

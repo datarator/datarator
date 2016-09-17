@@ -9,7 +9,7 @@ import (
 //go:generate esc -o data.go -pkg main data
 
 func readFile(fileName string) (f []byte, err error) {
-	useExternalData := *embedFlag
+	useExternalData := opts.Embed
 	fullPath := fmt.Sprintf("/data/%s", fileName)
 	file, err := FS(useExternalData).Open(fullPath)
 	if err != nil {
