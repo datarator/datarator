@@ -1,8 +1,4 @@
-<id>0</id>
-<greeting>hello</greeting>
-<from>from</from>
-<server>datarator</server>
-<id>1</id>
-<greeting>hello</greeting>
-<from>from</from>
-<server>datarator</server>
+<greeting/>
+<from/>
+<greeting/>
+<from/>

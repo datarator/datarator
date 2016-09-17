@@ -136,6 +136,49 @@ func TestTemplateXMLGenerate(t *testing.T) {
 		{
 			inTemplate: TemplateXML{
 				payload: TemplateXMLPayload{
+					PrettyPrint: false,
+				},
+				schema: Schema{
+					count: 1,
+					columns: []TypedColumn{
+						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								column: Column{
+									name: "Hello",
+									columns: []TypedColumn{
+										ColumnConst{
+											TypedColumnBase: TypedColumnBase{
+												column: Column{
+													name: "datarator",
+												},
+												payload: TypedColumnBasePayload{
+													Xml: "value",
+												},
+											},
+											payload: ColumnConstPayload{
+												Value: "datarator",
+											},
+										},
+									},
+								},
+								payload: TypedColumnBasePayload{},
+							},
+							payload: ColumnConstPayload{
+								Value: "ignored",
+							},
+						},
+					},
+				},
+			},
+			inContext: Chunk{
+				to:     1,
+				values: make(map[string]string),
+			},
+			outValue: "<Hello>datarator</Hello>\n",
+		},
+		{
+			inTemplate: TemplateXML{
+				payload: TemplateXMLPayload{
 					PrettyPrint: true,
 				},
 				schema: Schema{
@@ -164,12 +207,25 @@ func TestTemplateXMLGenerate(t *testing.T) {
 																Value: "NestedAttrVal",
 															},
 														},
+														ColumnConst{
+															TypedColumnBase: TypedColumnBase{
+																column: Column{
+																	name: "NestedVal",
+																},
+																payload: TypedColumnBasePayload{
+																	Xml: "value",
+																},
+															},
+															payload: ColumnConstPayload{
+																Value: "NestedVal",
+															},
+														},
 													},
 												},
 												payload: TypedColumnBasePayload{},
 											},
 											payload: ColumnConstPayload{
-												Value: "Nestedval",
+												Value: "ignored",
 											},
 										},
 									},
@@ -198,7 +254,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 				to:     2,
 				values: make(map[string]string),
 			},
-			outValue: "<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">Nestedval</Nested>\n</Hello>\n<datarator/>\n",
+			outValue: "<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">NestedVal</Nested>\n</Hello>\n<datarator/>\n<Hello>\n    <Nested NestedAttr=\"NestedAttrVal\">NestedVal</Nested>\n</Hello>\n<datarator/>\n",
 		},
 	}
 

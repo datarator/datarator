@@ -11,6 +11,7 @@ const (
 	payloadXMLCdata     = "cdata"
 	payloadXMLComment   = "comment"
 	payloadXMLElement   = "element"
+	payloadXMLValue     = "value"
 	contentTypeXML      = "text/xml; charset=UTF-8"
 
 	errUnsupportedXMLType = "Column: %s has unsupported XML type: %s"
@@ -61,7 +62,7 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 				buffer.WriteString(column.Column().name)
 
 				nestedColumns := column.Column().columns
-				if nestedColumns != nil {
+				if nestedColumns != nil && len(nestedColumns) > 0 {
 					// iterate nested attributes only
 					for _, nestedColumn := range nestedColumns {
 						if nestedColumn.Payload().XmlType() == payloadXMLAttribute {
@@ -93,13 +94,13 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 
 					buffer.WriteString(generated)
 
-					val, err := column.Value(chunk)
-					if err != nil {
-						return "", err
-					}
-					chunk.values[column.Column().name] = val
+					// val, err := column.Value(chunk)
+					// if err != nil {
+					// 	return "", err
+					// }
+					// chunk.values[column.Column().name] = val
 
-					buffer.WriteString(val)
+					// buffer.WriteString(val)
 
 					buffer.WriteString("</")
 					buffer.WriteString(column.Column().name)
@@ -112,6 +113,14 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 
 			case payloadXMLAttribute:
 				// already covered in the default case => nothing to do here
+			case payloadXMLValue:
+				val, err := column.Value(chunk)
+				if err != nil {
+					return "", err
+				}
+				chunk.values[column.Column().name] = val
+
+				buffer.WriteString(val)
 			case payloadXMLCdata:
 				val, err := column.Value(chunk)
 				if err != nil {

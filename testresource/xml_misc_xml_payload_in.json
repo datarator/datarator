@@ -1,39 +1,44 @@
 {
     "template": "xml",
     "count": 2,
-    "columns": [
-        {
-            "name": "book",
-            "type": "const",
-            "payload": {
-                "value": ""
+    "columns": [{
+        "name": "book",
+        "type": "const",
+        "payload": {
+            "value": ""
+        },
+        "columns": [{
+                "name": "id",
+                "type": "row_index",
+                "payload": {
+                    "xml": "attribute"
+                }
             },
-            "columns": [
-                {
-                    "name": "id",
-                    "type": "row_index",
-                    "payload": {
-                        "xml": "attribute"
-                    }
+            {
+                "name": "title",
+                "type": "const",
+                "payload": {
+                    "value": "Cronicles of Narnia",
+                    "xml": "attribute"
+                }
+            },
+            {
+                "name": "author",
+                "type": "const",
+                "payload": {
+                    "value": ""
                 },
-                {
-                    "name": "title",
-                    "type": "const",
-                    "payload": {
-                        "value": "Cronicles of Narnia",
-                        "xml": "attribute"
-                    }
-                },
-                {
+                "columns": [{
                     "name": "author",
                     "type": "const",
                     "payload": {
+                        "xml": "value",
                         "value": "C. S. Lewis"
                     }
-                }
-            ]
-        }
-    ],
+                }]
+            }
+        ]
+    }],
     "payload": {
         "pretty_print": true
     }

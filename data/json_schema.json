@@ -1,477 +1,476 @@
 {
-	"oneOf": [
-		{
-			"$ref": "#/definitions/templateCsv"
-		},
-		{
-			"$ref": "#/definitions/templateSql"
-		},
-		{
-			"$ref": "#/definitions/templateXml"
-		}
-	],
-	"definitions": {
-		"templateCsv": {
-			"properties": {
-				"template": {
-					"enum": [
-						"csv"
-					]
-				},
-				"count": {
-					"type": "integer",
-					"minimum": 0,
-					"maximum": 1000000
-				},
-				"columns": {
-					"type": "array",
-					"items": {
-						"$ref": "#/definitions/column"
-					},
-					"minItems": 1
-				},
-				"payload": {
-					"properties": {
-						"header": {
-							"type": "boolean"
-						},
-						"separator": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"required": [
-				"template",
-				"columns"
-			]
-		},
-		"templateSql": {
-			"properties": {
-				"template": {
-					"enum": [
-						"sql"
-					]
-				},
-				"count": {
-					"type": "integer",
-					"minimum": 0,
-					"maximum": 1000000
-				},
-				"columns": {
-					"type": "array",
-					"items": {
-						"$ref": "#/definitions/column"
-					},
-					"minItems": 1
-				}
-			},
-			"required": [
-				"template",
-				"columns"
-			]
-		},
-		"templateXml": {
-			"properties": {
-				"template": {
-					"enum": [
-						"xml"
-					]
-				},
-				"count": {
-					"type": "integer",
-					"minimum": 0,
-					"maximum": 1000000
-				},
-				"columns": {
-					"type": "array",
-					"items": {
-						"$ref": "#/definitions/column"
-					},
-					"minItems": 1
-				},
-				"payload": {
-					"properties": {
-						"pretty_print": {
-							"type": "boolean"
-						},
-						"pretty_print_tabs": {
-							"type": "boolean"
-						},
-						"pretty_print_spaces_count": {
-							"type": "integer"
-						}
-					}
-				}
-			},
-			"required": [
-				"template",
-				"columns"
-			]
-		},
-		"column": {
-			"oneOf": [
-				{
-					"$ref": "#/definitions/columnPayloadless"
-				},
-				{
-					"$ref": "#/definitions/columnColorHex"
-				},
-				{
-					"$ref": "#/definitions/columnConst"
-				},
-				{
-					"$ref": "#/definitions/columnCopy"
-				},
-				{
-					"$ref": "#/definitions/columnCreditCardNumber"
-				},
-				{
-					"$ref": "#/definitions/columnDateName"
-				},
-				{
-					"$ref": "#/definitions/columnDateOfBirth"
-				},
-				{
-					"$ref": "#/definitions/columnJoin"
-				},
-				{
-					"$ref": "#/definitions/columnRegex"
-				},
-				{
-					"$ref": "#/definitions/columnRowIndex"
-				}
-			]
-		},
-		"columnPayloadless": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"address.continent",
-						"address.country",
-						"address.city",
-						"address.phone",
-						"address.state",
-						"address.street",
-						"address.zip",
-						"color",
-						"credit_card.type",
-						"currency",
-						"currency.code",
-						"date.day.of_week",
-						"date.day.of_month",
-						"date.month",
-						"date.year",
-						"name.first",
-						"name.first.female",
-						"name.first.male",
-						"name.last",
-						"name.last.female",
-						"name.last.male",
-						"name.full",
-						"name.full.female",
-						"name.full.male"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnColorHex": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"color.hex"
-					]
-				},
-				"payload": {
-					"properties": {
-						"short": {
-							"type": "boolean"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnConst": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"const"
-					]
-				},
-				"payload": {
-					"properties": {
-						"value": {
-							"type": "string"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					},
-					"required": [
-						"value"
-					]
-				}
-			},
-			"required": [
-				"name",
-				"type",
-				"payload"
-			]
-		},
-		"columnCopy": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"copy"
-					]
-				},
-				"payload": {
-					"properties": {
-						"from": {
-							"type": "string"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					},
-					"required": [
-						"from"
-					]
-				}
-			},
-			"required": [
-				"name",
-				"type",
-				"payload"
-			]
-		},
-		"columnCreditCardNumber": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"credit_card.number"
-					]
-				},
-				"payload": {
-					"properties": {
-						"type": {
-							"enum": [
-								"amex",
-								"discover",
-								"mastercard",
-								"visa"
-							]
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnDateName": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"date.day.of_week.name",
-						"date.month.name"
-					]
-				},
-				"payload": {
-					"properties": {
-						"short": {
-							"type": "boolean"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnDateOfBirth": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"date.of_birth"
-					]
-				},
-				"payload": {
-					"properties": {
-						"age": {
-							"type": "integer"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"columnJoin": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"join"
-					]
-				},
-				"columns": {
-					"type": "array",
-					"items": {
-						"$ref": "#/definitions/column"
-					},
-					"minItems": 1
-				},
-				"payload": {
-					"properties": {
-						"separator": {
-							"type": "string"
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					},
-					"required": [
-						"separator"
-					]
-				}
-			},
-			"required": [
-				"name",
-				"type",
-				"columns"
-			]
-		},
-		"columnRegex": {
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"regex"
-					]
-				},
-				"payload": {
-					"properties": {
-						"regex": {
-							"type": "string"
-						},
-						"limit": {
-							"type": "integer",
-							"minimum": 0,
-							"maximum": 50
-						},
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					},
-					"required": [
-						"regex"
-					]
-				}
-			},
-			"required": [
-				"name",
-				"type",
-				"payload"
-			]
-		},
-		"columnRowIndex": {
-			"type": "object",
-			"properties": {
-				"name": {
-					"type": "string",
-					"pattern": "^[^/]+$"
-				},
-				"type": {
-					"enum": [
-						"row_index"
-					]
-				},
-				"payload": {
-					"properties": {
-						"xml": {
-							"$ref": "#/definitions/payloadXml"
-						}
-					}
-				}
-			},
-			"required": [
-				"name",
-				"type"
-			]
-		},
-		"payloadXml": {
-			"enum": [
-				"attribute",
-				"element",
-				"cdata",
-				"comment"
-			]
-		}
-	}
+    "oneOf": [{
+            "$ref": "#/definitions/templateCsv"
+        },
+        {
+            "$ref": "#/definitions/templateSql"
+        },
+        {
+            "$ref": "#/definitions/templateXml"
+        }
+    ],
+    "definitions": {
+        "templateCsv": {
+            "properties": {
+                "template": {
+                    "enum": [
+                        "csv"
+                    ]
+                },
+                "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/column"
+                    },
+                    "minItems": 1
+                },
+                "payload": {
+                    "properties": {
+                        "header": {
+                            "type": "boolean"
+                        },
+                        "separator": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "template",
+                "columns"
+            ]
+        },
+        "templateSql": {
+            "properties": {
+                "template": {
+                    "enum": [
+                        "sql"
+                    ]
+                },
+                "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/column"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [
+                "template",
+                "columns"
+            ]
+        },
+        "templateXml": {
+            "properties": {
+                "template": {
+                    "enum": [
+                        "xml"
+                    ]
+                },
+                "count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/column"
+                    },
+                    "minItems": 1
+                },
+                "payload": {
+                    "properties": {
+                        "pretty_print": {
+                            "type": "boolean"
+                        },
+                        "pretty_print_tabs": {
+                            "type": "boolean"
+                        },
+                        "pretty_print_spaces_count": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "template",
+                "columns"
+            ]
+        },
+        "column": {
+            "oneOf": [{
+                    "$ref": "#/definitions/columnPayloadless"
+                },
+                {
+                    "$ref": "#/definitions/columnColorHex"
+                },
+                {
+                    "$ref": "#/definitions/columnConst"
+                },
+                {
+                    "$ref": "#/definitions/columnCopy"
+                },
+                {
+                    "$ref": "#/definitions/columnCreditCardNumber"
+                },
+                {
+                    "$ref": "#/definitions/columnDateName"
+                },
+                {
+                    "$ref": "#/definitions/columnDateOfBirth"
+                },
+                {
+                    "$ref": "#/definitions/columnJoin"
+                },
+                {
+                    "$ref": "#/definitions/columnRegex"
+                },
+                {
+                    "$ref": "#/definitions/columnRowIndex"
+                }
+            ]
+        },
+        "columnPayloadless": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "address.continent",
+                        "address.country",
+                        "address.city",
+                        "address.phone",
+                        "address.state",
+                        "address.street",
+                        "address.zip",
+                        "color",
+                        "credit_card.type",
+                        "currency",
+                        "currency.code",
+                        "date.day.of_week",
+                        "date.day.of_month",
+                        "date.month",
+                        "date.year",
+                        "name.first",
+                        "name.first.female",
+                        "name.first.male",
+                        "name.last",
+                        "name.last.female",
+                        "name.last.male",
+                        "name.full",
+                        "name.full.female",
+                        "name.full.male"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "columnColorHex": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "color.hex"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "short": {
+                            "type": "boolean"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "columnConst": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "const"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "value": {
+                            "type": "string"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    },
+                    "required": [
+                        "value"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "payload"
+            ]
+        },
+        "columnCopy": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "copy"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "from": {
+                            "type": "string"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    },
+                    "required": [
+                        "from"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "payload"
+            ]
+        },
+        "columnCreditCardNumber": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "credit_card.number"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "amex",
+                                "discover",
+                                "mastercard",
+                                "visa"
+                            ]
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "columnDateName": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "date.day.of_week.name",
+                        "date.month.name"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "short": {
+                            "type": "boolean"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "columnDateOfBirth": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "date.of_birth"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "age": {
+                            "type": "integer"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "columnJoin": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "join"
+                    ]
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/column"
+                    },
+                    "minItems": 1
+                },
+                "payload": {
+                    "properties": {
+                        "separator": {
+                            "type": "string"
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    },
+                    "required": [
+                        "separator"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "columns"
+            ]
+        },
+        "columnRegex": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "regex"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "regex": {
+                            "type": "string"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 50
+                        },
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    },
+                    "required": [
+                        "regex"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "type",
+                "payload"
+            ]
+        },
+        "columnRowIndex": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "pattern": "^[^/]+$"
+                },
+                "type": {
+                    "enum": [
+                        "row_index"
+                    ]
+                },
+                "payload": {
+                    "properties": {
+                        "xml": {
+                            "$ref": "#/definitions/payloadXml"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "type"
+            ]
+        },
+        "payloadXml": {
+            "enum": [
+                "attribute",
+                "element",
+                "cdata",
+                "comment",
+                "value"
+            ]
+        }
+    }
 }

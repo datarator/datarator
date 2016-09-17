@@ -1,16 +1,11 @@
 {
     "template": "xml",
     "count": 2,
-    "columns": [
-        {
-            "name": "id",
-            "type": "row_index"
-        },
-        {
+    "columns": [{
             "name": "greeting",
             "type": "const",
             "payload": {
-                "value": "hello"
+                "value": ""
             }
         },
         {
@@ -18,13 +13,6 @@
             "type": "const",
             "payload": {
                 "value": "from"
-            }
-        },
-        {
-            "name": "server",
-            "type": "const",
-            "payload": {
-                "value": "datarator"
             }
         }
     ],
