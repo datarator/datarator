@@ -114,6 +114,18 @@ Optional :ref:`payload` available:
 * ``"pretty_print_tabs":"true"`` / ``"pretty_print_tabs":"false"`` - whether to use tabs (or spaces) for pretty print. By default is ``false`` (=> uses spaces).
 * ``"pretty_print_spaces_count":<count>``- the count of spaces in case of pretty print enabled. By default is 4.
 
+Moreover optional column-specific :ref:`payload` available:
+
+* ``"xml":"<xml_type>"`` - column to be used as a specific xml type, available values follow
+
+xml_type options:
+
+* ``"attribute"`` - column name is beeing used as a xml attribute name and column value as xml attribute value
+* ``"cdata"`` - column value is beeing used as a xml cdata (``<![[CDATA...]]``) contents
+* ``"comment"`` - column value is beeing used as a xml comment (``<!--...-->``) contents
+* ``"element"`` - column name is beeing used as a xml element name
+* ``"value"`` - column value  is beeing used as a xml element value
+
 For **example**, input JSON:
 ::
 
@@ -140,7 +152,15 @@ For **example**, input JSON:
                         "name": "name3",
                         "type": "const",
                         "payload": {
-                            "value": "value3"
+                            "value": ""
+                        },
+                        "columns": [{
+                                "name": "name3value",
+                                "type": "const",
+                                "payload": {
+                                    "value": "value3",
+                                    "xml": "value"
+                            }]
                         }
                     }
                 ]
