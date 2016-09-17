@@ -16,7 +16,7 @@ before_install:
   - go get github.com/mattn/goveralls
 script:
   - go generate
-  - go test -v -coverprofile=coverage.out ./...
+  - go test -v -coverprofile=coverage.out
   - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci
 before_deploy:
   # chandler needs ruby version >= 2.2 => install it via rvm (reuse travis installed one)
