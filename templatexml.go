@@ -119,9 +119,10 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 				}
 				chunk.values[column.Column().name] = val
 
-				buffer.WriteString("CDATA[\n")
+				buffer.WriteByte('\n')
+				buffer.WriteString("<![CDATA[\n")
 				buffer.WriteString(val)
-				buffer.WriteString("\n]\n")
+				buffer.WriteString("\n]]>\n")
 			case payloadXMLComment:
 				val, err := column.Value(chunk)
 				if err != nil {
