@@ -4,7 +4,7 @@ Installation
 Binaries 
 --------
 
-`Download the binary <https://github.com/datarator/datarator/releases>`_, that targets your platform and run it.
+`Download the binary <https://github.com/datarator/datarator/releases>`_, that targets your platform.
 
 
 From source
@@ -16,5 +16,4 @@ From source
     go get github.com/datarator/datarator
     cd $GOPATH/src/github.com/datarator/datarator
     go generate
-    go build
-    datarator
+    go install

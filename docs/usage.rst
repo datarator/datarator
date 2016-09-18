@@ -1,11 +1,35 @@
 Usage
 =====
 
-First make sure to have datarator installed (see page: :doc:`installation`) and running.
+First make sure to have datarator installed (see page: :doc:`installation`).
 
-To generate::
+Running
+-------
 
-        Hello world
+Assuming datarator binary is in your path, simpy run::
+
+    datarator
+
+Command line options
+--------------------
+
+Following are available::
+
+    Application Options:
+    -e, --embed     Use embedded rather than external static resources
+    -l, --parallel  Use parallel processing, rather than serial one.
+    -p, --port=     Port to listen on (default: 9292)
+    -t, --timeout=  Timeout in [ms] for maximum request processing (default: 3000)
+
+    Help Options:
+    -h, --help      Show this help message
+
+Generate
+--------
+
+Asuming datarator has been started with default command line options, to generate::
+
+    Hello world
 
 Pick your tool of choice for sending HTTP POST requests:
 
