@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"os"
+
 	"github.com/kataras/iris"
 )
 
@@ -88,7 +90,9 @@ func IrisAPI() *iris.Framework {
 }
 
 func main() {
-	parseFlags()
+	if exit := parseFlags(); exit {
+		os.Exit(0)
+	}
 	rand.Seed(time.Now().UTC().UnixNano())
 	fmt.Printf("Starting datarator (v. %s)...\n", version)
 	IrisAPI().Listen(fmt.Sprintf(":%d", opts.Port))
