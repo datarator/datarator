@@ -2,7 +2,7 @@
 set -e
 
 # don't rerun
-[ -d dist ] && exit 0
+[ -d dist ] && { echo "dist/ dir already exists => no re-run supported!"; exit 1; }
 
 #####################
 # build cross-arch binaries (using gox)
@@ -12,40 +12,69 @@ gox -output="dist/{{.Dir}}-${VERSION}-{{.OS}}_{{.Arch}}"
 
 pushd dist
 
+####################
+# generate man page
+####################
+mkdir -p usr/share/man/man1/
+./datarator-${VERSION}-linux_amd64 -m | gzip -vc > usr/share/man/man1/datarator.1.gz
+
 #####################
-# build linux distro packages (using fpm)
+# build linux distro / osx packages (using fpm)
 #####################
-FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/usr/local/bin' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
+FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
 gem install --no-ri --no-rdoc fpm
 
+mkdir -p usr/local/bin/
+
+# Linux
+
 # 32 bit
-cp datarator-${VERSION}-linux_386 datarator 
+cp -f datarator-${VERSION}-linux_386 usr/local/bin/datarator 
 for target in deb rpm apk
 do 
-    echo fpm -t ${target} "${FPM_ARGS}" -a 386 datarator | /bin/bash
+    echo fpm -t ${target} "${FPM_ARGS}" -a 386 usr/ | /bin/bash
 done
-rm -rf datarator 
+rm -rf usr/local/bin/* 
 
 # 64 bit
-cp datarator-${VERSION}-linux_amd64 datarator 
+cp -f datarator-${VERSION}-linux_amd64 usr/local/bin/datarator 
 for target in deb rpm apk
 do 
-    echo fpm -t ${target} "${FPM_ARGS}" -a amd64 datarator | /bin/bash
+    echo fpm -t ${target} "${FPM_ARGS}" -a amd64 usr/ | /bin/bash
 done
-rm -rf datarator
+rm -rf usr/local/bin/*
+
+# TODO
+# # MacOS
+
+# # 32 bit
+# cp -f datarator-${VERSION}-darwin_386 usr/local/bin/datarator 
+# for target in osxpkg
+# do 
+#     echo fpm -t ${target} "${FPM_ARGS}" -a 386 usr/ | /bin/bash
+# done
+# rm -rf usr/local/bin/*
+
+# # 64 bit
+# cp -f datarator-${VERSION}-darwin_amd64 usr/local/bin/datarator 
+# for target in osxpkg
+# do 
+#     echo fpm -t ${target} "${FPM_ARGS}" -a amd64 usr/ | /bin/bash
+# done
+# rm -rf usr
 
 #####################
 # pack binaries using (g)zip
 #####################
 # non-windows
-for dir in `ls | grep -v ".exe" | grep -v ".rpm" | grep -v ".deb" | grep -v ".apk"`
+for dir in `ls -F | grep -v "/" | grep -v ".exe" | grep -v ".rpm" | grep -v ".deb" | grep -v ".apk" | grep -v ".pkg"`
 do 
     mv ${dir} datarator
     tar -cvzf ${dir}.tgz datarator
 done
 
 # windows
-for dir in `ls | grep ".exe"`
+for dir in `ls -F | grep -v "/" | grep ".exe"`
 do 
     mv ${dir} datarator.exe
     zip `echo ${dir} | sed 's/\.exe$//'`.zip datarator.exe
