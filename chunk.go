@@ -27,9 +27,10 @@ type ChunkProcessorFactory struct {
 }
 
 func (cf ChunkProcessorFactory) CreateChunkProcessor() (ChunkProcessor, error) {
-
+	if opts.Parallel {
+		return ChunkProcessorParallelUnordered{}, nil
+	}
 	return ChunkProcessorSerial{}, nil
-	// return ChunkProcessorParallelUnordered{}, nil
 }
 
 func buildChunks(count int) []Chunk {

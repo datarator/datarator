@@ -86,7 +86,7 @@ func TestCsv(t *testing.T) {
 	}
 }
 
-func TestAllColumns(t *testing.T) {
+func TestAllColumnsSerial(t *testing.T) {
 	// if testing.Short() {
 	//     t.Skip("skipping test in short mode.")
 	// }
@@ -112,6 +112,38 @@ func TestAllColumns(t *testing.T) {
 			Status(http.StatusOK).
 			Body().Contains(",")
 	}
+}
+
+func TestAllColumnsParallel(t *testing.T) {
+	// if testing.Short() {
+	//     t.Skip("skipping test in short mode.")
+	// }
+
+	var tests = []struct {
+		inFile string
+	}{
+		{
+			inFile: "./testresource/all_columns_in.json",
+		},
+	}
+
+	opts.Parallel = true
+
+	for _, test := range tests {
+		in, errIn := ioutil.ReadFile(test.inFile)
+		if errIn != nil {
+			t.Fatalf("Failed reading file %v: %v", test.inFile, errIn.Error())
+		}
+
+		irisTest := irisTester(t)
+
+		irisTest.POST("/api/schemas/foo").WithBytes(in).
+			Expect().
+			Status(http.StatusOK).
+			Body().Contains(",")
+	}
+
+	opts.Parallel = false
 }
 
 func TestErr(t *testing.T) {
