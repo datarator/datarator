@@ -4,6 +4,7 @@ addons:
   apt:
     packages:
       - rpm # fpm requirement for building rpms
+      - bsdtar # fpm requirement for building pacman packages
 go:
   - 1.7
 env:

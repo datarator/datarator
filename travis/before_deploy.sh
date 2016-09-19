@@ -21,7 +21,7 @@ mkdir -p usr/share/man/man1/
 #####################
 # build linux distro / osx packages (using fpm)
 #####################
-FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>'"
+FPM_ARGS="-s dir -n datarator -v ${VERSION} --prefix '/' --license MIT --vendor 'http://github.com/datarator/datarator' --rpm-summary 'Stateless data generator with HTTP based JSON API' --description 'Stateless data generator with HTTP based JSON API' -m 'Peter Butkovic <butkovic@gmail.com>' --url 'https://github.com/datarator/datarator'"
 gem install --no-ri --no-rdoc fpm
 
 mkdir -p usr/local/bin/
@@ -30,7 +30,7 @@ mkdir -p usr/local/bin/
 
 # 32 bit
 cp -f datarator-${VERSION}-linux_386 usr/local/bin/datarator 
-for target in deb rpm apk
+for target in deb rpm apk pacman
 do 
     echo fpm -t ${target} "${FPM_ARGS}" -a 386 usr/ | /bin/bash
 done
@@ -38,7 +38,7 @@ rm -rf usr/local/bin/*
 
 # 64 bit
 cp -f datarator-${VERSION}-linux_amd64 usr/local/bin/datarator 
-for target in deb rpm apk
+for target in deb rpm apk pacman
 do 
     echo fpm -t ${target} "${FPM_ARGS}" -a amd64 usr/ | /bin/bash
 done
@@ -67,7 +67,7 @@ rm -rf usr/local/bin/*
 # pack binaries using (g)zip
 #####################
 # non-windows
-for dir in `ls -F | grep -v "/" | grep -v ".exe" | grep -v ".rpm" | grep -v ".deb" | grep -v ".apk" | grep -v ".pkg"`
+for dir in `ls -F | grep -v "/" | grep -v ".exe" | grep -v ".rpm" | grep -v ".deb" | grep -v ".apk" | grep -v ".pkg" | grep -v ".pkg.tar.xz"`
 do 
     mv ${dir} datarator
     tar -cvzf ${dir}.tgz datarator
