@@ -28,11 +28,7 @@ func TestColumnAddressValue(t *testing.T) {
 		},
 		{
 			inColumn: ColumnAddressState{},
-			outValue: "^[- a-zA-Z.]+$",
-		},
-		{
-			inColumn: ColumnAddressState{},
-			outValue: "^[- a-zA-Z.]+$",
+			outValue: "^[- a-zA-Z.()]+$",
 		},
 		{
 			inColumn: ColumnAddressStreet{},
