@@ -61,25 +61,32 @@ func IrisAPI() *iris.Framework {
 			defer close(doneChannel)
 
 			outChannel := processor.Process(jSONSchema.Count, template, doneChannel)
-			for out := range outChannel {
-				if out.err != nil {
-					emmitError(http.StatusInternalServerError, out.err.Error(), ctx)
+			timeoutChannel := time.After(time.Duration(opts.Timeout) * time.Millisecond)
+
+			for {
+				select {
+				// timed out
+				case <-timeoutChannel:
+					// TODO: for processing timeout, OK result, without data, is that OK?
+					// emmitError(http.StatusGatewayTimeout, "Too slow, time's up!", ctx)
 					return
+				case out, ok := <-outChannel:
+					if out.err != nil {
+						emmitError(http.StatusInternalServerError, out.err.Error(), ctx)
+						return
+					}
+
+					// channel closed
+					if !ok {
+						writer.Flush()
+						return
+					}
+
+					// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
+					writer.WriteString(out.out)
 				}
-
-				// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
-				writer.WriteString(out.out)
 			}
-			writer.Flush()
 		})
-
-		// TODO implement timeout
-		// select {
-		// 	case <-ch:
-		// 		// a read from ch has occurred
-		// 	case <-timeout:
-		// 		// the read from ch has timed out
-		// }
 	})
 
 	api.Get("/", func(ctx *iris.Context) {

@@ -1,0 +1,184 @@
+{
+    "template": "csv",
+    "count": 1000000,
+    "columns": [{
+            "name": "address.continent",
+            "type": "address.continent"
+        },
+        {
+            "name": "copy",
+            "type": "copy",
+            "payload": {
+                "from": "address.continent"
+            }
+        },
+        {
+            "name": "address.country",
+            "type": "address.country"
+        },
+        {
+            "name": "address.city",
+            "type": "address.city"
+        },
+        {
+            "name": "address.phone",
+            "type": "address.phone"
+        },
+        {
+            "name": "address.state",
+            "type": "address.state"
+        },
+        {
+            "name": "address.street",
+            "type": "address.street"
+        },
+        {
+            "name": "address.zip",
+            "type": "address.zip"
+        },
+        {
+            "name": "color",
+            "type": "color"
+        },
+        {
+            "name": "color.hex",
+            "type": "color.hex",
+            "payload": {
+                "short": true
+            }
+        },
+        {
+            "name": "const",
+            "type": "const",
+            "payload": {
+                "value": "constval"
+            }
+        },
+        {
+            "name": "credit_card.number",
+            "type": "credit_card.number",
+            "payload": {
+                "type": "visa"
+            }
+        },
+        {
+            "name": "credit_card.type",
+            "type": "credit_card.type"
+        },
+        {
+            "name": "join",
+            "type": "join",
+            "columns": [{
+                    "name": "const2",
+                    "type": "const",
+                    "payload": {
+                        "value": "constval"
+                    }
+                },
+                {
+                    "name": "const2",
+                    "type": "const",
+                    "payload": {
+                        "value": "constval"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "currency",
+            "type": "currency"
+        },
+        {
+            "name": "currency.code",
+            "type": "currency.code"
+        },
+        {
+            "name": "date.day.of_week",
+            "type": "date.day.of_week"
+        },
+        {
+            "name": "date.day.of_week.name",
+            "type": "date.day.of_week.name",
+            "payload": {
+                "short": true
+            }
+        },
+        {
+            "name": "date.day.of_month",
+            "type": "date.day.of_month"
+        },
+        {
+            "name": "date.month",
+            "type": "date.month"
+        },
+        {
+            "name": "date.month.name",
+            "type": "date.month.name",
+            "payload": {
+                "short": true
+            }
+        },
+        {
+            "name": "date.year",
+            "type": "date.year"
+        },
+        {
+            "name": "date.of_birth",
+            "type": "date.of_birth",
+            "payload": {
+                "age": 18
+            }
+        },
+        {
+            "name": "name.first",
+            "type": "name.first"
+        },
+        {
+            "name": "name.first.female",
+            "type": "name.first.female"
+        },
+        {
+            "name": "name.first.male",
+            "type": "name.first.male"
+        },
+        {
+            "name": "name.full",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full.female",
+            "type": "name.full.female"
+        },
+        {
+            "name": "name.full.male",
+            "type": "name.full.male"
+        },
+        {
+            "name": "name.last",
+            "type": "name.last"
+        },
+        {
+            "name": "name.last.female",
+            "type": "name.last.female"
+        },
+        {
+            "name": "name.last.male",
+            "type": "name.last.male"
+        },
+        {
+            "name": "regex",
+            "type": "regex",
+            "payload": {
+                "regex": "z{1,3}",
+                "limit": 10
+            }
+        },
+        {
+            "name": "row_index",
+            "type": "row_index"
+        }
+    ],
+    "payload": {
+        "separator": ","
+    }
+}

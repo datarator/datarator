@@ -8,8 +8,12 @@ import (
 	"github.com/gavv/httpexpect"
 )
 
+const defaultTimeout = 3000
+
 func irisTester(t *testing.T) *httpexpect.Expect {
 	api := IrisAPI()
+
+	opts.Timeout = defaultTimeout
 
 	return httpexpect.WithConfig(httpexpect.Config{
 		Client: &http.Client{
@@ -149,23 +153,33 @@ func TestAllColumnsParallel(t *testing.T) {
 func TestErr(t *testing.T) {
 	var tests = []struct {
 		inFile            string
+		timeout           int
 		outErrCode        int
 		outErrStringRegex string
 	}{
 		{
 			inFile:            "./testresource/err_unsupported_type.json",
+			timeout:           defaultTimeout,
 			outErrCode:        http.StatusBadRequest,
 			outErrStringRegex: "columns[.]0[.]type: columns[.]0[.]type must be one of the following:",
 		},
 		{
 			inFile:            "./testresource/err_unsupported_template.json",
+			timeout:           defaultTimeout,
 			outErrCode:        http.StatusBadRequest,
 			outErrStringRegex: "template: template must be one of the following: \"csv\"",
 		},
 		{
 			inFile:            "./testresource/err_invalid_json.json",
+			timeout:           defaultTimeout,
 			outErrCode:        http.StatusBadRequest,
 			outErrStringRegex: "on line 4 column 2 got :invalid character '}' looking for beginning of object key string",
+		},
+		{
+			inFile:            "./testresource/err_timeout.json",
+			timeout:           0,
+			outErrCode:        http.StatusOK,
+			outErrStringRegex: "",
 		},
 	}
 
@@ -176,6 +190,7 @@ func TestErr(t *testing.T) {
 		}
 
 		irisTest := irisTester(t)
+		opts.Timeout = test.timeout
 
 		irisTest.POST("/api/schemas/foo").WithBytes(in).
 			Expect().
