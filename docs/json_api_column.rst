@@ -807,7 +807,7 @@ could result in value:
 Column: regex
 -------------------------
 
-Generates the random male last name value (to examine full capabilities, refer to project: `lucasjones/reggen <https://github.com/lucasjones/reggen>`_ beeing used under the hood),
+Generates the random string matching the specified regular expression (to examine full capabilities, refer to project: `lucasjones/reggen <https://github.com/lucasjones/reggen>`_ beeing used under the hood),
 
 Mandatory :ref:`payload` available:
 
