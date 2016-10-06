@@ -1,0 +1,48 @@
+{
+    "template": "csv",
+    "count": 500000,
+    "columns": [{
+            "name": "name.full",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full2",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full3",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full4",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full5",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full6",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full7",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full8",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full9",
+            "type": "name.full"
+        },
+        {
+            "name": "name.full10",
+            "type": "name.full"
+        }
+    ],
+    "payload": {
+        "separator": ","
+    }
+}

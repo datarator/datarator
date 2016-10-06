@@ -1,0 +1,48 @@
+{
+    "template": "csv",
+    "count": 1000000,
+    "columns": [{
+            "name": "row_index",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index2",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index3",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index4",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index5",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index6",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index7",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index8",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index9",
+            "type": "row_index"
+        },
+        {
+            "name": "row_index10",
+            "type": "row_index"
+        }
+    ],
+    "payload": {
+        "separator": ","
+    }
+}
