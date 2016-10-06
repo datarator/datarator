@@ -55,7 +55,7 @@ func TestCsv(t *testing.T) {
 		{
 			inFile:         "./testresource/sql_const_in.json",
 			outFile:        "./testresource/sql_const_out",
-			outContentType: "application/octet-stream",
+			outContentType: "text/sql",
 		},
 		{
 			inFile:         "./testresource/xml_flat_in.json",

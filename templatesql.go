@@ -4,7 +4,7 @@ import "bytes"
 
 const (
 	templateSQL    = "sql"
-	contentTypeSQL = "application/octet-stream"
+	contentTypeSQL = "text/sql"
 )
 
 type TemplateSQL struct {
