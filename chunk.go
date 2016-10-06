@@ -1,9 +1,5 @@
 package main
 
-const (
-	chunkSize = 1000
-)
-
 type Chunk struct {
 	from   int
 	to     int
@@ -28,18 +24,28 @@ func (cf ChunkProcessorFactory) CreateChunkProcessor() (ChunkProcessor, error) {
 	return ChunkProcessorSerial{}, nil
 }
 
-func processChunk(chunk *Chunk, template Template, doneChannel <-chan struct{}) <-chan Output {
-	outChannel := make(chan Output)
-	go func() {
-		defer close(outChannel)
-		for chunk.index = chunk.from; chunk.index < chunk.to; chunk.index++ {
-			out, err := template.Generate(chunk)
-			outChannel <- Output{
-				out: out,
-				err: err,
-			}
-		}
-	}()
+func buildChunks(count int) []*Chunk {
+	chunkSize := opts.ChunkSize
+	chunks := []*Chunk{}
 
-	return outChannel
+	chunksCount := count / chunkSize
+	for i := 0; i < chunksCount; i++ {
+		chunks = append(chunks, &Chunk{
+			from:   i * chunkSize,
+			to:     (i + 1) * chunkSize,
+			index:  i * chunkSize,
+			values: make(map[string]string),
+		})
+	}
+
+	oneMoreChunkNeeded := count%chunkSize > 0
+	if oneMoreChunkNeeded {
+		chunks = append(chunks, &Chunk{
+			from:   chunksCount * chunkSize,
+			to:     count,
+			index:  chunksCount * chunkSize,
+			values: make(map[string]string),
+		})
+	}
+	return chunks
 }
