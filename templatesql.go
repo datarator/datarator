@@ -36,19 +36,19 @@ func (template TemplateSQL) ContentType() string {
 }
 
 func (template TemplateSQL) getLinePrefix(chunk *Chunk) []byte {
-	if template.linePrefix != nil {
-		return template.linePrefix
+	if template.linePrefix == nil {
+		var buffer bytes.Buffer
+		buffer.WriteString("INSERT INTO ")
+		buffer.WriteString(template.schema.document)
+		buffer.WriteString(" ( ")
+		for _, column := range template.schema.columns {
+			buffer.WriteString(column.Column().name)
+			buffer.WriteString(", ")
+		}
+		buffer.Truncate(buffer.Len() - 2)
+		buffer.WriteString(" ) VALUES (")
+		template.linePrefix = buffer.Bytes()
 	}
 
-	var buffer bytes.Buffer
-	buffer.WriteString("INSERT INTO ")
-	buffer.WriteString(template.schema.document)
-	buffer.WriteString(" ( ")
-	for _, column := range template.schema.columns {
-		buffer.WriteString(column.Column().name)
-		buffer.WriteString(", ")
-	}
-	buffer.Truncate(buffer.Len() - 2)
-	buffer.WriteString(" ) VALUES (")
-	return buffer.Bytes()
+	return template.linePrefix
 }
