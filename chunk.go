@@ -13,7 +13,7 @@ type Chunk struct {
 }
 
 type Output struct {
-	out string
+	out []byte
 	err error
 }
 
@@ -28,14 +28,16 @@ func (cf ChunkProcessorFactory) CreateChunkProcessor() (ChunkProcessor, error) {
 	return ChunkProcessorSerial{}, nil
 }
 
-func processChunk(context *Chunk, template Template, doneChannel <-chan struct{}) <-chan Output {
+func processChunk(chunk *Chunk, template Template, doneChannel <-chan struct{}) <-chan Output {
 	outChannel := make(chan Output)
 	go func() {
 		defer close(outChannel)
-		out, err := template.Generate(context)
-		outChannel <- Output{
-			out: out,
-			err: err,
+		for chunk.index = chunk.from; chunk.index < chunk.to; chunk.index++ {
+			out, err := template.Generate(chunk)
+			outChannel <- Output{
+				out: out,
+				err: err,
+			}
 		}
 	}()
 

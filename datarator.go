@@ -87,10 +87,10 @@ func IrisAPI() *iris.Framework {
 						if err != nil {
 							// gzipping failed => go on in a non-gzipped way
 						} else {
-							out.out = gzipped.String()
+							out.out = gzipped.Bytes()
 						}
 					}
-					writer.WriteString(out.out)
+					writer.Write(out.out)
 				}
 			}
 		})
@@ -103,10 +103,10 @@ func IrisAPI() *iris.Framework {
 	return api
 }
 
-func pack(str string) (bytes.Buffer, error) {
+func pack(bytez []byte) (bytes.Buffer, error) {
 	var b bytes.Buffer
 	gz := gzip.NewWriter(&b)
-	if _, err := gz.Write([]byte(str)); err != nil {
+	if _, err := gz.Write(bytez); err != nil {
 		return b, err
 	}
 	if err := gz.Flush(); err != nil {

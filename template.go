@@ -15,7 +15,7 @@ type Schema struct {
 }
 
 type Template interface {
-	Generate(chunk *Chunk) (string, error)
+	Generate(chunk *Chunk) ([]byte, error)
 	ContentType() string
 }
 

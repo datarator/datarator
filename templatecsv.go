@@ -17,26 +17,27 @@ type TemplateCSV struct {
 	payload TemplateCSVPayload
 }
 
-func (template TemplateCSV) Generate(chunk *Chunk) (string, error) {
+func (template TemplateCSV) Generate(chunk *Chunk) ([]byte, error) {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(template.getHeader(chunk))
-
-	for chunk.index = chunk.from; chunk.index < chunk.to; chunk.index++ {
-		for _, column := range template.schema.columns {
-			val, err := column.Value(chunk)
-			if err != nil {
-				return "", err
-			}
-			chunk.values[column.Column().name] = val
-
-			buffer.WriteString(val)
-			buffer.WriteString(template.payload.Separator)
-		}
-		buffer.Truncate(buffer.Len() - len(template.payload.Separator))
-		buffer.WriteByte('\n')
+	if chunk.index == 0 {
+		buffer.WriteString(template.getHeader(chunk))
 	}
-	return buffer.String(), nil
+
+	for _, column := range template.schema.columns {
+		val, err := column.Value(chunk)
+		if err != nil {
+			return nil, err
+		}
+		chunk.values[column.Column().name] = val
+
+		buffer.WriteString(val)
+		buffer.WriteString(template.payload.Separator)
+	}
+
+	buffer.Truncate(buffer.Len() - len(template.payload.Separator))
+	buffer.WriteByte('\n')
+	return buffer.Bytes(), nil
 }
 
 func (template TemplateCSV) ContentType() string {

@@ -1,11 +1,14 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+)
 
 func TestTemplateXMLGenerate(t *testing.T) {
 	var tests = []struct {
 		inTemplate TemplateXML
-		inContext  Chunk
+		inChunk    Chunk
 		outValue   string
 	}{
 		{
@@ -41,7 +44,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     2,
 				values: make(map[string]string),
 			},
@@ -84,7 +87,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     1,
 				values: make(map[string]string),
 			},
@@ -127,7 +130,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     1,
 				values: make(map[string]string),
 			},
@@ -170,7 +173,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     1,
 				values: make(map[string]string),
 			},
@@ -250,7 +253,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 					},
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     2,
 				values: make(map[string]string),
 			},
@@ -259,8 +262,12 @@ func TestTemplateXMLGenerate(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inTemplate.Generate(&test.inContext)
-		if actual != test.outValue {
+		var actual bytes.Buffer
+		for test.inChunk.index = test.inChunk.from; test.inChunk.index < test.inChunk.to; test.inChunk.index++ {
+			bytes, _ := test.inTemplate.Generate(&test.inChunk)
+			actual.Write(bytes)
+		}
+		if actual.String() != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}
 	}

@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+)
 
 func TestTemplateCSVGenerate(t *testing.T) {
 	var tests = []struct {
@@ -101,8 +104,12 @@ func TestTemplateCSVGenerate(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inTemplate.Generate(&test.inChunk)
-		if actual != test.outValue {
+		var actual bytes.Buffer
+		for test.inChunk.index = test.inChunk.from; test.inChunk.index < test.inChunk.to; test.inChunk.index++ {
+			bytes, _ := test.inTemplate.Generate(&test.inChunk)
+			actual.Write(bytes)
+		}
+		if actual.String() != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}
 	}

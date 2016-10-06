@@ -1,11 +1,14 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+)
 
 func TestTemplateSQLGenerate(t *testing.T) {
 	var tests = []struct {
 		inTemplate TemplateSQL
-		inContext  Chunk
+		inChunk    Chunk
 		outValue   string
 	}{
 		{
@@ -37,7 +40,7 @@ func TestTemplateSQLGenerate(t *testing.T) {
 					document: "foo",
 				},
 			},
-			inContext: Chunk{
+			inChunk: Chunk{
 				to:     2,
 				values: make(map[string]string),
 			},
@@ -46,8 +49,12 @@ func TestTemplateSQLGenerate(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		actual, _ := test.inTemplate.Generate(&test.inContext)
-		if actual != test.outValue {
+		var actual bytes.Buffer
+		for test.inChunk.index = test.inChunk.from; test.inChunk.index < test.inChunk.to; test.inChunk.index++ {
+			bytes, _ := test.inTemplate.Generate(&test.inChunk)
+			actual.Write(bytes)
+		}
+		if actual.String() != test.outValue {
 			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
 		}
 	}

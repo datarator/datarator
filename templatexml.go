@@ -28,25 +28,16 @@ type TemplateXML struct {
 	payload TemplateXMLPayload
 }
 
-func (template TemplateXML) Generate(chunk *Chunk) (string, error) {
-	var buffer bytes.Buffer
-	for chunk.index = chunk.from; chunk.index < chunk.to; chunk.index++ {
-
-		generated, err := template.generate(template.schema.columns, chunk)
-		if err != nil {
-			return "", err
-		}
-
-		buffer.WriteString(generated)
-	}
-	return buffer.String(), nil
+func (template TemplateXML) Generate(chunk *Chunk) ([]byte, error) {
+	generated, err := template.generate(template.schema.columns, chunk)
+	return generated, err
 }
 
 func (template TemplateXML) ContentType() string {
 	return contentTypeXML
 }
 
-func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (string, error) {
+func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) ([]byte, error) {
 	var buffer bytes.Buffer
 	if columns != nil {
 		for _, column := range columns {
@@ -68,7 +59,7 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 						if nestedColumn.Payload().XmlType() == payloadXMLAttribute {
 							val, err := nestedColumn.Value(chunk)
 							if err != nil {
-								return "", err
+								return nil, err
 							}
 							chunk.values[column.Column().name] = val
 
@@ -89,10 +80,10 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 						parent: chunk,
 					})
 					if err != nil {
-						return "", err
+						return nil, err
 					}
 
-					buffer.WriteString(generated)
+					buffer.Write(generated)
 
 					// val, err := column.Value(chunk)
 					// if err != nil {
@@ -116,7 +107,7 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 			case payloadXMLValue:
 				val, err := column.Value(chunk)
 				if err != nil {
-					return "", err
+					return nil, err
 				}
 				chunk.values[column.Column().name] = val
 
@@ -124,7 +115,7 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 			case payloadXMLCdata:
 				val, err := column.Value(chunk)
 				if err != nil {
-					return "", err
+					return nil, err
 				}
 				chunk.values[column.Column().name] = val
 
@@ -135,7 +126,7 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 			case payloadXMLComment:
 				val, err := column.Value(chunk)
 				if err != nil {
-					return "", err
+					return nil, err
 				}
 				chunk.values[column.Column().name] = val
 
@@ -146,12 +137,12 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) (strin
 				buffer.WriteString("-->")
 				buffer.WriteByte('\n')
 			default:
-				return "", fmt.Errorf(errUnsupportedXMLType, column.Column().name, xmlType)
+				return nil, fmt.Errorf(errUnsupportedXMLType, column.Column().name, xmlType)
 			}
 		}
 
 	}
-	return buffer.String(), nil
+	return buffer.Bytes(), nil
 }
 
 func (template TemplateXML) getIndent(chunk *Chunk) string {
