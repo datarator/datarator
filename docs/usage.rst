@@ -16,10 +16,10 @@ Command line options
 Following are available::
 
     Application Options:
-    -e, --embed     Use embedded rather than external static resources
-    -l, --parallel  Use parallel processing, rather than serial one.
-    -p, --port=     Port to listen on (default: 9292)
-    -t, --timeout=  Timeout in [ms] for maximum request processing (default: 3000)
+    -c, --chunk=   The count of generated data returned in one chunk  (default: 1000)
+    -e, --embed    Use embedded rather than external static resources
+    -p, --port=    Port to listen on (default: 9292)
+    -t, --timeout= Timeout in [ms] for maximum request processing (default: 3000)
 
     Help Options:
     -h, --help      Show this help message
