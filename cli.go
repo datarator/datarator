@@ -9,11 +9,10 @@ import (
 )
 
 type options struct {
-	Embed    bool `short:"e" long:"embed" description:"Use embedded rather than external static resources"`
-	ManPage  bool `short:"m" long:"man" description:"Dump man page to stdout" hidden:"true"`
-	Parallel bool `short:"l" long:"parallel" description:"Use parallel processing, rather than serial one."`
-	Port     int  `short:"p" long:"port" description:"Port to listen on" default:"9292"`
-	Timeout  int  `short:"t" long:"timeout" description:"Timeout in [ms] for maximum request processing" default:"3000"`
+	Embed   bool `short:"e" long:"embed" description:"Use embedded rather than external static resources"`
+	ManPage bool `short:"m" long:"man" description:"Dump man page to stdout" hidden:"true"`
+	Port    int  `short:"p" long:"port" description:"Port to listen on" default:"9292"`
+	Timeout int  `short:"t" long:"timeout" description:"Timeout in [ms] for maximum request processing" default:"3000"`
 }
 
 var (

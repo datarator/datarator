@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"compress/gzip"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -14,20 +16,17 @@ import (
 
 const (
 	errStaticDataNotFound = "File: %s was not found"
+
+	// used for header: "Accept-Encoding" (to check if client supports compression)
+	strGzip = "gzip"
 )
 
 func IrisAPI() *iris.Framework {
 
 	api := iris.New()
 
-	// TODO Gzip
-	// iris.Config.Gzip = true
-
 	// define the api
 	api.Post("/api/schemas/:id", func(ctx *iris.Context) {
-
-		// TODO implement timeout
-		// time.After(time.Duration(*timeoutFlag) * time.Millisecond)
 
 		id := ctx.Param("id")
 		println("POST /api/schemas/" + id)
@@ -46,11 +45,11 @@ func IrisAPI() *iris.Framework {
 			return
 		}
 
-		ctx.SetContentType(template.ContentType())
-		ctx.StreamWriter(func(writer *bufio.Writer) {
-			// TODO Gzip
-			// ctx.Response.WriteGzip()
+		gzipAllowed := ctx.Request.Header.HasAcceptEncoding(strGzip)
 
+		ctx.SetContentType(template.ContentType())
+
+		ctx.StreamWriter(func(writer *bufio.Writer) {
 			processor, err := ChunkProcessorFactory{}.CreateChunkProcessor()
 			if err != nil {
 				emmitError(http.StatusInternalServerError, err.Error(), ctx)
@@ -82,7 +81,15 @@ func IrisAPI() *iris.Framework {
 						return
 					}
 
-					// ? TODO http://stackoverflow.com/questions/25171385/how-should-i-add-buffering-to-a-gzip-writer
+					// TODO optimize performance
+					if gzipAllowed {
+						gzipped, err := pack(out.out)
+						if err != nil {
+							// gzipping failed => go on in a non-gzipped way
+						} else {
+							out.out = gzipped.String()
+						}
+					}
 					writer.WriteString(out.out)
 				}
 			}
@@ -94,6 +101,21 @@ func IrisAPI() *iris.Framework {
 	})
 
 	return api
+}
+
+func pack(str string) (bytes.Buffer, error) {
+	var b bytes.Buffer
+	gz := gzip.NewWriter(&b)
+	if _, err := gz.Write([]byte(str)); err != nil {
+		return b, err
+	}
+	if err := gz.Flush(); err != nil {
+		return b, err
+	}
+	if err := gz.Close(); err != nil {
+		return b, err
+	}
+	return b, nil
 }
 
 func main() {
