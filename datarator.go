@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"compress/gzip"
 	"fmt"
 	"math/rand"
@@ -62,6 +61,11 @@ func IrisAPI() *iris.Framework {
 			outChannel := processor.Process(jSONSchema.Count, template, doneChannel)
 			timeoutChannel := time.After(time.Duration(opts.Timeout) * time.Millisecond)
 
+			var gzipWriter *gzip.Writer
+			if gzipAllowed {
+				gzipWriter = gzip.NewWriter(writer)
+			}
+
 			for {
 				select {
 				// timed out
@@ -75,22 +79,36 @@ func IrisAPI() *iris.Framework {
 						return
 					}
 
-					// channel closed
+					// if channel closed
 					if !ok {
+
+						if gzipAllowed {
+							if err := gzipWriter.Flush(); err != nil {
+								emmitError(http.StatusInternalServerError, err.Error(), ctx)
+								return
+							}
+							if err := gzipWriter.Close(); err != nil {
+								emmitError(http.StatusInternalServerError, err.Error(), ctx)
+								return
+							}
+						}
+
 						writer.Flush()
 						return
 					}
 
-					// TODO optimize performance
 					if gzipAllowed {
-						gzipped, err := pack(out.out)
-						if err != nil {
-							// gzipping failed => go on in a non-gzipped way
-						} else {
-							out.out = gzipped.Bytes()
+						if _, err := gzipWriter.Write(out.out); err != nil {
+							emmitError(http.StatusInternalServerError, err.Error(), ctx)
+							return
 						}
+					} else {
+						if _, err := writer.Write(out.out); err != nil {
+							emmitError(http.StatusInternalServerError, err.Error(), ctx)
+							return
+						}
+
 					}
-					writer.Write(out.out)
 				}
 			}
 		})
@@ -101,21 +119,6 @@ func IrisAPI() *iris.Framework {
 	})
 
 	return api
-}
-
-func pack(bytez []byte) (bytes.Buffer, error) {
-	var b bytes.Buffer
-	gz := gzip.NewWriter(&b)
-	if _, err := gz.Write(bytez); err != nil {
-		return b, err
-	}
-	if err := gz.Flush(); err != nil {
-		return b, err
-	}
-	if err := gz.Close(); err != nil {
-		return b, err
-	}
-	return b, nil
 }
 
 func main() {

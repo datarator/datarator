@@ -14,6 +14,7 @@ func irisTester(t *testing.T) *httpexpect.Expect {
 	api := IrisAPI()
 
 	opts.Timeout = defaultTimeout
+	opts.ChunkSize = 1000
 
 	return httpexpect.WithConfig(httpexpect.Config{
 		Client: &http.Client{
@@ -34,37 +35,49 @@ func TestCsv(t *testing.T) {
 
 	var tests = []struct {
 		inFile         string
+		headers        map[string]string
 		outFile        string
 		outContentType string
 	}{
 		{
 			inFile:         "./testresource/csv_const_in.json",
 			outFile:        "./testresource/csv_const_out",
+			headers:        make(map[string]string),
+			outContentType: "text/csv",
+		},
+		{
+			inFile:         "./testresource/csv_const_in.json",
+			outFile:        "./testresource/csv_const_out.gz",
+			headers:        map[string]string{"Accept-Encoding": "gzip,deflate"},
 			outContentType: "text/csv",
 		},
 		{
 			inFile:         "./testresource/csv_join_in.json",
 			outFile:        "./testresource/csv_join_out",
+			headers:        make(map[string]string),
 			outContentType: "text/csv",
 		},
 		{
 			inFile:         "./testresource/csv_regex_in.json",
 			outFile:        "./testresource/csv_regex_out",
+			headers:        make(map[string]string),
 			outContentType: "text/csv",
 		},
 		{
-			inFile:         "./testresource/sql_const_in.json",
-			outFile:        "./testresource/sql_const_out",
+			inFile:  "./testresource/sql_const_in.json",
+			outFile: "./testresource/sql_const_out", headers: make(map[string]string),
 			outContentType: "text/sql",
 		},
 		{
 			inFile:         "./testresource/xml_flat_in.json",
 			outFile:        "./testresource/xml_flat_out",
+			headers:        make(map[string]string),
 			outContentType: "text/xml",
 		},
 		{
 			inFile:         "./testresource/xml_misc_xml_payload_in.json",
 			outFile:        "./testresource/xml_misc_xml_payload_out",
+			headers:        make(map[string]string),
 			outContentType: "text/xml",
 		},
 	}
@@ -82,7 +95,8 @@ func TestCsv(t *testing.T) {
 
 		irisTest := irisTester(t)
 
-		irisTest.POST("/api/schemas/foo").WithBytes(in).
+		irisTest.POST("/api/schemas/foo").
+			WithHeaders(test.headers).WithBytes(in).
 			Expect().
 			Status(http.StatusOK).
 			ContentType(test.outContentType).
