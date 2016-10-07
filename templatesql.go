@@ -21,12 +21,13 @@ func (template TemplateSQL) Generate(chunk *Chunk) ([]byte, error) {
 			return nil, err
 		}
 		chunk.values[column.Column().name] = val
-		buffer.WriteString(" '")
+		buffer.WriteByte('\'')
 		buffer.WriteString(val)
-		buffer.WriteString("',")
+		buffer.WriteByte('\'')
+		buffer.WriteByte(',')
 	}
 	buffer.Truncate(buffer.Len() - 1)
-	buffer.WriteString(" );")
+	buffer.WriteString(");")
 	buffer.WriteByte('\n')
 	return buffer.Bytes(), nil
 }
@@ -40,13 +41,13 @@ func (template TemplateSQL) getLinePrefix(chunk *Chunk) []byte {
 		var buffer bytes.Buffer
 		buffer.WriteString("INSERT INTO ")
 		buffer.WriteString(template.schema.document)
-		buffer.WriteString(" ( ")
+		buffer.WriteString(" (")
 		for _, column := range template.schema.columns {
 			buffer.WriteString(column.Column().name)
-			buffer.WriteString(", ")
+			buffer.WriteByte(',')
 		}
-		buffer.Truncate(buffer.Len() - 2)
-		buffer.WriteString(" ) VALUES (")
+		buffer.Truncate(buffer.Len() - 1)
+		buffer.WriteString(") VALUES (")
 		template.linePrefix = buffer.Bytes()
 	}
 
