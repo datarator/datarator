@@ -15,7 +15,7 @@ type Column struct {
 	name         string
 	columns      []TypedColumn
 	emptyIndeces []int
-	locale       string
+	// locale       string
 }
 
 type TypedColumn interface {
