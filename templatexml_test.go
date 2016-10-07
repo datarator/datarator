@@ -268,7 +268,7 @@ func TestTemplateXMLGenerate(t *testing.T) {
 			actual.Write(bytes)
 		}
 		if actual.String() != test.outValue {
-			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
+			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual.String())
 		}
 	}
 }

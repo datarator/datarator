@@ -44,7 +44,7 @@ func TestTemplateSQLGenerate(t *testing.T) {
 				to:     2,
 				values: make(map[string]string),
 			},
-			outValue: "INSERT INTO foo ( col1, col2 ) VALUES ( 'Hello', 'datarator' );\nINSERT INTO foo ( col1, col2 ) VALUES ( 'Hello', 'datarator' );\n",
+			outValue: "INSERT INTO foo (col1,col2) VALUES ('Hello','datarator');\nINSERT INTO foo (col1,col2) VALUES ('Hello','datarator');\n",
 		},
 	}
 
@@ -55,7 +55,7 @@ func TestTemplateSQLGenerate(t *testing.T) {
 			actual.Write(bytes)
 		}
 		if actual.String() != test.outValue {
-			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual)
+			t.Fatalf("Expected: %v\nActual: %v", test.outValue, actual.String())
 		}
 	}
 }
