@@ -15,7 +15,8 @@ import (
 
 const (
 	errStaticDataNotFound = "File: %s was not found"
-
+	// represents the header["Content-Encoding"]
+	contentEncodingHeader = "Content-Encoding"
 	// used for header: "Accept-Encoding" (to check if client supports compression)
 	strGzip = "gzip"
 )
@@ -47,6 +48,9 @@ func IrisAPI() *iris.Framework {
 		gzipAllowed := ctx.Request.Header.HasAcceptEncoding(strGzip)
 
 		ctx.SetContentType(template.ContentType())
+		if gzipAllowed {
+			ctx.SetHeader(contentEncodingHeader, strGzip)
+		}
 
 		ctx.StreamWriter(func(writer *bufio.Writer) {
 			processor, err := ChunkProcessorFactory{}.CreateChunkProcessor()
