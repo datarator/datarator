@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type creditCard struct {
@@ -74,7 +73,6 @@ func generateWithPrefix(size int, prefix []int) []int {
 }
 
 func randomIntSlice(size int) []int {
-	rand.Seed(time.Now().UTC().UnixNano())
 	result := make([]int, size)
 
 	for i := 0; i < size; i++ {

@@ -2,8 +2,10 @@ package httpexpect
 
 import (
 	"bytes"
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"net/http/httptest"
 
@@ -17,7 +19,10 @@ import (
 // directly. It passes httptest.ResponseRecorder as http.ResponseWriter
 // to the handler, and then constructs http.Response from recorded data.
 type Binder struct {
-	handler http.Handler
+	// HTTP handler invoked for every request.
+	Handler http.Handler
+	// TLS connection state used for https:// requests.
+	TLS *tls.ConnectionState
 }
 
 // NewBinder returns a new Binder given a http.Handler.
@@ -27,7 +32,7 @@ type Binder struct {
 //       Transport: NewBinder(handler),
 //   }
 func NewBinder(handler http.Handler) Binder {
-	return Binder{handler}
+	return Binder{Handler: handler}
 }
 
 // RoundTrip implements http.RoundTripper.RoundTrip.
@@ -44,9 +49,17 @@ func (binder Binder) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = ioutil.NopCloser(bytes.NewReader(nil))
 	}
 
+	if req.URL != nil && req.URL.Scheme == "https" && binder.TLS != nil {
+		req.TLS = binder.TLS
+	}
+
+	if req.RequestURI == "" {
+		req.RequestURI = req.URL.RequestURI()
+	}
+
 	recorder := httptest.NewRecorder()
 
-	binder.handler.ServeHTTP(recorder, req)
+	binder.Handler.ServeHTTP(recorder, req)
 
 	resp := http.Response{
 		Request:    req,
@@ -69,11 +82,14 @@ func (binder Binder) RoundTrip(req *http.Request) (*http.Response, error) {
 // FastBinder implements networkless http.RoundTripper attached directly
 // to fasthttp.RequestHandler.
 //
-// FastBinder emulates network communication by invoking given http.Handler
-// directly. It passes converts http.Request to fasthttp.Request, invokes
-// handler, and then converts fasthttp.Response to http.Response.
+// FastBinder emulates network communication by invoking given fasthttp.RequestHandler
+// directly. It converts http.Request to fasthttp.Request, invokes handler, and then
+// converts fasthttp.Response to http.Response.
 type FastBinder struct {
-	handler fasthttp.RequestHandler
+	// FastHTTP handler invoked for every request.
+	Handler fasthttp.RequestHandler
+	// TLS connection state used for https:// requests.
+	TLS *tls.ConnectionState
 }
 
 // NewFastBinder returns a new FastBinder given a fasthttp.RequestHandler.
@@ -83,18 +99,23 @@ type FastBinder struct {
 //       Transport: NewFastBinder(fasthandler),
 //   }
 func NewFastBinder(handler fasthttp.RequestHandler) FastBinder {
-	return FastBinder{handler}
+	return FastBinder{Handler: handler}
 }
 
 // RoundTrip implements http.RoundTripper.RoundTrip.
 func (binder FastBinder) RoundTrip(stdreq *http.Request) (*http.Response, error) {
-	var fastreq fasthttp.Request
+	fastreq := std2fast(stdreq)
 
-	convertRequest(stdreq, &fastreq)
+	var conn net.Conn
+	if stdreq.URL != nil && stdreq.URL.Scheme == "https" && binder.TLS != nil {
+		conn = connTLS{state: binder.TLS}
+	} else {
+		conn = connNonTLS{}
+	}
 
-	var ctx fasthttp.RequestCtx
-
-	ctx.Init(&fastreq, nil, nil)
+	ctx := fasthttp.RequestCtx{}
+	ctx.Init2(conn, fastLogger{}, true)
+	fastreq.CopyTo(&ctx.Request)
 
 	if stdreq.ContentLength >= 0 {
 		ctx.Request.Header.SetContentLength(int(stdreq.ContentLength))
@@ -109,12 +130,13 @@ func (binder FastBinder) RoundTrip(stdreq *http.Request) (*http.Response, error)
 		}
 	}
 
-	binder.handler(&ctx)
+	binder.Handler(&ctx)
 
-	return convertResponse(stdreq, &ctx.Response), nil
+	return fast2std(stdreq, &ctx.Response), nil
 }
 
-func convertRequest(stdreq *http.Request, fastreq *fasthttp.Request) {
+func std2fast(stdreq *http.Request) *fasthttp.Request {
+	fastreq := &fasthttp.Request{}
 	fastreq.SetRequestURI(stdreq.URL.String())
 
 	fastreq.Header.SetMethod(stdreq.Method)
@@ -128,9 +150,11 @@ func convertRequest(stdreq *http.Request, fastreq *fasthttp.Request) {
 			}
 		}
 	}
+
+	return fastreq
 }
 
-func convertResponse(stdreq *http.Request, fastresp *fasthttp.Response) *http.Response {
+func fast2std(stdreq *http.Request, fastresp *fasthttp.Response) *http.Response {
 	status := fastresp.Header.StatusCode()
 	body := fastresp.Body()
 
@@ -160,4 +184,31 @@ func convertResponse(stdreq *http.Request, fastresp *fasthttp.Response) *http.Re
 	}
 
 	return stdresp
+}
+
+type fastLogger struct{}
+
+func (fastLogger) Printf(format string, args ...interface{}) {
+	_, _ = format, args
+}
+
+type connNonTLS struct {
+	net.Conn
+}
+
+func (connNonTLS) RemoteAddr() net.Addr {
+	return &net.TCPAddr{IP: net.IPv4zero}
+}
+
+func (connNonTLS) LocalAddr() net.Addr {
+	return &net.TCPAddr{IP: net.IPv4zero}
+}
+
+type connTLS struct {
+	connNonTLS
+	state *tls.ConnectionState
+}
+
+func (c connTLS) ConnectionState() tls.ConnectionState {
+	return *c.state
 }

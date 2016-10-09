@@ -2,11 +2,10 @@ package websocket
 
 import (
 	"net"
-	"net/url"
 	"strings"
 	"time"
 
-	"github.com/kataras/iris/context"
+	"github.com/kataras/go-websocket"
 	"github.com/valyala/fasthttp"
 )
 
@@ -67,9 +66,13 @@ const (
 // HandshakeError describes an error with the handshake from the peer.
 type HandshakeError struct {
 	message string
+	status  int
 }
 
 func (e HandshakeError) Error() string { return e.message }
+
+// Status returns the status code of this HandshakeError
+func (e HandshakeError) Status() int { return e.status }
 
 // Upgrader specifies parameters for upgrading an HTTP connection to a
 // WebSocket connection.
@@ -88,55 +91,21 @@ type Upgrader struct {
 	// requested by the client.
 	Subprotocols []string
 
-	// Error specifies the function for generating HTTP error responses.
-	Error func(ctx context.IContext, status int, reason error)
-
-	// CheckOrigin returns true if the request Origin header is acceptable. If
-	// CheckOrigin is nil, the host in the Origin header must not be set or
-	// must match the host of the request.
-	CheckOrigin func(ctx context.IContext) bool
-
-	//Receiver it's the receiver handler, acceps a *websocket.Conn
-	Receiver func(*Conn)
+	//Receiver it's the receiver handler, acceps a kataras/go-websocket.UnderlineConnection
+	Receiver func(websocket.UnderlineConnection)
 
 	// Headers  if true then the client's headers are copy to the websocket connection
 	Headers bool
 }
 
-// DontCheckOrigin set Upgrader.CheckOrigin to a function which always returns true
-// returns itself
-func (u *Upgrader) DontCheckOrigin() *Upgrader {
-	u.CheckOrigin = func(ctx context.IContext) bool {
-		return true
-	}
-	return u
-}
-
-func (u *Upgrader) returnError(ctx context.IContext, status int, reason string) error {
-	err := HandshakeError{reason}
-	if u.Error != nil {
-		u.Error(ctx, status, err)
-	} else {
-		ctx.EmitError(status)
-	}
+func (u *Upgrader) returnError(ctx *fasthttp.RequestCtx, status int, reason string) error {
+	err := HandshakeError{reason, status}
+	// after iris v4.5.0 these errors are managed from Iris Websocket's configuration
 	return err
 }
 
-// checkSameOrigin returns true if the origin is not set or is equal to the request host.
-func checkSameOrigin(ctx context.IContext) bool {
-	origin := ctx.RequestHeader("Origin")
-	if len(origin) == 0 {
-		return true
-	}
-	u, err := url.Parse(origin)
-	if err != nil {
-		return false
-	}
-	return u.Host == string(ctx.HostString())
-}
+func (u *Upgrader) selectSubprotocol(ctx *fasthttp.RequestCtx) string {
 
-func (u *Upgrader) selectSubprotocol(ctx context.IContext) string {
-	responseHeader := ctx.GetRequestCtx().Response.Header
 	if u.Subprotocols != nil {
 		clientProtocols := Subprotocols(ctx)
 		for _, serverProtocol := range u.Subprotocols {
@@ -146,20 +115,20 @@ func (u *Upgrader) selectSubprotocol(ctx context.IContext) string {
 				}
 			}
 		}
-	} else if responseHeader.Len() > 0 {
-		return string(responseHeader.Peek("Sec-Websocket-Protocol"))
+	} else if ctx.Response.Header.Len() > 0 {
+		return string(ctx.Response.Header.Peek("Sec-Websocket-Protocol"))
 	}
 	return ""
 }
 
-func (u *Upgrader) getSubprotocol(ctx context.IContext) (subprotocol string) {
+func (u *Upgrader) getSubprotocol(ctx *fasthttp.RequestCtx) (subprotocol string) {
 	//first of all check if we have already that setted
-	if h := string(ctx.GetRequestCtx().Response.Header.Peek("Sec-Websocket-Protocol")); h != "" {
+	if h := string(ctx.Response.Header.Peek("Sec-Websocket-Protocol")); h != "" {
 		subprotocol = h
 		return
 	}
 
-	header := string(ctx.GetRequestCtx().Request.Header.Peek("Sec-Websocket-Protocol"))
+	header := string(ctx.Request.Header.Peek("Sec-Websocket-Protocol"))
 	if len(header) > 0 {
 		protocols := strings.Split(header, ",")
 		for i := range protocols {
@@ -169,7 +138,7 @@ func (u *Upgrader) getSubprotocol(ctx context.IContext) (subprotocol string) {
 		if len(protocols) > 0 {
 			subprotocol = checkSubprotocols(protocols, u.Subprotocols)
 			if subprotocol != "" {
-				ctx.GetRequestCtx().Response.Header.Set("Sec-Websocket-Protocol", subprotocol)
+				ctx.Response.Header.Set("Sec-Websocket-Protocol", subprotocol)
 			}
 		}
 	}
@@ -197,40 +166,32 @@ func checkSubprotocols(reqProtocols []string, resProtocols []string) string {
 //
 // If the upgrade fails, then Upgrade replies to the client with an HTTP error
 // response.
-func (u *Upgrader) Upgrade(ctx context.IContext) error {
-	if !ctx.GetRequestCtx().IsGet() {
+func (u *Upgrader) Upgrade(ctx *fasthttp.RequestCtx) error {
+	if !ctx.IsGet() {
 		return u.returnError(ctx, StatusMethodNotAllowed, "websocket: method not GET")
 	}
-	if ctx.RequestHeader("Sec-Websocket-Version") != "13" {
+	if string(ctx.Request.Header.Peek("Sec-Websocket-Version")) != "13" {
 		return u.returnError(ctx, StatusBadRequest, "websocket: version != 13")
 	}
 
-	if !ctx.GetRequestCtx().Request.Header.ConnectionUpgrade() {
+	if !ctx.Request.Header.ConnectionUpgrade() {
 		return u.returnError(ctx, StatusBadRequest, "websocket: could not find connection header with token 'upgrade'")
 	}
 
-	if !tokenListContainsValue(ctx.RequestHeader("Upgrade"), "websocket") {
+	if !tokenListContainsValue(string(ctx.Request.Header.Peek("Upgrade")), "websocket") {
 		return u.returnError(ctx, StatusBadRequest, "websocket: could not find upgrade header with token 'websocket'")
 	}
 
-	checkOrigin := u.CheckOrigin
-	if checkOrigin == nil {
-		checkOrigin = checkSameOrigin
-	}
-	if !checkOrigin(ctx) {
-		return u.returnError(ctx, StatusForbidden, "websocket: origin not allowed")
-	}
-
-	challengeKey := ctx.RequestHeader("Sec-Websocket-Key")
+	challengeKey := string(ctx.Request.Header.Peek("Sec-Websocket-Key"))
 	if challengeKey == "" {
 		return u.returnError(ctx, StatusBadRequest, "websocket: key missing or blank")
 	}
 
 	//set the headers
-	ctx.SetStatusCode(StatusSwitchingProtocols)
-	ctx.GetRequestCtx().Response.Header.Set("Upgrade", "websocket")
-	ctx.GetRequestCtx().Response.Header.Set("Connection", "Upgrade")
-	ctx.GetRequestCtx().Response.Header.Set("Sec-Websocket-Accept", computeAcceptKey(challengeKey))
+	ctx.Response.SetStatusCode(StatusSwitchingProtocols)
+	ctx.Response.Header.Set("Upgrade", "websocket")
+	ctx.Response.Header.Set("Connection", "Upgrade")
+	ctx.Response.Header.Set("Sec-Websocket-Accept", computeAcceptKey(challengeKey))
 
 	subprotocol := u.selectSubprotocol(ctx)
 
@@ -306,9 +267,9 @@ func (u *Upgrader) Upgrade(ctx context.IContext) error {
 	h := &fasthttp.RequestHeader{}
 	if u.Headers {
 		//copy request headers in order to have access inside the Conn after
-		ctx.GetRequestCtx().Request.Header.CopyTo(h)
+		ctx.Request.Header.CopyTo(h)
 	}
-	ctx.GetRequestCtx().Hijack(func(conn net.Conn) {
+	ctx.Hijack(func(conn net.Conn) {
 		c := newConn(conn, true, u.ReadBufferSize, u.WriteBufferSize)
 		if u.Headers {
 			c.SetHeaders(h)
@@ -340,15 +301,9 @@ func (u *Upgrader) Upgrade(ctx context.IContext) error {
 // If the request is not a valid WebSocket handshake, then Upgrade returns an
 // error of type HandshakeError. Applications should handle this error by
 // replying to the client with an HTTP error response.
-func Upgrade(ctx context.IContext, receiverHandler func(*Conn), readBufSize, writeBufSize int) error {
+func Upgrade(ctx *fasthttp.RequestCtx, receiverHandler func(websocket.UnderlineConnection), readBufSize, writeBufSize int) error {
 	u := Upgrader{ReadBufferSize: readBufSize, WriteBufferSize: writeBufSize, Receiver: receiverHandler}
-	u.Error = func(ctx context.IContext, status int, reason error) {
-		// don't return errors to maintain backwards compatibility
-	}
-	u.CheckOrigin = func(ctx context.IContext) bool {
-		// allow all connections by default
-		return true
-	}
+
 	return u.Upgrade(ctx)
 }
 
@@ -357,29 +312,23 @@ func Upgrade(ctx context.IContext, receiverHandler func(*Conn), readBufSize, wri
 // first parameter is the receiver, think it like a handler which accepts a *websocket.Conn (func *websocket.Conn)
 // second parameter is the readBufSize (int)
 // third parameter is the writeBufSize (int)
-func Custom(receiverHandler func(*Conn), readBufSize, writeBufSize int, copyheaders bool) Upgrader {
+func Custom(receiverHandler func(websocket.UnderlineConnection), readBufSize, writeBufSize int, copyheaders bool) Upgrader {
 	u := Upgrader{ReadBufferSize: readBufSize, WriteBufferSize: writeBufSize, Receiver: receiverHandler, Headers: copyheaders}
-	u.Error = func(ctx context.IContext, status int, reason error) {
-		// don't return errors to maintain backwards compatibility
-	}
-	u.CheckOrigin = func(ctx context.IContext) bool {
-		// allow all connections by default
-		return true
-	}
+
 	return u
 }
 
 // New returns an Upgrader with the default options
 // accepts one parameter
 // the receiver, think it like a handler which accepts a *websocket.Conn (func *websocket.Conn)
-func New(receiverHandler func(*Conn)) Upgrader {
+func New(receiverHandler func(websocket.UnderlineConnection)) Upgrader {
 	return Custom(receiverHandler, 4096, 4096, true)
 }
 
 // Subprotocols returns the subprotocols requested by the client in the
 // Sec-Websocket-Protocol header.
-func Subprotocols(ctx context.IContext) []string {
-	h := strings.TrimSpace(ctx.RequestHeader("Sec-Websocket-Protocol"))
+func Subprotocols(ctx *fasthttp.RequestCtx) []string {
+	h := strings.TrimSpace(string(ctx.Request.Header.Peek("Sec-Websocket-Protocol")))
 	if h == "" {
 		return nil
 	}
@@ -392,7 +341,7 @@ func Subprotocols(ctx context.IContext) []string {
 
 // IsWebSocketUpgrade returns true if the client requested upgrade to the
 // WebSocket protocol.
-func IsWebSocketUpgrade(ctx context.IContext) bool {
-	return tokenListContainsValue(ctx.RequestHeader("Connection"), "upgrade") &&
-		tokenListContainsValue(ctx.RequestHeader("Upgrade"), "websocket")
+func IsWebSocketUpgrade(ctx *fasthttp.RequestCtx) bool {
+	return tokenListContainsValue(string(ctx.Request.Header.Peek("Connection")), "upgrade") &&
+		tokenListContainsValue(string(ctx.Request.Header.Peek("Upgrade")), "websocket")
 }

@@ -81,6 +81,40 @@ func (a *Array) Element(index int) *Value {
 	return &Value{a.chain, a.value[index]}
 }
 
+// First returns a new Value object that may be used to inspect first element
+// of given array.
+//
+// If given array is empty, First reports failure and returns empty
+// (but non-nil) value.
+//
+// Example:
+//  array := NewArray(t, []interface{}{"foo", 123})
+//  array.First().String().Equal("foo")
+func (a *Array) First() *Value {
+	if len(a.value) < 1 {
+		a.chain.fail("\narray is empty")
+		return &Value{a.chain, nil}
+	}
+	return &Value{a.chain, a.value[0]}
+}
+
+// Last returns a new Value object that may be used to inspect last element
+// of given array.
+//
+// If given array is empty, Last reports failure and returns empty
+// (but non-nil) value.
+//
+// Example:
+//  array := NewArray(t, []interface{}{"foo", 123})
+//  array.Last().Number().Equal(123)
+func (a *Array) Last() *Value {
+	if len(a.value) < 1 {
+		a.chain.fail("\narray is empty")
+		return &Value{a.chain, nil}
+	}
+	return &Value{a.chain, a.value[len(a.value)-1]}
+}
+
 // Iter returns a new slice of Values attached to array elements.
 //
 // Example:
@@ -101,7 +135,7 @@ func (a *Array) Iter() []Value {
 	return ret
 }
 
-// Empty succeedes if array is empty.
+// Empty succeeds if array is empty.
 //
 // Example:
 //  array := NewArray(t, []interface{}{})
@@ -110,7 +144,7 @@ func (a *Array) Empty() *Array {
 	return a.Equal([]interface{}{})
 }
 
-// NotEmpty succeedes if array is non-empty.
+// NotEmpty succeeds if array is non-empty.
 //
 // Example:
 //  array := NewArray(t, []interface{}{"foo", 123})
@@ -119,7 +153,7 @@ func (a *Array) NotEmpty() *Array {
 	return a.NotEqual([]interface{}{})
 }
 
-// Equal succeedes if array is equal to another array.
+// Equal succeeds if array is equal to another array.
 // Before comparison, both arrays are converted to canonical form.
 //
 // value should be slice of any type.
@@ -147,7 +181,7 @@ func (a *Array) Equal(value interface{}) *Array {
 	return a
 }
 
-// NotEqual succeedes if array is not equal to another array.
+// NotEqual succeeds if array is not equal to another array.
 // Before comparison, both arrays are converted to canonical form.
 //
 // value should be slice of any type.
@@ -167,7 +201,7 @@ func (a *Array) NotEqual(value interface{}) *Array {
 	return a
 }
 
-// Elements succeedes if array contains all given elements, in given order, and only them.
+// Elements succeeds if array contains all given elements, in given order, and only them.
 // Before comparison, array and all elements are converted to canonical form.
 //
 // For partial or unordered comparison, see Contains and ContainsOnly.
@@ -183,7 +217,7 @@ func (a *Array) Elements(values ...interface{}) *Array {
 	return a.Equal(values)
 }
 
-// Contains succeedes if array contains all given elements (in any order).
+// Contains succeeds if array contains all given elements (in any order).
 // Before comparison, array and all elements are converted to canonical form.
 //
 // Example:
@@ -203,7 +237,7 @@ func (a *Array) Contains(values ...interface{}) *Array {
 	return a
 }
 
-// NotContains succeedes if array contains none of given elements.
+// NotContains succeeds if array contains none of given elements.
 // Before comparison, array and all elements are converted to canonical form.
 //
 // Example:
@@ -224,7 +258,7 @@ func (a *Array) NotContains(values ...interface{}) *Array {
 	return a
 }
 
-// ContainsOnly succeedes if array contains all given elements, in any order, and only
+// ContainsOnly succeeds if array contains all given elements, in any order, and only
 // them. Before comparison, array and all elements are converted to canonical form.
 //
 // Example:

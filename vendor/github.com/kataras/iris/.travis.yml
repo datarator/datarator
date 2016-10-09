@@ -1,5 +1,4 @@
 language: go
 
 go:
-  - go1.6
-  - tip
+  - go1.7

@@ -1,7 +1,3 @@
-/*
-Context.go  Implements: ./context/context.go
-*/
-
 package iris
 
 import (
@@ -18,15 +14,13 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
-	"github.com/iris-contrib/errors"
 	"github.com/iris-contrib/formBinder"
-	"github.com/kataras/iris/config"
-	"github.com/kataras/iris/context"
+	"github.com/kataras/go-errors"
+	"github.com/kataras/go-fs"
+	"github.com/kataras/go-sessions"
 	"github.com/kataras/iris/utils"
-	"github.com/klauspost/compress/gzip"
 	"github.com/valyala/fasthttp"
 )
 
@@ -49,8 +43,11 @@ const (
 	contentBinary = "application/octet-stream"
 	// ContentJSON header value for JSON data.
 	contentJSON = "application/json"
-	// ContentJSONP header value for JSONP data.
+	// ContentJSONP header value for JSONP & Javascript data.
 	contentJSONP = "application/javascript"
+	// ContentJavascript header value for Javascript/JSONP
+	// conversional
+	contentJavascript = "application/javascript"
 	// ContentText header value for Text data.
 	contentText = "text/plain"
 	// ContentXML header value for XML data.
@@ -74,9 +71,6 @@ const (
 	cookieHeaderID               = "Cookie: "
 	cookieHeaderIDLen            = len(cookieHeaderID)
 )
-
-// this pool is used everywhere needed in the iris for example inside party-> Static
-var gzipWriterPool = sync.Pool{New: func() interface{} { return &gzip.Writer{} }}
 
 // errors
 
@@ -104,13 +98,11 @@ type (
 		framework *Framework
 		//keep track all registed middleware (handlers)
 		middleware Middleware
-		session    *session
+		session    sessions.Session
 		// pos is the position number of the Context, look .Next to understand
 		pos uint8
 	}
 )
-
-var _ context.IContext = &Context{}
 
 // GetRequestCtx returns the current fasthttp context
 func (ctx *Context) GetRequestCtx() *fasthttp.RequestCtx {
@@ -207,7 +199,7 @@ func (ctx *Context) HostString() string {
 func (ctx *Context) VirtualHostname() string {
 	realhost := ctx.HostString()
 	hostname := realhost
-	virtualhost := ctx.framework.Servers.Main().Hostname()
+	virtualhost := ctx.framework.mux.hostname
 
 	if portIdx := strings.IndexByte(hostname, ':'); portIdx > 0 {
 		hostname = hostname[0:portIdx]
@@ -277,6 +269,13 @@ func (ctx *Context) RemoteAddr() string {
 // returns string
 func (ctx *Context) RequestHeader(k string) string {
 	return utils.BytesToString(ctx.RequestCtx.Request.Header.Peek(k))
+}
+
+// IsAjax returns true if this request is an 'ajax request'( XMLHttpRequest)
+//
+// Read more at: http://www.w3schools.com/ajax/
+func (ctx *Context) IsAjax() bool {
+	return ctx.RequestHeader("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 }
 
 // FormValueString returns a single value, as string, from post request's data
@@ -365,33 +364,65 @@ func (ctx *Context) Subdomain() (subdomain string) {
 	return
 }
 
+// BodyDecoder is an interface which any struct can implement in order to customize the decode action
+// from ReadJSON and ReadXML
+//
+// Trivial example of this could be:
+// type User struct { Username string }
+//
+// func (u *User) Decode(data []byte) error {
+//	  return json.Unmarshal(data, u)
+// }
+//
+// the 'context.ReadJSON/ReadXML(&User{})' will call the User's
+// Decode option to decode the request body
+//
+// Note: This is totally optionally, the default decoders
+// for ReadJSON is the encoding/json and for ReadXML is the encoding/xml
+type BodyDecoder interface {
+	Decode(data []byte) error
+}
+
 // ReadJSON reads JSON from request's body
 func (ctx *Context) ReadJSON(jsonObject interface{}) error {
-	data := ctx.RequestCtx.Request.Body()
+	rawData := ctx.Request.Body()
 
-	decoder := json.NewDecoder(strings.NewReader(string(data)))
-	err := decoder.Decode(jsonObject)
-
-	//err != nil fix by @shiena
-	if err != nil && err != io.EOF {
-		return errReadBody.Format("JSON", err.Error())
+	// check if the jsonObject contains its own decode
+	// in this case the jsonObject should be a pointer also,
+	// but this is up to the user's custom Decode implementation*
+	//
+	// See 'BodyDecoder' for more
+	if decoder, isDecoder := jsonObject.(BodyDecoder); isDecoder {
+		return decoder.Decode(rawData)
 	}
 
-	return nil
+	// check if jsonObject is already a pointer, if yes then pass as it's
+	if reflect.TypeOf(jsonObject).Kind() == reflect.Ptr {
+		return json.Unmarshal(rawData, jsonObject)
+	}
+	// finally, if the jsonObject doesn't contains a self-body decoder and it's not a pointer
+	return json.Unmarshal(rawData, &jsonObject)
 }
 
 // ReadXML reads XML from request's body
 func (ctx *Context) ReadXML(xmlObject interface{}) error {
-	data := ctx.RequestCtx.Request.Body()
+	rawData := ctx.Request.Body()
 
-	decoder := xml.NewDecoder(strings.NewReader(string(data)))
-	err := decoder.Decode(xmlObject)
-	//err != nil fix by @shiena
-	if err != nil && err != io.EOF {
-		return errReadBody.Format("XML", err.Error())
+	// check if the xmlObject contains its own decode
+	// in this case the jsonObject should be a pointer also,
+	// but this is up to the user's custom Decode implementation*
+	//
+	// See 'BodyDecoder' for more
+	if decoder, isDecoder := xmlObject.(BodyDecoder); isDecoder {
+		return decoder.Decode(rawData)
 	}
 
-	return nil
+	// check if xmlObject is already a pointer, if yes then pass as it's
+	if reflect.TypeOf(xmlObject).Kind() == reflect.Ptr {
+		return xml.Unmarshal(rawData, xmlObject)
+	}
+	// finally, if the xmlObject doesn't contains a self-body decoder and it's not a pointer
+	return xml.Unmarshal(rawData, &xmlObject)
 }
 
 // ReadForm binds the formObject  with the form data
@@ -407,7 +438,7 @@ func (ctx *Context) ReadForm(formObject interface{}) error {
 	// if no multipart and post arguments ( means normal form)
 
 	if reqCtx.PostArgs().Len() == 0 && reqCtx.QueryArgs().Len() == 0 {
-		return errReadBody.With(errNoForm.Return())
+		return errReadBody.With(errNoForm)
 	}
 
 	form := make(map[string][]string, reqCtx.PostArgs().Len()+reqCtx.QueryArgs().Len())
@@ -458,7 +489,7 @@ func (ctx *Context) SetHeader(k string, v string) {
 // first parameter is the url to redirect
 // second parameter is the http status should send, default is 302 (StatusFound), you can set it to 301 (Permant redirect), if that's nessecery
 func (ctx *Context) Redirect(urlToRedirect string, statusHeader ...int) {
-	httpStatus := StatusFound // a 'temporary-redirect-like' wich works better than for our purpose
+	httpStatus := StatusFound // a 'temporary-redirect-like' which works better than for our purpose
 	if statusHeader != nil && len(statusHeader) > 0 && statusHeader[0] > 0 {
 		httpStatus = statusHeader[0]
 	}
@@ -536,19 +567,76 @@ func (ctx *Context) Gzip(b []byte, status int) {
 	}
 }
 
-// RenderWithStatus builds up the response from the specified template or a response engine.
-// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or response engine
-func (ctx *Context) RenderWithStatus(status int, name string, binding interface{}, options ...map[string]interface{}) error {
-	ctx.SetStatusCode(status)
-	if strings.IndexByte(name, '.') > -1 { //we have template
-		return ctx.framework.templates.getBy(name).execute(ctx, name, binding, options...)
+// renderSerialized renders contents with a serializer with status OK which you can change using RenderWithStatus or ctx.SetStatusCode(iris.StatusCode)
+func (ctx *Context) renderSerialized(contentType string, obj interface{}, options ...map[string]interface{}) error {
+	s := ctx.framework.serializers
+	finalResult, err := s.Serialize(contentType, obj, options...)
+	if err != nil {
+		return err
 	}
-	return ctx.framework.responses.getBy(name).render(ctx, binding, options...)
+
+	gzipEnabled := ctx.framework.Config.Gzip
+	charset := ctx.framework.Config.Charset
+	if len(options) > 0 {
+		gzipEnabled = getGzipOption(gzipEnabled, options[0]) // located to the template.go below the RenderOptions
+		charset = getCharsetOption(charset, options[0])
+	}
+	ctype := contentType
+
+	if ctype == contentMarkdown { // remember the text/markdown is just a custom internal iris content type, which in reallity renders html
+		ctype = contentHTML
+	}
+
+	if ctype != contentBinary { // set the charset only on non-binary data
+		ctype += "; charset=" + charset
+	}
+	ctx.SetContentType(ctype)
+
+	if gzipEnabled && ctx.clientAllowsGzip() {
+		_, err := fasthttp.WriteGzip(ctx.RequestCtx.Response.BodyWriter(), finalResult)
+		if err != nil {
+			return err
+		}
+		ctx.RequestCtx.Response.Header.Add(varyHeader, acceptEncodingHeader)
+		ctx.SetHeader(contentEncodingHeader, "gzip")
+	} else {
+		ctx.Response.SetBody(finalResult)
+	}
+
+	ctx.SetStatusCode(StatusOK)
+
+	return nil
+}
+
+// RenderTemplateSource serves a template source(raw string contents) from  the first template engines which supports raw parsing returns its result as string
+func (ctx *Context) RenderTemplateSource(status int, src string, binding interface{}, options ...map[string]interface{}) error {
+	err := ctx.framework.templates.renderSource(ctx, src, binding, options...)
+	if err == nil {
+		ctx.SetStatusCode(status)
+	}
+
+	return err
+}
+
+// RenderWithStatus builds up the response from the specified template or a serialize engine.
+// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or serialize engines
+func (ctx *Context) RenderWithStatus(status int, name string, binding interface{}, options ...map[string]interface{}) (err error) {
+	if strings.IndexByte(name, '.') > -1 { //we have template
+		err = ctx.framework.templates.renderFile(ctx, name, binding, options...)
+	} else {
+		err = ctx.renderSerialized(name, binding, options...)
+	}
+
+	if err == nil {
+		ctx.SetStatusCode(status)
+	}
+
+	return
 }
 
 // Render same as .RenderWithStatus but with status to iris.StatusOK (200) if no previous status exists
-// builds up the response from the specified template or a response engine.
-// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or response engine
+// builds up the response from the specified template or a serialize engine.
+// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or serialize engine
 func (ctx *Context) Render(name string, binding interface{}, options ...map[string]interface{}) error {
 	errCode := ctx.RequestCtx.Response.StatusCode()
 	if errCode <= 0 {
@@ -558,12 +646,14 @@ func (ctx *Context) Render(name string, binding interface{}, options ...map[stri
 }
 
 // MustRender same as .Render but returns 500 internal server http status (error) if rendering fail
-// builds up the response from the specified template or a response engine.
-// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or response engine
+// builds up the response from the specified template or a serialize engine.
+// Note: the options: "gzip" and "charset" are built'n support by Iris, so you can pass these on any template engine or serialize engine
 func (ctx *Context) MustRender(name string, binding interface{}, options ...map[string]interface{}) {
 	if err := ctx.Render(name, binding, options...); err != nil {
 		ctx.Panic()
-		ctx.framework.Logger.Dangerf("MustRender panics for client with IP: %s On template: %s.Trace: %s\n", ctx.RemoteAddr(), name, err)
+		if ctx.framework.Config.IsDevelopment {
+			ctx.framework.Logger.Printf("MustRender panics for client with IP: %s On template: %s.Trace: %s\n", ctx.RemoteAddr(), name, err)
+		}
 	}
 }
 
@@ -576,7 +666,7 @@ func (ctx *Context) TemplateString(name string, binding interface{}, options ...
 // HTML writes html string with a http status
 func (ctx *Context) HTML(status int, htmlContents string) {
 	if err := ctx.RenderWithStatus(status, contentHTML, htmlContents); err != nil {
-		// if no response engine found for text/html
+		// if no serialize engine found for text/html
 		ctx.SetContentType(contentHTML + "; charset=" + ctx.framework.Config.Charset)
 		ctx.RequestCtx.SetStatusCode(status)
 		ctx.RequestCtx.WriteString(htmlContents)
@@ -610,7 +700,7 @@ func (ctx *Context) XML(status int, v interface{}) error {
 
 // MarkdownString parses the (dynamic) markdown string and returns the converted html string
 func (ctx *Context) MarkdownString(markdownText string) string {
-	return ctx.framework.ResponseString(contentMarkdown, markdownText)
+	return ctx.framework.SerializeToString(contentMarkdown, markdownText)
 }
 
 // Markdown parses and renders to the client a particular (dynamic) markdown string
@@ -627,28 +717,26 @@ func (ctx *Context) Markdown(status int, markdown string) {
 // You can define your own "Content-Type" header also, after this function call
 // Doesn't implements resuming (by range), use ctx.SendFile instead
 func (ctx *Context) ServeContent(content io.ReadSeeker, filename string, modtime time.Time, gzipCompression bool) error {
-	if t, err := time.Parse(config.TimeFormat, ctx.RequestHeader(ifModifiedSince)); err == nil && modtime.Before(t.Add(1*time.Second)) {
+	if t, err := time.Parse(ctx.framework.Config.TimeFormat, ctx.RequestHeader(ifModifiedSince)); err == nil && modtime.Before(t.Add(1*time.Second)) {
 		ctx.RequestCtx.Response.Header.Del(contentType)
 		ctx.RequestCtx.Response.Header.Del(contentLength)
 		ctx.RequestCtx.SetStatusCode(StatusNotModified)
 		return nil
 	}
 
-	ctx.RequestCtx.Response.Header.Set(contentType, utils.TypeByExtension(filename))
-	ctx.RequestCtx.Response.Header.Set(lastModified, modtime.UTC().Format(config.TimeFormat))
+	ctx.RequestCtx.Response.Header.Set(contentType, fs.TypeByExtension(filename))
+	ctx.RequestCtx.Response.Header.Set(lastModified, modtime.UTC().Format(ctx.framework.Config.TimeFormat))
 	ctx.RequestCtx.SetStatusCode(StatusOK)
 	var out io.Writer
 	if gzipCompression && ctx.clientAllowsGzip() {
 		ctx.RequestCtx.Response.Header.Add(varyHeader, acceptEncodingHeader)
 		ctx.SetHeader(contentEncodingHeader, "gzip")
-		gzipWriter := gzipWriterPool.Get().(*gzip.Writer)
-		gzipWriter.Reset(ctx.RequestCtx.Response.BodyWriter())
-		defer gzipWriter.Close()
-		defer gzipWriterPool.Put(gzipWriter)
+
+		gzipWriter := fs.AcquireGzipWriter(ctx.RequestCtx.Response.BodyWriter())
+		defer fs.ReleaseGzipWriter(gzipWriter)
 		out = gzipWriter
 	} else {
 		out = ctx.RequestCtx.Response.BodyWriter()
-
 	}
 	_, err := io.Copy(out, content)
 	return errServeContent.With(err)
@@ -771,7 +859,7 @@ func (ctx *Context) Set(key string, value interface{}) {
 // Note: the method ctx.Request.Header.VisitAllCookie by fasthttp, has a strange bug which I cannot solve at the moment.
 // This is the reason which this function exists and should be used instead of fasthttp's built'n.
 func (ctx *Context) VisitAllCookies(visitor func(key string, value string)) {
-	// strange bug, this doesnt works also: 	cookieHeaderContent := ctx.Request.Header.Peek("Cookie")/User-Agent tested also
+	// strange bug, this doesn't works also: 	cookieHeaderContent := ctx.Request.Header.Peek("Cookie")/User-Agent tested also
 	headerbody := string(ctx.Request.Header.Header())
 	headerlines := strings.Split(headerbody, "\n")
 	for _, s := range headerlines {
@@ -902,7 +990,7 @@ func (ctx *Context) GetFlash(key string) (string, error) {
 
 	cookieKey, cookieValue := ctx.decodeFlashCookie(key)
 	if cookieValue == "" {
-		return "", errFlashNotFound.Return()
+		return "", errFlashNotFound
 	}
 	// store this flash message to the lifetime request's local storage,
 	// I choose this method because no need to store it if not used at all
@@ -950,13 +1038,13 @@ func (ctx *Context) SetFlash(key string, value string) {
 }
 
 // Session returns the current session
-func (ctx *Context) Session() context.Session {
+func (ctx *Context) Session() sessions.Session {
 	if ctx.framework.sessions == nil { // this should never return nil but FOR ANY CASE, on future changes.
 		return nil
 	}
 
 	if ctx.session == nil {
-		ctx.session = ctx.framework.sessions.start(ctx)
+		ctx.session = ctx.framework.sessions.StartFasthttp(ctx.RequestCtx)
 	}
 	return ctx.session
 }
@@ -964,7 +1052,7 @@ func (ctx *Context) Session() context.Session {
 // SessionDestroy destroys the whole session, calls the provider's destroy and remove the cookie
 func (ctx *Context) SessionDestroy() {
 	if sess := ctx.Session(); sess != nil {
-		ctx.framework.sessions.destroy(ctx)
+		ctx.framework.sessions.DestroyFasthttp(ctx.RequestCtx)
 	}
 
 }
@@ -972,4 +1060,9 @@ func (ctx *Context) SessionDestroy() {
 // Log logs to the iris defined logger
 func (ctx *Context) Log(format string, a ...interface{}) {
 	ctx.framework.Logger.Printf(format, a...)
+}
+
+// Framework returns the Iris instance, containing the configuration and all other fields
+func (ctx *Context) Framework() *Framework {
+	return ctx.framework
 }

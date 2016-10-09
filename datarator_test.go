@@ -12,13 +12,14 @@ const defaultTimeout = 3000
 
 func irisTester(t *testing.T) *httpexpect.Expect {
 	api := IrisAPI()
+	api.Build()
 
 	opts.Timeout = defaultTimeout
 	opts.ChunkSize = 1000
 
 	return httpexpect.WithConfig(httpexpect.Config{
 		Client: &http.Client{
-			Transport: httpexpect.NewFastBinder(api.ListenVirtual().Handler),
+			Transport: httpexpect.NewFastBinder(api.Router),
 			Jar:       httpexpect.NewJar(),
 		},
 		Reporter: httpexpect.NewAssertReporter(t),
@@ -118,10 +119,17 @@ func TestCsv(t *testing.T) {
 			Expect().
 			Status(http.StatusOK).
 			ContentType(test.responseContentType).
-			// TODO once merged: https://github.com/gavv/httpexpect/pull/25
-			// ContentEncoding(test.reponseContentEncoding).
 			TransferEncoding(test.responseTransferEncoding).
 			Body().Equal(string(out))
+
+		// not working for empty string => kept separatelly
+		if test.responseContentEncoding != "" {
+			irisTest.POST("/api/schemas/foo").
+				WithHeaders(test.requestHeaders).WithBytes(in).
+				Expect().
+				ContentEncoding(test.responseContentEncoding)
+		}
+
 	}
 }
 

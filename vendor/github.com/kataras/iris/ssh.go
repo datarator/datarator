@@ -1,6 +1,6 @@
 package iris
 
-// Minimal managment over SSH for your Iris & Q web server
+// Minimal management over SSH for your Iris & Q web server
 //
 // Declaration:
 //
@@ -27,6 +27,8 @@ package iris
 // log
 // help
 // exit
+//
+// Keep note that I will re-write this file, ssh.go because, as you can see, it's not well-written and not maintainable*
 
 import (
 	"bytes"
@@ -43,11 +45,12 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/iris-contrib/errors"
-	"github.com/iris-contrib/logger"
+	"log"
+
 	"github.com/kardianos/osext"
 	"github.com/kardianos/service"
-	"github.com/kataras/iris/utils"
+	"github.com/kataras/go-errors"
+	"github.com/kataras/go-fs"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -101,7 +104,7 @@ func (s *SSHServer) bindTo(station *Framework) {
 
 		sshCommands := Commands{
 			Command{Name: "status", Description: "Prompts the status of the HTTP Server, is listening(started) or not(stopped).", Action: func(conn ssh.Channel) {
-				if station.Servers.Main() != nil && station.Servers.Main().IsListening() {
+				if station.IsRunning() {
 					statusRunningMsg(conn)
 				} else {
 					statusNotRunningMsg(conn)
@@ -114,29 +117,26 @@ func (s *SSHServer) bindTo(station *Framework) {
 			// Note for stop If you have opened a tab with Q route:
 			//  in order to see that the http listener has closed you have to close your browser and re-navigate(browsers caches the tcp connection)
 			Command{Name: "stop", Description: "Stops the HTTP Server.", Action: func(conn ssh.Channel) {
-				srv := station.Servers.Main()
-				if srv != nil && srv.IsListening() {
-					srv.Close()
-					srv.listener = nil
+				if station.IsRunning() {
+					station.Close()
+					//srv.listener = nil used to reopen so let it setted
 					serverStoppedMsg(conn)
 				} else {
 					errServerNotReadyMsg(conn)
 				}
 			}},
 			Command{Name: "start", Description: "Starts the HTTP Server.", Action: func(conn ssh.Channel) {
-				srv := station.Servers.Main()
-				if !srv.IsListening() {
-					go srv.Open(srv.Handler)
+				if !station.IsRunning() {
+					go station.Reserve()
 				}
 				serverStartedMsg(conn)
 			}},
 			Command{Name: "restart", Description: "Restarts the HTTP Server.", Action: func(conn ssh.Channel) {
-				srv := station.Servers.Main()
-				if srv != nil && srv.IsListening() {
-					srv.Close()
-					srv.listener = nil
+				if station.IsRunning() {
+					station.Close()
+					//srv.listener = nil used to reopen so let it setted
 				}
-				go srv.Open(srv.Handler)
+				go station.Reserve()
 				serverRestartedMsg(conn)
 			}},
 			/* not ready yet
@@ -219,13 +219,13 @@ var (
 	SSHBanner = banner
 
 	helpMessage = SSHBanner + `
-	
+
 COMMANDS:
 	  {{ range $index, $cmd := .Commands }}
-		  {{- $cmd.Name }} - {{ $cmd.Description }}
+		  {{- $cmd.Name }} | {{ $cmd.Description }}
 	  {{ end }}
 USAGE:
-	  ssh myusername@{{ .Hostname}} -p {{ .Port }} {{ first .Commands}}
+	  ssh myusername@{{ .Hostname}} {{ .PortDeclaration }} {{ first .Commands}}
 	  or just write the command below
 VERSION:
 	  {{ .Version }}
@@ -324,7 +324,7 @@ func generateSigner(keypath string, sshKeygenBin string) (ssh.Signer, error) {
 	} else {
 		sshKeygenBin = "ssh-keygen"
 	}
-	if !utils.DirectoryExists(keypath) {
+	if !fs.DirectoryExists(keypath) {
 		os.MkdirAll(filepath.Dir(keypath), os.ModePerm)
 		keygenCmd := exec.Command(sshKeygenBin, "-f", keypath, "-t", "rsa", "-N", "")
 		_, err := keygenCmd.Output()
@@ -423,8 +423,13 @@ type SSHServer struct {
 	Commands Commands // Commands{Command{Name: "restart", Description:"restarts & rebuild the server", Action: func(ssh.Channel){}}}
 	// note for Commands field:
 	// the default  Iris's commands are defined at the end of this file, I tried to make this file as standalone as I can, because it will be used for Iris web framework also.
-	Shell  bool           // Set it to true to enable execute terminal's commands(system commands) via ssh if no other command is found from the Commands field. Defaults to false for security reasons
-	Logger *logger.Logger // log.New(...)/ $qinstance.Logger, fill it when you want to receive debug and info/warnings messages
+	Shell  bool        // Set it to true to enable execute terminal's commands(system commands) via ssh if no other command is found from the Commands field. Defaults to false for security reasons
+	Logger *log.Logger // log.New(...)/ $qinstance.Logger, fill it when you want to receive debug and info/warnings messages
+}
+
+// NewSSHServer returns a new empty SSHServer
+func NewSSHServer() *SSHServer {
+	return &SSHServer{}
 }
 
 // Enabled returns true if SSH can be started, if Host != ""
@@ -446,23 +451,9 @@ func (s *SSHServer) logf(format string, a ...interface{}) {
 	}
 }
 
-// parseHostname receives an addr of form host[:port] and returns the hostname part of it
-// ex: localhost:8080 will return the `localhost`, mydomain.com:22 will return the 'mydomain'
-func parseHostname(addr string) string {
-	idx := strings.IndexByte(addr, ':')
-	if idx == 0 {
-		// only port, then return 0.0.0.0
-		return "0.0.0.0"
-	} else if idx > 0 {
-		return addr[0:idx]
-	}
-	// it's already hostname
-	return addr
-}
-
-// parsePort receives an addr of form host[:port] and returns the port part of it
-// ex: localhost:8080 will return the `8080`, mydomain.com will return the '22'
-func parsePort(addr string) int {
+// parsePortSSH receives an addr of form host[:port] and returns the port part of it
+// ex: localhost:22 will return the `22`, mydomain.com will return the '22'
+func parsePortSSH(addr string) int {
 	if portIdx := strings.IndexByte(addr, ':'); portIdx != -1 {
 		afP := addr[portIdx+1:]
 		p, err := strconv.Atoi(afP)
@@ -478,11 +469,17 @@ var standardCommands = Commands{Command{Name: "help", Description: "Opens up the
 	Command{Name: "exit", Description: "Exits from the terminal (if interactive shell)"}}
 
 func (s *SSHServer) writeHelp(wr io.Writer) {
-	port := parsePort(s.Host)
-	hostname := parseHostname(s.Host)
-
+	port := parsePortSSH(s.Host)
+	hostname := ParseHostname(s.Host)
+	defer func() {
+		if r := recover(); r != nil {
+			// means that user-dev has old version of Go Programming Language in her/his machine, so print a message to the server terminal
+			// which will help the dev, NOT the client
+			s.logf("[IRIS SSH] Help message is disabled, please install Go Programming Language, at least version 1.7: https://golang.org/dl/")
+		}
+	}()
 	data := map[string]interface{}{
-		"Hostname": hostname, "Port": port,
+		"Hostname": hostname, "PortDeclaration": "-p " + strconv.Itoa(port),
 		"Commands": append(s.Commands, standardCommands...),
 		"Version":  Version,
 	}
