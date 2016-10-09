@@ -1,0 +1,16 @@
+{
+    "template": "csv",
+    "count": 2,
+    "columns": [{
+        "name": "server",
+        "type": "const",
+        "payload": {
+            "value": "datarator",
+            "emptyPercent": -1
+        }
+    }],
+    "payload": {
+        "header": false,
+        "separator": " "
+    }
+}

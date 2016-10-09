@@ -21,6 +21,9 @@ func TestTemplateSQLGenerate(t *testing.T) {
 								column: Column{
 									name: "col1",
 								},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "Hello",
@@ -30,6 +33,9 @@ func TestTemplateSQLGenerate(t *testing.T) {
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
 									name: "col2",
+								},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
 								},
 							},
 							payload: ColumnConstPayload{

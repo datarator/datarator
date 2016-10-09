@@ -1,0 +1,35 @@
+{
+    "template": "csv",
+    "count": 2,
+    "columns": [{
+            "name": "id",
+            "type": "row_index"
+        },
+        {
+            "name": "greeting",
+            "type": "const",
+            "payload": {
+                "value": "hello"
+            }
+        },
+        {
+            "name": "from",
+            "type": "const",
+            "payload": {
+                "value": "from"
+            }
+        },
+        {
+            "name": "server",
+            "type": "const",
+            "payload": {
+                "value": "datarator",
+                "emptyPercent": 100
+            }
+        }
+    ],
+    "payload": {
+        "header": false,
+        "separator": " "
+    }
+}

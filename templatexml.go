@@ -57,11 +57,10 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) ([]byt
 					// iterate nested attributes only
 					for _, nestedColumn := range nestedColumns {
 						if nestedColumn.Payload().XmlType() == payloadXMLAttribute {
-							val, err := nestedColumn.Value(chunk)
+							val, err := generateValue(chunk, template.schema.emptyValue, nestedColumn)
 							if err != nil {
 								return nil, err
 							}
-							chunk.values[column.Column().name] = val
 
 							buffer.WriteByte(' ')
 							buffer.WriteString(nestedColumn.Column().name)
@@ -105,31 +104,25 @@ func (template TemplateXML) generate(columns []TypedColumn, chunk *Chunk) ([]byt
 			case payloadXMLAttribute:
 				// already covered in the default case => nothing to do here
 			case payloadXMLValue:
-				val, err := column.Value(chunk)
+				val, err := generateValue(chunk, template.schema.emptyValue, column)
 				if err != nil {
 					return nil, err
 				}
-				chunk.values[column.Column().name] = val
-
 				buffer.WriteString(val)
 			case payloadXMLCdata:
-				val, err := column.Value(chunk)
+				val, err := generateValue(chunk, template.schema.emptyValue, column)
 				if err != nil {
 					return nil, err
 				}
-				chunk.values[column.Column().name] = val
-
 				buffer.WriteByte('\n')
 				buffer.WriteString("<![CDATA[\n")
 				buffer.WriteString(val)
 				buffer.WriteString("\n]]>\n")
 			case payloadXMLComment:
-				val, err := column.Value(chunk)
+				val, err := generateValue(chunk, template.schema.emptyValue, column)
 				if err != nil {
 					return nil, err
 				}
-				chunk.values[column.Column().name] = val
-
 				buffer.WriteByte('\n')
 				buffer.WriteString(template.getIndent(chunk))
 				buffer.WriteString("<!--")

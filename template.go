@@ -25,7 +25,7 @@ type TemplateFactory struct {
 func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSONSchema) (Template, error) {
 	var err error
 
-	columns, err := createColumns(jSONSchema.Columns)
+	columns, err := createColumns(jSONSchema.Columns, jSONSchema.Count)
 	if err != nil {
 		return nil, err
 	}
@@ -36,8 +36,6 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSO
 		count:      jSONSchema.Count,
 		columns:    columns,
 	}
-	// "EmptyIndeces":     countEmptyIndeces(jSONColumn.EmptyPercent),
-	// "Locale":      retrieveLocale(jSONColumn),
 
 	var template Template
 
@@ -71,12 +69,20 @@ func (templateFactory TemplateFactory) CreateTemplate(id string, jSONSchema *JSO
 	return template, nil
 }
 
-// func countEmptyIndeces(EmptyPercent float32) ([]int, error) {
-//     // TODO
-//     return []int {1}, nil
-// }
-
-// func retrieveLocale(jSONColumn JSONColumn) (string, error) {
-//     // TODO traverse all the way up to root to retrieve the locale
-//     return "en", nil
-// }
+func generateValue(chunk *Chunk, emptyValue string, column TypedColumn) (string, error) {
+	var val string
+	emptyIndeces := column.Payload().EmptyIndeces()
+	if emptyIndeces[chunk.index] {
+		val = emptyValue
+		chunk.values[column.Column().name] = val
+		return val, nil
+	} else {
+		var err error
+		val, err = column.Value(chunk)
+		if err != nil {
+			return "", err
+		}
+	}
+	chunk.values[column.Column().name] = val
+	return val, nil
+}

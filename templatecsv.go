@@ -25,12 +25,10 @@ func (template TemplateCSV) Generate(chunk *Chunk) ([]byte, error) {
 	}
 
 	for _, column := range template.schema.columns {
-		val, err := column.Value(chunk)
+		val, err := generateValue(chunk, template.schema.emptyValue, column)
 		if err != nil {
 			return nil, err
 		}
-		chunk.values[column.Column().name] = val
-
 		buffer.WriteString(val)
 		buffer.WriteString(template.payload.Separator)
 	}

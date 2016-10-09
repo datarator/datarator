@@ -24,7 +24,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 								column: Column{
 									name: "Hello",
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "",
@@ -35,7 +37,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 								column: Column{
 									name: "datarator",
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "",
@@ -69,7 +73,8 @@ func TestTemplateXMLGenerate(t *testing.T) {
 													name: "datarator",
 												},
 												payload: TypedColumnBasePayload{
-													Xml: "cdata",
+													Xml:          "cdata",
+													emptyIndeces: make(map[int]bool),
 												},
 											},
 											payload: ColumnConstPayload{
@@ -78,7 +83,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 										},
 									},
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "",
@@ -112,7 +119,8 @@ func TestTemplateXMLGenerate(t *testing.T) {
 													name: "datarator",
 												},
 												payload: TypedColumnBasePayload{
-													Xml: "comment",
+													Xml:          "comment",
+													emptyIndeces: make(map[int]bool),
 												},
 											},
 											payload: ColumnConstPayload{
@@ -121,7 +129,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 										},
 									},
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "",
@@ -164,7 +174,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 										},
 									},
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "ignored",
@@ -203,7 +215,8 @@ func TestTemplateXMLGenerate(t *testing.T) {
 																	name: "NestedAttr",
 																},
 																payload: TypedColumnBasePayload{
-																	Xml: "attribute",
+																	Xml:          "attribute",
+																	emptyIndeces: make(map[int]bool),
 																},
 															},
 															payload: ColumnConstPayload{
@@ -216,7 +229,8 @@ func TestTemplateXMLGenerate(t *testing.T) {
 																	name: "NestedVal",
 																},
 																payload: TypedColumnBasePayload{
-																	Xml: "value",
+																	Xml:          "value",
+																	emptyIndeces: make(map[int]bool),
 																},
 															},
 															payload: ColumnConstPayload{
@@ -244,7 +258,9 @@ func TestTemplateXMLGenerate(t *testing.T) {
 								column: Column{
 									name: "datarator",
 								},
-								payload: TypedColumnBasePayload{},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "",

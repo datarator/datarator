@@ -12,10 +12,8 @@ const (
 )
 
 type Column struct {
-	name         string
-	columns      []TypedColumn
-	emptyIndeces []int
-	// locale       string
+	name    string
+	columns []TypedColumn
 }
 
 type TypedColumn interface {
@@ -39,22 +37,29 @@ func (column TypedColumnBase) Payload() TypedColumnPayload {
 
 type TypedColumnPayload interface {
 	XmlType() string
+	EmptyIndeces() map[int]bool
 }
 
 type TypedColumnBasePayload struct {
-	Xml string `json:"xml"`
+	Xml          string  `json:"xml"`
+	EmptyPercent float32 `json:"emptyPercent"`
+	emptyIndeces map[int]bool
 }
 
 func (payload TypedColumnBasePayload) XmlType() string {
 	return payload.Xml
 }
 
+func (payload TypedColumnBasePayload) EmptyIndeces() map[int]bool {
+	return payload.emptyIndeces
+}
+
 type ColumnFactory struct {
 }
 
-func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedColumn, error) {
+func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn, count int) (TypedColumn, error) {
 
-	nestedColums, err := createColumns(jSONColumn.Columns)
+	nestedColums, err := createColumns(jSONColumn.Columns, count)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +68,6 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 		name:    jSONColumn.Name,
 		columns: nestedColums,
 	}
-	// "EmptyIndeces":     countEmptyIndeces(jSONColumn.EmptyPercent),
-	// "Locale":      retrieveLocale(jSONColumn),
 
 	var typedColumn TypedColumn
 	var errPayload error
@@ -74,6 +77,13 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	if errBasePayload != nil {
 		return nil, errBasePayload
 	}
+
+	emptyIndeces, err := computeEmptyIndeces(basePayload.EmptyPercent, count)
+	if err != nil {
+		return nil, err
+	}
+	basePayload.emptyIndeces = emptyIndeces
+
 	typedColumnBase := TypedColumnBase{
 		column:  column,
 		payload: basePayload,
@@ -257,22 +267,12 @@ func (columnFactory ColumnFactory) CreateColumn(jSONColumn JSONColumn) (TypedCol
 	return typedColumn, nil
 }
 
-// func countEmptyIndeces(EmptyPercent float32) ([]int, error) {
-//     // TODO
-//     return []int {1}, nil
-// }
-
-// func retrieveLocale(jSONColumn JSONColumn) (string, error) {
-//     // TODO traverse all the way up to root to retrieve the locale
-//     return "en", nil
-// }
-
-func createColumns(columns []JSONColumn) ([]TypedColumn, error) {
+func createColumns(columns []JSONColumn, count int) ([]TypedColumn, error) {
 	columnFactory := ColumnFactory{}
 	nestedColumns := []TypedColumn{}
 
 	for _, nestedJSONColumn := range columns {
-		nestedColumn, err := columnFactory.CreateColumn(nestedJSONColumn)
+		nestedColumn, err := columnFactory.CreateColumn(nestedJSONColumn, count)
 		if err != nil {
 			return nil, err
 		}

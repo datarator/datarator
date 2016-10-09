@@ -16,11 +16,10 @@ func (template TemplateSQL) Generate(chunk *Chunk) ([]byte, error) {
 	var buffer bytes.Buffer
 	buffer.Write(template.getLinePrefix(chunk))
 	for _, column := range template.schema.columns {
-		val, err := column.Value(chunk)
+		val, err := generateValue(chunk, template.schema.emptyValue, column)
 		if err != nil {
 			return nil, err
 		}
-		chunk.values[column.Column().name] = val
 		buffer.WriteByte('\'')
 		buffer.WriteString(val)
 		buffer.WriteByte('\'')

@@ -46,6 +46,12 @@ func TestCsv(t *testing.T) {
 			outContentType: "text/csv",
 		},
 		{
+			inFile:         "./testresource/csv_const_empty_in.json",
+			outFile:        "./testresource/csv_const_empty_out",
+			headers:        make(map[string]string),
+			outContentType: "text/csv",
+		},
+		{
 			inFile:         "./testresource/csv_const_in.json",
 			outFile:        "./testresource/csv_const_out.gz",
 			headers:        map[string]string{"Accept-Encoding": "gzip,deflate"},
@@ -156,6 +162,18 @@ func TestErr(t *testing.T) {
 			timeout:           defaultTimeout,
 			outErrCode:        http.StatusBadRequest,
 			outErrStringRegex: "on line 4 column 2 got :invalid character '}' looking for beginning of object key string",
+		},
+		{
+			inFile:            "./testresource/err_invalid_empty_percent_negative.json",
+			timeout:           0,
+			outErrCode:        http.StatusBadRequest,
+			outErrStringRegex: "Must be greater than or equal to 0",
+		},
+		{
+			inFile:            "./testresource/err_invalid_empty_percent_over_100.json",
+			timeout:           0,
+			outErrCode:        http.StatusBadRequest,
+			outErrStringRegex: "Must be less than or equal to 100",
 		},
 		{
 			inFile:            "./testresource/err_timeout.json",

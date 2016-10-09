@@ -45,6 +45,9 @@
                     }
                 }
             },
+            "links": [{
+                "href": "http://datarator.readthedocs.io/en/latest/json_api_template.html#template-csv"
+            }],
             "required": [
                 "template",
                 "columns"
@@ -248,6 +251,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -277,6 +283,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -306,6 +315,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -335,6 +347,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -364,6 +379,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -393,6 +411,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -422,6 +443,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -451,6 +475,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -483,6 +510,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -515,6 +545,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     },
                     "required": [
@@ -551,6 +584,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     },
                     "required": [
@@ -592,6 +628,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -621,6 +660,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -650,6 +692,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -679,6 +724,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -708,6 +756,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -740,6 +791,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -769,6 +823,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -798,6 +855,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -830,6 +890,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -859,6 +922,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -891,6 +957,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -930,6 +999,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     },
                     "required": [
@@ -963,6 +1035,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -992,6 +1067,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1021,6 +1099,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1050,6 +1131,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1079,6 +1163,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1108,6 +1195,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1137,6 +1227,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1166,6 +1259,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1195,6 +1291,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1232,6 +1331,9 @@
                         },
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     },
                     "required": [
@@ -1266,6 +1368,9 @@
                     "properties": {
                         "xml": {
                             "$ref": "#/definitions/payloadXml"
+                        },
+                        "emptyPercent": {
+                            "$ref": "#/definitions/payloadEmptyPercent"
                         }
                     }
                 }
@@ -1285,6 +1390,11 @@
             ],
             "type": "string",
             "default": "element"
+        },
+        "payloadEmptyPercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
         }
     }
 }

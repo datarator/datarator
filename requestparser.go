@@ -22,18 +22,15 @@ type RequestParser interface {
 }
 
 type JSONColumn struct {
-	Name         string
-	Type         string
-	EmptyPercent float32 `json:"emptyPercent"`
-	Locale       string
-	Columns      []JSONColumn
-	JSONPayload  json.RawMessage `json:"payload"`
+	Name        string
+	Type        string
+	Columns     []JSONColumn
+	JSONPayload json.RawMessage `json:"payload"`
 }
 
 type JSONSchema struct {
 	Template    string
 	EmptyValue  string `json:"emptyValue"`
-	Locale      string
 	Count       int
 	Columns     []JSONColumn
 	JSONPayload json.RawMessage `json:"payload"`

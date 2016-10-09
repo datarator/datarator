@@ -18,11 +18,21 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					count: 2,
 					columns: []TypedColumn{
 						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
+							},
 							payload: ColumnConstPayload{
 								Value: "Hello",
 							},
 						},
 						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
+							},
 							payload: ColumnConstPayload{
 								Value: "datarator",
 							},
@@ -45,11 +55,21 @@ func TestTemplateCSVGenerate(t *testing.T) {
 					count: 2,
 					columns: []TypedColumn{
 						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
+							},
 							payload: ColumnConstPayload{
 								Value: "Hello",
 							},
 						},
 						ColumnConst{
+							TypedColumnBase: TypedColumnBase{
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
+							},
 							payload: ColumnConstPayload{
 								Value: "datarator",
 							},
@@ -77,6 +97,9 @@ func TestTemplateCSVGenerate(t *testing.T) {
 								column: Column{
 									name: "foo",
 								},
+								payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
+								},
 							},
 							payload: ColumnConstPayload{
 								Value: "Hello",
@@ -86,6 +109,8 @@ func TestTemplateCSVGenerate(t *testing.T) {
 							TypedColumnBase: TypedColumnBase{
 								column: Column{
 									name: "bar",
+								}, payload: TypedColumnBasePayload{
+									emptyIndeces: make(map[int]bool),
 								},
 							},
 							payload: ColumnConstPayload{

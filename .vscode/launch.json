@@ -10,6 +10,15 @@
             "args": []
         },
         {
+            "name": "Test-single",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program": "${workspaceRoot}",
+            "env": {},
+            "args": ["datarator_test.go"]
+        },
+        {
             "name": "Launch",
             "type": "go",
             "request": "launch",
