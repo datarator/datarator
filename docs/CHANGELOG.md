@@ -8,9 +8,27 @@ Datarator is in a pre-1.0 state. This means that its APIs and behavior are subje
 
 * TODO
 
+## [0.2.0][] (2016-10-10)
+
+Features:
+* CLI:
+    * options: confgurable chunk size
+* API: 
+    * column payload: `emptyPercent`
+    * response gzip support
+    * response header: `Content-Encoding`
+    * timeout on data generation
+    * removed api: GET /
+    * template:`sql` removed whitespaces
+    * json schema updated for usage with [jdorn/json-editor](http://github.com/jdorn/json-editor)
+
+Fixes:
+* using proper sql mime type
+
 ## 0.1.0 (2016-09-06)
 
 * Initial release
-
+ 
 [Semver]: http://semver.org
-[Unreleased]: https://github.com/datarator/datarator/compare/0.1.0...master
+[Unreleased]: https://github.com/datarator/datarator/compare/v0.2.0...master
+[0.2.0]: https://github.com/datarator/datarator/compare/0.1.0...v0.2.0
