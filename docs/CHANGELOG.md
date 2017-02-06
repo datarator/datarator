@@ -6,9 +6,15 @@ Datarator is in a pre-1.0 state. This means that its APIs and behavior are subje
 
 ## [Unreleased][]
 
-* TODO
+## [0.2.1][] (2017-02-06)
+
+Fixes:
+* binaries release fixed
 
 ## [0.2.0][] (2016-10-10)
+
+Known Issues:
+* bianries release failed (no binaries provided)
 
 Features:
 * CLI:
@@ -31,4 +37,5 @@ Fixes:
  
 [Semver]: http://semver.org
 [Unreleased]: https://github.com/datarator/datarator/compare/v0.2.0...master
+[0.2.1]: https://github.com/datarator/datarator/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/datarator/datarator/compare/0.1.0...v0.2.0
