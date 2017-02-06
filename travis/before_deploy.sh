@@ -44,6 +44,9 @@ do
 done
 rm -rf usr/local/bin/*
 
+# prevent deployment problems afterwards, as we deploy `dist/*`` and `dist/usr` can't be deployed (see: https://travis-ci.org/datarator/datarator/builds/166543614)
+rm -rf usr
+
 # TODO
 # # MacOS
 
