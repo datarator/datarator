@@ -2,7 +2,7 @@
 set -e
 
 # don't rerun
-[ -d dist ] && { echo "dist/ dir already exists => no re-run supported!"; exit 1; }
+[ -d dist ] && { echo "dist/ dir already exists => exiting!"; exit 0; }
 
 #####################
 # build cross-arch binaries (using gox)
