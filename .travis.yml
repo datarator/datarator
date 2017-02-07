@@ -9,7 +9,7 @@ go:
   - 1.7
 env:
   global:
-    - VERSION=0.2.1
+    - VERSION=0.2.2-dev
     # for coveralls.io
     - secure: t0xgK1eBYifj6Og14iEekc732pzXxx96zSokvRb8PRZrsHzwA5pexMnlrqqXpDJE8xU+506cTeMKfGf8YkzLJDCDb0n58ymUGGYHehRiuveUBhOpRtO7BxQQGdeeX15k0Kc5At+brziuQkfD/cieaCXe+qBUbzrsKBaSklI7NRXEUFIPFNiRkHQyvq+xLXCZ0mhh16tH396C+RGDbAC/QDBZl3jVGcAlO0MEIGSPFKgci/wGc32WOnakQJvMd4oSu/IZtmTi3uIl8mpL5+b9h88IprajJOhPUo7a+T1LH5r5CwGmka6lwllLnKdOE6U/96PpvrVA+4HhCCBL2b/sqVwIk2nN+KW1x7d4bNs95hDCl6fByOqZhI0M3MLZN8DFeRvXWW6QGY2YgjmtY1don6lFb/KYpse6AfxgLGN4iEqOtX+slgzrPyRS26Z8TVEXT5lVHkMRB7iUQO9xLd4ef4XpCmpyVC+ToQsNKE8MG761mnlxg4sJeE3FLLNa+qJxRiTMvhbkR8FXmJ1eSZtc4LzrCCADwveY8/fuccxbD5d03AxnsviygYfDv+fpvRwzJVAPtAV4lDruGM9nXZJaAeB7Vn/zlOKIqKRW2OaOHer6idKQECZrUpnpDIkuSH6RrlS7GYKY8KexqWrAMuh2OTaat8zfTOFiK+VrqdTEf/c=
 before_install:
