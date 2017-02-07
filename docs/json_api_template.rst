@@ -71,35 +71,35 @@ For **example**, input JSON:
 ::
 
    {
-    "template": "sql",
-    "count": 3,
-    "columns": [{
-        "name": "name1",
-        "type": "const",
-        "payload": {
-            "value": "value1"
-        }
-    }, {
-        "name": "name2",
-        "type": "const",
-        "payload": {
-            "value": "value2"
-        }
-    }, {
-        "name": "name3",
-        "type": "const",
-        "payload": {
-            "value": "value3"
-        }
-    }]
-}
+        "template": "sql",
+        "count": 3,
+        "columns": [{
+            "name": "name1",
+            "type": "const",
+            "payload": {
+                "value": "value1"
+            }
+        }, {
+            "name": "name2",
+            "type": "const",
+            "payload": {
+                "value": "value2"
+            }
+        }, {
+            "name": "name3",
+            "type": "const",
+            "payload": {
+                "value": "value3"
+            }
+        }]
+    }
 
 results in:
 ::
 
-    INSERT INTO foo ( name1, name2, name3 ) VALUES ( 'value1', 'value2', 'value3' );
-    INSERT INTO foo ( name1, name2, name3 ) VALUES ( 'value1', 'value2', 'value3' );
-    INSERT INTO foo ( name1, name2, name3 ) VALUES ( 'value1', 'value2', 'value3' );
+    INSERT INTO foo (name1,name2,name3) VALUES ('value1','value2','value3');
+    INSERT INTO foo (name1,name2,name3) VALUES ('value1','value2','value3');
+    INSERT INTO foo (name1,name2,name3) VALUES ('value1','value2','value3');
 
 .. _xml:
 
