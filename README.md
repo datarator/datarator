@@ -15,7 +15,7 @@ Datarator is a stateless data generator with HTTP based JSON API.
 * [Usage](http://datarator.readthedocs.io/en/latest/usage.html)
 * [JSON API](http://datarator.readthedocs.io/en/latest/json_api.html)
 
-For full documentation refer to format of your choice: [html](http://datarator.readthedocs.io/), [pdf] (https://media.readthedocs.org/pdf/datarator/latest/datarator.pdf) or [epub] (https://media.readthedocs.org/epub/datarator/latest/datarator.epub).
+For full documentation refer to format of your choice: [html](http://datarator.readthedocs.io/), [pdf](https://media.readthedocs.org/pdf/datarator/latest/datarator.pdf) or [epub](https://media.readthedocs.org/epub/datarator/latest/datarator.epub).
 
 # Licensing
 
